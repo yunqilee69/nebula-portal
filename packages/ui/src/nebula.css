@@ -1,0 +1,200 @@
+.ne-page {
+  display: grid;
+  gap: var(--shell-content-gap, 16px);
+}
+
+.ne-muted {
+  color: var(--shell-text-muted, #667085);
+}
+
+.ne-card-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--shell-content-gap, 16px);
+}
+
+.ne-nav-card {
+  display: grid;
+  gap: 8px;
+  padding: 18px;
+  text-align: left;
+  border: 1px solid var(--shell-border-strong, #c7d2e0);
+  border-radius: calc(var(--shell-radius, 8px) - 1px);
+  background: var(--shell-surface-strong, #ffffff);
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.ne-nav-card::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 4px;
+  background: linear-gradient(180deg, var(--shell-primary, #1677ff) 0%, color-mix(in srgb, var(--shell-primary, #1677ff) 38%, transparent) 100%);
+}
+
+.ne-nav-card:hover {
+  border-color: color-mix(in srgb, var(--shell-primary, #1677ff) 36%, var(--shell-border-strong, #c7d2e0));
+  transform: translateY(-1px);
+  box-shadow: 0 14px 28px rgba(15, 23, 42, 0.08);
+}
+
+.ne-breadcrumbs {
+  margin-bottom: 12px;
+}
+
+.ne-workspace-tabs {
+  margin-bottom: 0;
+}
+
+.ne-workspace-tabs .ant-tabs-nav {
+  margin-bottom: 0;
+}
+
+.ne-workspace-tabs .ant-tabs-nav::before {
+  border-bottom: none !important;
+}
+
+.ne-workspace-tabs .ant-tabs-tab {
+  border-radius: 6px 6px 0 0 !important;
+}
+
+.ne-workspace-tabs__label {
+  display: inline-flex;
+  align-items: center;
+  margin: -12px -16px;
+  padding: 12px 16px;
+}
+
+.ne-workspace-tabs .ant-tabs-tab-active {
+  background: linear-gradient(180deg, rgba(22, 119, 255, 0.1) 0%, rgba(22, 119, 255, 0.02) 100%);
+}
+
+.ne-search-panel,
+.ne-table-panel {
+  border: 1px solid var(--shell-border-strong, #c7d2e0);
+  border-radius: var(--shell-radius, 8px);
+  background: var(--shell-surface-strong, #ffffff);
+  box-shadow: var(--shell-shadow, 0 10px 30px rgba(15, 23, 42, 0.06));
+}
+
+.ne-search-panel__header,
+.ne-table-panel__toolbar,
+.ne-table-panel__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 16px;
+  flex-wrap: wrap;
+}
+
+.ne-search-panel__header,
+.ne-table-panel__toolbar:not(:empty) {
+  border-bottom: 1px solid var(--shell-border, #d0d5dd);
+}
+
+.ne-table-panel__toolbar:empty {
+  display: none;
+}
+
+.ne-search-panel__title,
+.ne-table-panel__summary {
+  color: var(--shell-text-muted, #667085);
+  font-size: 13px;
+}
+
+.ne-search-panel__body,
+.ne-table-panel__body {
+  padding: 16px;
+}
+
+.ne-table-panel__body .ant-table-wrapper {
+  overflow: hidden;
+}
+
+.ne-table-panel__body .ant-table {
+  background: transparent;
+}
+
+.ne-table-panel--with-footer .ne-table-panel__body .ant-table-tbody > tr.ant-table-placeholder > .ant-table-cell {
+  border-bottom: none;
+}
+
+.ne-table-panel__footer {
+  border-top: 1px solid var(--shell-border, #d0d5dd);
+}
+
+.ne-table-panel__pagination {
+  margin-left: auto;
+}
+
+.ne-empty-state {
+  padding: 24px 0;
+}
+
+.ne-file-uploader {
+  display: grid;
+  gap: 16px;
+}
+
+.ne-file-card-grid {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+}
+
+.ne-file-card {
+  display: grid;
+  grid-template-columns: 72px minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+  border: 1px solid var(--shell-border, #d0d5dd);
+  border-radius: 8px;
+  background: var(--shell-surface-strong, #fff);
+  padding: 12px;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.05);
+}
+
+.ne-file-card__preview {
+  width: 72px;
+  height: 72px;
+  border-radius: 6px;
+  overflow: hidden;
+  background: #f2f4f7;
+  display: grid;
+  place-items: center;
+}
+
+.ne-file-card__preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.ne-file-card__icon {
+  font-size: 24px;
+  color: var(--shell-primary, #0b7285);
+}
+
+.ne-file-card__meta {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+}
+
+.ne-file-card__actions {
+  display: flex;
+  align-items: center;
+}
+
+@media (max-width: 992px) {
+  .ne-card-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .ne-file-card {
+    grid-template-columns: 1fr;
+  }
+}

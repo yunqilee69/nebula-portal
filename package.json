@@ -1,0 +1,24 @@
+{
+  "name": "nebula-portal",
+  "private": true,
+  "packageManager": "pnpm@10.8.0",
+  "scripts": {
+    "dev": "pnpm dev:shell",
+    "dev:federation": "turbo run dev --parallel",
+    "dev:shell": "pnpm --filter shell dev",
+    "dev:demo": "pnpm --filter demo-business dev",
+    "check:naming": "node scripts/check-frontend-naming.mjs",
+    "build": "pnpm check:naming && turbo run build",
+    "typecheck": "pnpm check:naming && turbo run typecheck",
+    "create-app": "node scripts/create-app.mjs"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@vitejs/plugin-react": "^4.4.1",
+    "turbo": "^2.5.0",
+    "typescript": "^5.8.3",
+    "vite": "^6.3.5"
+  }
+}
