@@ -1,6 +1,7 @@
 node_modules
 dist
 .turbo
+.sisyphus
 .DS_Store
 coverage
 pnpm-lock.yaml
