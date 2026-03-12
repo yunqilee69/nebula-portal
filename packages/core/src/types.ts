@@ -77,6 +77,65 @@ export interface RoleDetail {
   permissions: string[];
 }
 
+export interface UserRoleRef {
+  id: string;
+  name: string;
+  code: string;
+}
+
+export interface UserOrganizationRef {
+  id: string;
+  name: string;
+  code: string;
+}
+
+export interface UserItem {
+  id: string;
+  username: string;
+  nickname?: string;
+  avatar?: string;
+  email?: string;
+  phone?: string;
+  status?: number;
+  remark?: string;
+  createTime?: string;
+  updateTime?: string;
+  roles?: UserRoleRef[];
+  organizations?: UserOrganizationRef[];
+}
+
+export interface UserDetail extends UserItem {}
+
+export interface UserPageQuery {
+  pageNum: number;
+  pageSize: number;
+  orderName?: string;
+  orderType?: string;
+  username?: string;
+  nickname?: string;
+  email?: string;
+  phone?: string;
+  status?: number;
+}
+
+export interface UserPageResult {
+  data: UserItem[];
+  total: number;
+}
+
+export interface UserMutationPayload {
+  username: string;
+  password?: string;
+  nickname?: string;
+  avatar?: string;
+  email?: string;
+  phone?: string;
+  status?: number;
+  remark?: string;
+  roleIds?: string[];
+  orgIds?: string[];
+}
+
 export interface MenuMutationPayload {
   id?: string;
   parentId?: string;
@@ -251,6 +310,275 @@ export interface DictRecord {
   label: string;
   value: string;
   extra?: Record<string, string>;
+}
+
+export interface DictTypeItem {
+  id: string;
+  typeCode: string;
+  typeName: string;
+  status?: number;
+  cacheEnabled?: number;
+  remark?: string;
+  createTime?: string;
+  updateTime?: string;
+}
+
+export interface DictTypeDetail extends DictTypeItem {}
+
+export interface DictTypePageQuery {
+  pageNum: number;
+  pageSize: number;
+  orderName?: string;
+  orderType?: string;
+  typeCode?: string;
+  typeName?: string;
+  status?: number;
+}
+
+export interface DictTypePageResult {
+  data: DictTypeItem[];
+  total: number;
+}
+
+export interface DictTypeMutationPayload {
+  typeCode: string;
+  typeName: string;
+  status?: number;
+  cacheEnabled?: number;
+  remark?: string;
+}
+
+export interface DictItemItem {
+  id: string;
+  typeCode: string;
+  itemCode: string;
+  itemLabel: string;
+  itemValue: string;
+  sort?: number;
+  status?: number;
+  isDefault?: number;
+  tagColor?: string;
+  extraJson?: string;
+  remark?: string;
+  createTime?: string;
+  updateTime?: string;
+}
+
+export interface DictItemDetail extends DictItemItem {}
+
+export interface DictItemPageQuery {
+  pageNum: number;
+  pageSize: number;
+  orderName?: string;
+  orderType?: string;
+  typeCode?: string;
+  itemCode?: string;
+  itemLabel?: string;
+  status?: number;
+}
+
+export interface DictItemPageResult {
+  data: DictItemItem[];
+  total: number;
+}
+
+export interface DictItemMutationPayload {
+  typeCode: string;
+  itemCode: string;
+  itemLabel: string;
+  itemValue: string;
+  sort?: number;
+  status?: number;
+  isDefault?: number;
+  tagColor?: string;
+  extraJson?: string;
+  remark?: string;
+}
+
+export interface OAuth2ClientItem {
+  id: string;
+  clientId: string;
+  clientName?: string;
+  clientType?: string;
+  status?: number;
+  remark?: string;
+  createTime?: string;
+  updateTime?: string;
+}
+
+export interface OAuth2ClientDetail extends OAuth2ClientItem {
+  clientSecret?: string;
+  grantTypes?: string;
+  scopes?: string;
+  redirectUris?: string;
+  autoApprove?: number;
+  accessTokenValidity?: number;
+  refreshTokenValidity?: number;
+  additionalInformation?: string;
+}
+
+export interface OAuth2ClientPageQuery {
+  pageNum: number;
+  pageSize: number;
+  orderName?: string;
+  orderType?: string;
+  clientId?: string;
+  clientName?: string;
+  status?: number;
+}
+
+export interface OAuth2ClientPageResult {
+  data: OAuth2ClientItem[];
+  total: number;
+}
+
+export interface OAuth2ClientMutationPayload {
+  clientId: string;
+  clientSecret?: string;
+  clientName?: string;
+  grantTypes?: string;
+  scopes?: string;
+  redirectUris?: string;
+  autoApprove?: number;
+  accessTokenValidity?: number;
+  refreshTokenValidity?: number;
+  additionalInformation?: string;
+  status?: number;
+}
+
+export interface OAuth2AccountItem {
+  id: string;
+  userId: string;
+  provider?: string;
+  oauth2AccountId?: string;
+  status?: number;
+  createTime?: string;
+  updateTime?: string;
+}
+
+export interface OAuth2AccountDetail extends OAuth2AccountItem {
+  username?: string;
+  nickname?: string;
+  providerId?: string;
+  providerUserId?: string;
+  providerAttributes?: string;
+  linkedAt?: string;
+}
+
+export interface OAuth2AccountPageQuery {
+  pageNum: number;
+  pageSize: number;
+  orderName?: string;
+  orderType?: string;
+  userId?: string;
+  providerId?: string;
+  status?: number;
+}
+
+export interface OAuth2AccountPageResult {
+  data: OAuth2AccountItem[];
+  total: number;
+}
+
+export interface OAuth2AccountMutationPayload {
+  userId: string;
+  providerId: string;
+  providerUserId?: string;
+  providerAttributes?: string;
+}
+
+export interface NotifyTemplateItem {
+  id: string;
+  templateCode: string;
+  templateName: string;
+  channelType: string;
+  status?: number;
+  isBuiltin?: number;
+  remark?: string;
+  createTime?: string;
+  updateTime?: string;
+}
+
+export interface NotifyTemplateDetail extends NotifyTemplateItem {
+  subjectTemplate?: string;
+  contentTemplate?: string;
+}
+
+export interface NotifyTemplatePageQuery {
+  pageNum: number;
+  pageSize: number;
+  orderName?: string;
+  orderType?: string;
+  templateCode?: string;
+  templateName?: string;
+  channelType?: string;
+  status?: number;
+}
+
+export interface NotifyTemplatePageResult {
+  data: NotifyTemplateItem[];
+  total: number;
+}
+
+export interface NotifyTemplateMutationPayload {
+  templateCode: string;
+  templateName: string;
+  channelType: string;
+  subjectTemplate?: string;
+  contentTemplate: string;
+  status?: number;
+  isBuiltin?: number;
+  remark?: string;
+}
+
+export interface NotifyRecordItem {
+  id: string;
+  bizType?: string;
+  bizNo?: string;
+  channelType: string;
+  templateCode?: string;
+  subjectText?: string;
+  receiver?: string;
+  ccReceiver?: string;
+  sendStatus?: string;
+  failReason?: string;
+  sendTime?: string;
+  contentText?: string;
+  extJson?: string;
+  createTime?: string;
+  updateTime?: string;
+}
+
+export interface NotifyRecordDetail extends NotifyRecordItem {}
+
+export interface NotifyRecordPageQuery {
+  pageNum: number;
+  pageSize: number;
+  orderName?: string;
+  orderType?: string;
+  channelType?: string;
+  templateCode?: string;
+  receiver?: string;
+  sendStatus?: string;
+}
+
+export interface NotifyRecordPageResult {
+  data: NotifyRecordItem[];
+  total: number;
+}
+
+export interface SendNotifyPayload {
+  channelType: string;
+  templateCode?: string;
+  templateParams?: Record<string, string>;
+  subject?: string;
+  content?: string;
+  receiver?: string;
+  ccReceiver?: string;
+  receiverUserId?: string;
+  bizType?: string;
+  bizNo?: string;
+  extJson?: string;
 }
 
 export type DictMap = Record<string, DictRecord[]>;
