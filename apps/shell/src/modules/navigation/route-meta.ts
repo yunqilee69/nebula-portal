@@ -43,6 +43,17 @@ export function buildBreadcrumbItems(menus: MenuItem[], pathname: string): NeBre
 }
 
 export function resolveRouteLabel(menus: MenuItem[], pathname: string) {
+  const lineage = findLineage(menus, pathname);
+  if (lineage.length > 0) {
+    return (lineage.at(-1) as MenuItem).name;
+  }
+
+  const platformPage = platformPageDefinitions.find((page) => page.path === pathname);
+  if (platformPage) {
+    const locale = useI18nStore.getState().locale;
+    return translateShellMessage(locale, platformPage.menuNameKey ?? "", platformPage.menuName);
+  }
+
   const breadcrumbs = buildBreadcrumbItems(menus, pathname);
   return breadcrumbs.at(-1)?.title ?? translateShellMessage(useI18nStore.getState().locale, "nav.untitled", "未命名页面");
 }
