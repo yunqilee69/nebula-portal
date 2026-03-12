@@ -18,9 +18,9 @@ export const shellEnv = {
     .map((item: string) => item.trim())
     .filter(Boolean),
   systemParamPagePath: import.meta.env.VITE_SYSTEM_PARAM_PAGE_PATH ?? "/system-params/page",
-  notifyPath: import.meta.env.VITE_NOTIFY_CURRENT_PATH ?? "/notice/site-messages/page",
+  notifyPath: import.meta.env.VITE_NOTIFY_CURRENT_PATH ?? "/notify/site-messages/page",
   notifyReadPathTemplate:
-    import.meta.env.VITE_NOTIFY_READ_PATH_TEMPLATE ?? "/notice/site-messages/{id}/read",
+    import.meta.env.VITE_NOTIFY_READ_PATH_TEMPLATE ?? "/notify/site-messages/{id}/read",
   localeCurrentPath: import.meta.env.VITE_I18N_CURRENT_LOCALE_PATH ?? "",
   localeSwitchPath: import.meta.env.VITE_I18N_SWITCH_LOCALE_PATH ?? "",
   storageUploadTaskPath: import.meta.env.VITE_STORAGE_UPLOAD_TASK_PATH ?? "/storage/upload-tasks",
