@@ -10,17 +10,23 @@ import { useAuthStore } from "./modules/auth/auth-store";
 import { BasicLayout } from "./layout/basic-layout";
 import { DashboardPage } from "./pages/dashboard-page";
 import { ButtonPermissionPage } from "./pages/button-permission-page";
+import { DictManagementPage } from "./pages/dict-management-page";
 import { IframePage } from "./pages/iframe-page";
 import { MenuManagementPage } from "./pages/menu-management-page";
 import { MenuPermissionPage } from "./pages/menu-permission-page";
+import { NotifyRecordPage } from "./pages/notify-record-page";
+import { NotifyTemplateManagementPage } from "./pages/notify-template-management-page";
 import { NotificationsPage } from "./pages/notifications-page";
 import { NotFoundPage } from "./pages/not-found-page";
+import { OAuth2AccountManagementPage } from "./pages/oauth2-account-management-page";
+import { OAuth2ClientManagementPage } from "./pages/oauth2-client-management-page";
 import { OrganizationManagementPage } from "./pages/organization-management-page";
 import { OrgPermissionPage } from "./pages/org-permission-page";
 import { RoleAccessPage } from "./pages/role-access-page";
 import { StorageCenterPage } from "./pages/storage-center-page";
 import { SystemParamsPage } from "./pages/system-params-page";
 import { UnavailablePage } from "./pages/unavailable-page";
+import { UserManagementPage } from "./pages/user-management-page";
 import { loadRemoteModules } from "./modules/runtime/remote-modules";
 import { buildAppContext, preloadShellData } from "./modules/runtime/bootstrap";
 import { useDictStore } from "./modules/dict/dict-store";
@@ -150,10 +156,16 @@ function AppRouter() {
         { index: true, element: <DashboardPage /> },
         { path: "platform/menus", element: <MenuManagementPage /> },
         { path: "platform/organizations", element: <OrganizationManagementPage /> },
+        { path: "platform/users", element: <UserManagementPage /> },
+        { path: "platform/dicts", element: <DictManagementPage /> },
+        { path: "platform/oauth2-clients", element: <OAuth2ClientManagementPage /> },
+        { path: "platform/oauth2-accounts", element: <OAuth2AccountManagementPage /> },
         { path: "platform/org-permissions", element: <OrgPermissionPage /> },
         { path: "platform/menu-permissions", element: <MenuPermissionPage /> },
         { path: "platform/button-permissions", element: <ButtonPermissionPage /> },
         { path: "platform/params", element: <SystemParamsPage /> },
+        { path: "platform/notify-templates", element: <NotifyTemplateManagementPage /> },
+        { path: "platform/notify-records", element: <NotifyRecordPage /> },
         { path: "platform/notifications", element: <NotificationsPage /> },
         { path: "platform/access", element: <RoleAccessPage /> },
         { path: "platform/storage", element: <StorageCenterPage /> },
