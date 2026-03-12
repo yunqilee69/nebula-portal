@@ -4,6 +4,8 @@ export interface WorkspaceTabItem {
   key: string;
   path: string;
   label: string;
+  defaultLabel?: string;
+  temporaryLabel?: string;
   closable: boolean;
 }
 
@@ -16,6 +18,7 @@ interface NavigationState {
   closeTab: (key: string) => void;
   closeOtherTabs: (key: string) => void;
   refreshTab: (key: string) => void;
+  renameTab: (key: string, label?: string) => void;
   setActiveKey: (key: string) => void;
 }
 
@@ -37,8 +40,28 @@ export const useNavigationStore = create<NavigationState>((set) => ({
   openTab: (tab) =>
     set((state) => ({
       tabs: state.tabs.some((item) => item.key === tab.key)
-        ? state.tabs.map((item) => (item.key === tab.key ? { ...item, label: tab.label } : item))
-        : [...state.tabs, tab],
+        ? state.tabs.map((item) => {
+          if (item.key !== tab.key) {
+            return item;
+          }
+
+          const defaultLabel = tab.defaultLabel ?? tab.label;
+
+          return {
+            ...item,
+            ...tab,
+            defaultLabel,
+            label: item.temporaryLabel ?? defaultLabel,
+          };
+        })
+        : [
+          ...state.tabs,
+          {
+            ...tab,
+            defaultLabel: tab.defaultLabel ?? tab.label,
+            label: tab.temporaryLabel ?? (tab.defaultLabel ?? tab.label),
+          },
+        ],
       activeKey: tab.key,
       refreshKeys: state.refreshKeys[tab.key] !== undefined ? state.refreshKeys : { ...state.refreshKeys, [tab.key]: 0 },
     })),
@@ -69,6 +92,24 @@ export const useNavigationStore = create<NavigationState>((set) => ({
         ...state.refreshKeys,
         [key]: (state.refreshKeys[key] ?? 0) + 1,
       },
+    })),
+  renameTab: (key, label) =>
+    set((state) => ({
+      tabs: state.tabs.map((item) => {
+        if (item.key !== key) {
+          return item;
+        }
+
+        const temporaryLabel = label?.trim() || undefined;
+        const defaultLabel = item.defaultLabel ?? item.label;
+
+        return {
+          ...item,
+          defaultLabel,
+          temporaryLabel,
+          label: temporaryLabel ?? defaultLabel,
+        };
+      }),
     })),
   setActiveKey: (key) => set({ activeKey: key }),
 }));

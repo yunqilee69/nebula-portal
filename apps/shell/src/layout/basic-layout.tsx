@@ -52,6 +52,7 @@ export function BasicLayout({ remoteStatuses }: BasicLayoutProps) {
   const closeTab = useNavigationStore((state) => state.closeTab);
   const closeOtherTabs = useNavigationStore((state) => state.closeOtherTabs);
   const refreshTab = useNavigationStore((state) => state.refreshTab);
+  const renameTab = useNavigationStore((state) => state.renameTab);
   const clearNavigation = useNavigationStore((state) => state.clear);
   const setActiveKey = useNavigationStore((state) => state.setActiveKey);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
@@ -118,8 +119,13 @@ export function BasicLayout({ remoteStatuses }: BasicLayoutProps) {
                 items={tabs}
                 menuLabels={{
                   refresh: t("common.refresh"),
+                  rename: t("layout.tab.rename"),
                   closeCurrent: t("layout.tab.closeCurrent"),
                   closeOthers: t("layout.tab.closeOthers"),
+                  renameDialogTitle: t("layout.tab.renameDialogTitle"),
+                  renameInputPlaceholder: t("layout.tab.renameInputPlaceholder"),
+                  renameConfirm: t("layout.tab.renameConfirm"),
+                  renameCancel: t("layout.tab.renameCancel"),
                 }}
                 onChange={(key) => {
                   setActiveKey(key);
@@ -143,6 +149,13 @@ export function BasicLayout({ remoteStatuses }: BasicLayoutProps) {
                 }}
                 onRefresh={(key) => {
                   refreshTab(key);
+                  setActiveKey(key);
+                  if (routeKey !== key) {
+                    navigate(key);
+                  }
+                }}
+                onRename={(key, label) => {
+                  renameTab(key, label);
                   setActiveKey(key);
                   if (routeKey !== key) {
                     navigate(key);
