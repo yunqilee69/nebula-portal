@@ -83,7 +83,7 @@ export async function fetchOrganizationPage(query: OrganizationPageQuery): Promi
     return { data: rows.slice(start, start + query.pageSize), total: rows.length };
   }
 
-  const response = await apiClient.get("/orgs/page", { params: query });
+  const response = await apiClient.get("/orgs/page", { params: { req: JSON.stringify(query) } });
   return parsePagePayload(unwrapEnvelope<Record<string, unknown>>(response.data));
 }
 

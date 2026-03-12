@@ -22,17 +22,22 @@ export async function fetchRolePage() {
       { id: "role-2", name: "Business Operator", code: "biz_operator", status: 1 },
     ] satisfies RoleItem[];
   }
-  const request = async (params: Record<string, unknown>) => {
-    const response = await apiClient.get("/roles/page", { params });
-    return unwrapEnvelope<Record<string, unknown>>(response.data);
-  };
-  let payload: Record<string, unknown>;
-  try {
-    payload = await request({ req: JSON.stringify({ pageNum: 1, pageSize: 20 }) });
-  } catch {
-    payload = await request({ pageNum: 1, pageSize: 20 });
-  }
+  const response = await apiClient.get("/roles/page", {
+    params: { req: JSON.stringify({ pageNum: 1, pageSize: 20 }) },
+  });
+  const payload = unwrapEnvelope<Record<string, unknown>>(response.data);
   return getArray<unknown>(payload.data).map(mapRole).filter((item): item is RoleItem => item !== null);
+}
+
+export async function fetchRoleList() {
+  if (shellEnv.useMockAuth) {
+    return fetchRolePage();
+  }
+
+  const response = await apiClient.get("/roles/list");
+  return getArray<unknown>(unwrapEnvelope<unknown[]>(response.data))
+    .map(mapRole)
+    .filter((item): item is RoleItem => item !== null);
 }
 
 export async function fetchRoleDetail(id: string): Promise<RoleDetail> {
