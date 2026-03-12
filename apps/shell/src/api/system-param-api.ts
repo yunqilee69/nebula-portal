@@ -19,8 +19,18 @@ function mapSystemParam(item: unknown): SystemParamItem | null {
     paramName: getString(record.paramName),
     dataType: getString(record.dataType),
     status: typeof record.status === "number" ? record.status : undefined,
-    isSensitive: typeof record.isSensitive === "number" ? record.isSensitive : undefined,
-    isDynamic: typeof record.isDynamic === "number" ? record.isDynamic : undefined,
+    isSensitive:
+      typeof record.isSensitive === "number"
+        ? record.isSensitive
+        : typeof record.sensitive === "number"
+          ? record.sensitive
+          : undefined,
+    isDynamic:
+      typeof record.isDynamic === "number"
+        ? record.isDynamic
+        : typeof record.dynamic === "number"
+          ? record.dynamic
+          : undefined,
   };
 }
 
@@ -49,33 +59,14 @@ export async function fetchSystemParamPage(query: SystemParamPageQuery): Promise
     return { data: rows, total: rows.length };
   }
 
-  const flatParams: Record<string, unknown> = {
-    pageNum: query.pageNum,
-    pageSize: query.pageSize,
-    orderName: query.orderName,
-    orderType: query.orderType,
-    groupCode: query.groupCode,
-    paramKey: query.paramKey,
-    paramName: query.paramName,
-    status: query.status,
-  };
+  const response = await apiClient.get(shellEnv.systemParamPagePath, { params: { req: JSON.stringify(query) } });
+  const payload = unwrapEnvelope<Record<string, unknown>>(response.data);
 
-  const request = async (params: Record<string, unknown>) => {
-    const response = await apiClient.get(shellEnv.systemParamPagePath, { params });
-    return unwrapEnvelope<Record<string, unknown>>(response.data);
-  };
-
-  let payload: Record<string, unknown>;
-  try {
-    payload = await request({ req: JSON.stringify(query) });
-  } catch {
-    payload = await request(flatParams);
-  }
-
-  const data = getArray<unknown>(payload.data)
+  const data = getArray<unknown>(payload.data ?? payload.records ?? payload.rows)
     .map(mapSystemParam)
     .filter((item): item is SystemParamItem => item !== null);
-  const total = typeof payload.total === "number" ? payload.total : data.length;
+  const totalCandidate = payload.total ?? payload.count;
+  const total = typeof totalCandidate === "number" ? totalCandidate : data.length;
   return { data, total };
 }
 

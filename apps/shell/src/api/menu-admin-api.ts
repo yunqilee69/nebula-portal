@@ -72,27 +72,8 @@ export async function fetchMenuPage(query: MenuPageQuery): Promise<MenuPageResul
     };
   }
 
-  const flatParams: Record<string, unknown> = {
-    pageNum: query.pageNum,
-    pageSize: query.pageSize,
-    orderName: query.orderName,
-    orderType: query.orderType,
-    name: query.name,
-    code: query.code,
-    status: query.status,
-  };
-
-  const request = async (params: Record<string, unknown>) => {
-    const response = await apiClient.get("/menus/page", { params });
-    return unwrapEnvelope<Record<string, unknown>>(response.data);
-  };
-
-  let payload: Record<string, unknown>;
-  try {
-    payload = await request({ query: JSON.stringify(query) });
-  } catch {
-    payload = await request(flatParams);
-  }
+  const response = await apiClient.get("/menus/page", { params: { query: JSON.stringify(query) } });
+  const payload = unwrapEnvelope<Record<string, unknown>>(response.data);
 
   const data = getArray<unknown>(payload.data)
     .map(mapMenuRecord)

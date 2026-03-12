@@ -51,7 +51,7 @@ export async function fetchButtonPage(query: ButtonPageQuery): Promise<ButtonPag
     return { data: rows.slice(start, start + query.pageSize), total: rows.length };
   }
 
-  const response = await apiClient.get("/buttons/page", { params: query });
+  const response = await apiClient.get("/buttons/page", { params: { query: JSON.stringify(query) } });
   return parsePagePayload(unwrapEnvelope<Record<string, unknown>>(response.data));
 }
 

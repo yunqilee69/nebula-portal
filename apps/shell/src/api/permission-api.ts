@@ -65,7 +65,7 @@ export async function fetchPermissionPage(query: PermissionPageQuery): Promise<P
     return { data: rows.slice(start, start + query.pageSize), total: rows.length };
   }
 
-  const response = await apiClient.get("/permissions/page", { params: query });
+  const response = await apiClient.get("/permissions/page", { params: { query: JSON.stringify(query) } });
   return parsePagePayload(unwrapEnvelope<Record<string, unknown>>(response.data));
 }
 

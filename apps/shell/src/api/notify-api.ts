@@ -31,17 +31,10 @@ export async function fetchCurrentNotifications() {
     ] satisfies NotificationItem[];
   }
 
-  const request = async (params: Record<string, unknown>) => {
-    const response = await apiClient.get(shellEnv.notifyPath, { params });
-    return unwrapEnvelope<Record<string, unknown>>(response.data);
-  };
-
-  let payload: Record<string, unknown>;
-  try {
-    payload = await request({ req: JSON.stringify({ pageNum: 1, pageSize: 8, readStatus: 0 }) });
-  } catch {
-    payload = await request({ pageNum: 1, pageSize: 8, readStatus: 0 });
-  }
+  const response = await apiClient.get(shellEnv.notifyPath, {
+    params: { req: JSON.stringify({ pageNum: 1, pageSize: 8, readStatus: 0 }) },
+  });
+  const payload = unwrapEnvelope<Record<string, unknown>>(response.data);
 
   return getArray<unknown>(payload.data ?? payload).map<NotificationItem>(mapSiteMessage);
 }
