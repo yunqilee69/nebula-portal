@@ -40,7 +40,6 @@ The shell reads backend and remote settings from Vite env vars. Copy values into
 - `VITE_BACKEND_PROXY_TARGET`: shell dev proxy target, defaults to `http://127.0.0.1:8080`
 - `VITE_MODULE_MODE`: `embedded` by default for single-package startup, or `federation` to load remote modules from remote entries
 - `VITE_DEMO_REMOTE_URL`: remote entry URL for the demo app
-- `VITE_USE_MOCK_AUTH`: optional `true` to bypass backend login during local shell-only development
 - `VITE_STORAGE_UPLOAD_TASK_PATH`: create storage upload task path, defaults to `/storage/upload-tasks`
 - `VITE_STORAGE_UPLOAD_SIMPLE_PATH_TEMPLATE`: simple upload path template, defaults to `/storage/upload-tasks/{id}/simple`
 - `VITE_STORAGE_UPLOAD_COMPLETE_PATH_TEMPLATE`: upload complete path template, defaults to `/storage/upload-tasks/{id}/complete`

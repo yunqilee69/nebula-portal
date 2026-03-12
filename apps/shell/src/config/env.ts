@@ -38,5 +38,4 @@ export const shellEnv = {
   storageFileDeletePathTemplate:
     import.meta.env.VITE_STORAGE_FILE_DELETE_PATH_TEMPLATE ?? "/storage/files/{id}",
   demoRemoteUrl: import.meta.env.VITE_DEMO_REMOTE_URL ?? "http://127.0.0.1:3001/assets/remoteEntry.js",
-  useMockAuth: import.meta.env.VITE_USE_MOCK_AUTH === "true",
 };

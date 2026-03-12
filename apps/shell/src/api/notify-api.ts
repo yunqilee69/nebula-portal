@@ -19,18 +19,6 @@ function mapSiteMessage(item: unknown): NotificationItem {
 }
 
 export async function fetchCurrentNotifications() {
-  if (shellEnv.useMockAuth) {
-    return [
-      {
-        id: "mock-message-1",
-        title: "Welcome to Nebula Shell",
-        type: "info",
-        read: false,
-        createdAt: new Date().toISOString(),
-      },
-    ] satisfies NotificationItem[];
-  }
-
   const response = await apiClient.get(shellEnv.notifyPath, {
     params: { req: JSON.stringify({ pageNum: 1, pageSize: 8, readStatus: 0 }) },
   });
@@ -40,8 +28,5 @@ export async function fetchCurrentNotifications() {
 }
 
 export async function markNotificationRead(id: string) {
-  if (shellEnv.useMockAuth) {
-    return;
-  }
   await apiClient.put(shellEnv.notifyReadPathTemplate.replace("{id}", encodeURIComponent(id)));
 }

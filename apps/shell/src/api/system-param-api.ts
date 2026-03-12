@@ -35,30 +35,6 @@ function mapSystemParam(item: unknown): SystemParamItem | null {
 }
 
 export async function fetchSystemParamPage(query: SystemParamPageQuery): Promise<SystemParamPageResult> {
-  if (shellEnv.useMockAuth) {
-    const rows: SystemParamItem[] = [
-      {
-        id: "param-1",
-        groupCode: "platform",
-        paramKey: "upload_max_size",
-        paramName: "Upload Max Size",
-        dataType: "INTEGER",
-        status: 1,
-        isDynamic: 1,
-      },
-      {
-        id: "param-2",
-        groupCode: "theme",
-        paramKey: "theme.primaryColor",
-        paramName: "Primary Color",
-        dataType: "STRING",
-        status: 1,
-        isDynamic: 1,
-      },
-    ];
-    return { data: rows, total: rows.length };
-  }
-
   const response = await apiClient.get(shellEnv.systemParamPagePath, { params: { req: JSON.stringify(query) } });
   const payload = unwrapEnvelope<Record<string, unknown>>(response.data);
 
@@ -71,24 +47,15 @@ export async function fetchSystemParamPage(query: SystemParamPageQuery): Promise
 }
 
 export async function createSystemParam(payload: SystemParamMutationPayload) {
-  if (shellEnv.useMockAuth) {
-    return { id: crypto.randomUUID(), ...payload };
-  }
   const response = await apiClient.post("/system-params", payload);
   return unwrapEnvelope<unknown>(response.data);
 }
 
 export async function updateSystemParam(id: string, payload: SystemParamMutationPayload) {
-  if (shellEnv.useMockAuth) {
-    return { id, ...payload };
-  }
   const response = await apiClient.put(`/system-params/${id}`, payload);
   return unwrapEnvelope<unknown>(response.data);
 }
 
 export async function deleteSystemParam(id: string) {
-  if (shellEnv.useMockAuth) {
-    return;
-  }
   await apiClient.delete(`/system-params/${id}`);
 }

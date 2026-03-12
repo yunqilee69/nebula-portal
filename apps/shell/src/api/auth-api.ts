@@ -64,42 +64,6 @@ function normalizeSession(payload: unknown, currentUser: Awaited<ReturnType<type
 }
 
 export async function loginWithPassword(payload: LoginPayload) {
-  if (shellEnv.useMockAuth) {
-    return {
-      token: "mock-token",
-      refreshToken: "mock-refresh-token",
-      accessTokenExpiresIn: 3600,
-      refreshTokenExpiresIn: 604800,
-      user: {
-        userId: "u001",
-        username: payload.username || "demo",
-        avatar: undefined,
-        roles: ["admin"],
-      },
-      permissions: [
-        "crm:customer:list",
-        "crm:customer:create",
-        "crm:customer:edit",
-        "crm:customer:export",
-        "platform:org:create",
-        "platform:org:edit",
-        "platform:org:delete",
-        "platform:org-permission:create",
-        "platform:org-permission:edit",
-        "platform:org-permission:delete",
-        "platform:menu-permission:create",
-        "platform:menu-permission:edit",
-        "platform:menu-permission:delete",
-        "platform:button:create",
-        "platform:button:edit",
-        "platform:button:delete",
-        "platform:button-permission:create",
-        "platform:button-permission:edit",
-        "platform:button-permission:delete",
-      ],
-    } satisfies AuthSession;
-  }
-
   const response = await apiClient.post(shellEnv.loginPath, payload);
   const tokenPayload = normalizeTokenPayload(response.data);
   const currentUser = await fetchCurrentUser(tokenPayload.token);

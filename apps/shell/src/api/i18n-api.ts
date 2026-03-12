@@ -11,7 +11,7 @@ function normalizeLocale(value: unknown, fallback: LocaleCode = "zh-CN"): Locale
 }
 
 export async function fetchCurrentLocalePreference(): Promise<LocaleCode> {
-  if (shellEnv.useMockAuth || !shellEnv.localeCurrentPath) {
+  if (!shellEnv.localeCurrentPath) {
     return "zh-CN";
   }
 
@@ -20,7 +20,7 @@ export async function fetchCurrentLocalePreference(): Promise<LocaleCode> {
 }
 
 export async function updateLocalePreference(locale: LocaleCode): Promise<LocaleCode> {
-  if (shellEnv.useMockAuth || !shellEnv.localeSwitchPath) {
+  if (!shellEnv.localeSwitchPath) {
     return locale;
   }
 

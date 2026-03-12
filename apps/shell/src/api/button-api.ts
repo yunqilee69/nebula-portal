@@ -1,7 +1,5 @@
 import type { ButtonItem, ButtonMutationPayload, ButtonPageQuery, ButtonPageResult } from "@platform/core";
-import { shellEnv } from "../config/env";
 import { apiClient, getArray, getRecord, getString, unwrapEnvelope } from "./client";
-import { mockButtons, stampUpdatedTime } from "./mock-auth-admin-data";
 
 function mapButton(item: unknown): ButtonItem | null {
   const record = getRecord(item);
@@ -31,79 +29,25 @@ function parsePagePayload(payload: Record<string, unknown>) {
 }
 
 export async function fetchButtonPage(query: ButtonPageQuery): Promise<ButtonPageResult> {
-  if (shellEnv.useMockAuth) {
-    const rows = mockButtons.filter((item) => {
-      if (query.menuId && item.menuId !== query.menuId) {
-        return false;
-      }
-      if (query.name && !item.name.toLowerCase().includes(query.name.toLowerCase())) {
-        return false;
-      }
-      if (query.code && !item.code.toLowerCase().includes(query.code.toLowerCase())) {
-        return false;
-      }
-      if (typeof query.status === "number" && item.status !== query.status) {
-        return false;
-      }
-      return true;
-    });
-    const start = (query.pageNum - 1) * query.pageSize;
-    return { data: rows.slice(start, start + query.pageSize), total: rows.length };
-  }
-
   const response = await apiClient.get("/buttons/page", { params: { query: JSON.stringify(query) } });
   return parsePagePayload(unwrapEnvelope<Record<string, unknown>>(response.data));
 }
 
 export async function fetchButtonDetail(id: string) {
-  if (shellEnv.useMockAuth) {
-    return mockButtons.find((item) => item.id === id) ?? null;
-  }
-
   const response = await apiClient.get(`/buttons/${id}`);
   return mapButton(unwrapEnvelope<unknown>(response.data));
 }
 
 export async function createButton(payload: ButtonMutationPayload) {
-  if (shellEnv.useMockAuth) {
-    const row: ButtonItem = {
-      id: crypto.randomUUID(),
-      ...payload,
-      sort: payload.sort ?? 0,
-      status: payload.status ?? 1,
-      createTime: stampUpdatedTime(),
-      updateTime: stampUpdatedTime(),
-    };
-    mockButtons.unshift(row);
-    return row;
-  }
-
   const response = await apiClient.post("/buttons", payload);
   return unwrapEnvelope<unknown>(response.data);
 }
 
 export async function updateButton(id: string, payload: ButtonMutationPayload) {
-  if (shellEnv.useMockAuth) {
-    const index = mockButtons.findIndex((item) => item.id === id);
-    if (index >= 0) {
-      mockButtons[index] = { ...mockButtons[index], ...payload, id, updateTime: stampUpdatedTime() };
-      return mockButtons[index];
-    }
-    return { id, ...payload };
-  }
-
   const response = await apiClient.put(`/buttons/${id}`, { id, ...payload });
   return unwrapEnvelope<unknown>(response.data);
 }
 
 export async function deleteButton(id: string) {
-  if (shellEnv.useMockAuth) {
-    const index = mockButtons.findIndex((item) => item.id === id);
-    if (index >= 0) {
-      mockButtons.splice(index, 1);
-    }
-    return;
-  }
-
   await apiClient.delete(`/buttons/${id}`);
 }

@@ -1,5 +1,4 @@
 import type { MenuItem, MenuMutationPayload, MenuPageQuery, MenuPageResult } from "@platform/core";
-import { shellEnv } from "../config/env";
 import { apiClient, getArray, getRecord, getString, unwrapEnvelope } from "./client";
 
 function normalizeMenuType(type: unknown): MenuItem["type"] {
@@ -43,35 +42,6 @@ function mapMenuRecord(item: unknown): MenuItem | null {
 }
 
 export async function fetchMenuPage(query: MenuPageQuery): Promise<MenuPageResult> {
-  if (shellEnv.useMockAuth) {
-    const mockRows: MenuItem[] = [
-      {
-        id: "menu-1",
-        name: "客户管理",
-        type: 1,
-        sort: 1,
-        status: 1,
-        icon: "TeamOutlined",
-        visible: 1,
-      },
-      {
-        id: "menu-2",
-        parentId: "menu-1",
-        name: "客户列表",
-        type: 2,
-        path: "/crm/list",
-        component: "crm/CustomerList",
-        sort: 1,
-        status: 1,
-        visible: 1,
-      },
-    ];
-    return {
-      data: mockRows.slice((query.pageNum - 1) * query.pageSize, query.pageNum * query.pageSize),
-      total: mockRows.length,
-    };
-  }
-
   const response = await apiClient.get("/menus/page", { params: { query: JSON.stringify(query) } });
   const payload = unwrapEnvelope<Record<string, unknown>>(response.data);
 
@@ -83,42 +53,11 @@ export async function fetchMenuPage(query: MenuPageQuery): Promise<MenuPageResul
 }
 
 export async function createMenu(payload: MenuMutationPayload) {
-  if (shellEnv.useMockAuth) {
-    return { id: crypto.randomUUID(), ...payload };
-  }
   const response = await apiClient.post("/menus", payload);
   return unwrapEnvelope<unknown>(response.data);
 }
 
 export async function fetchMenuTree() {
-  if (shellEnv.useMockAuth) {
-    return [
-      {
-        id: "menu-1",
-        name: "客户管理",
-        type: 1,
-        sort: 1,
-        status: 1,
-        icon: "TeamOutlined",
-        visible: 1,
-        children: [
-          {
-            id: "menu-2",
-            parentId: "menu-1",
-            name: "客户列表",
-            type: 2,
-            path: "/crm/list",
-            component: "crm/CustomerList",
-            sort: 1,
-            status: 1,
-            visible: 1,
-            permission: "crm:customer:view",
-          },
-        ],
-      },
-    ] satisfies MenuItem[];
-  }
-
   const response = await apiClient.get("/menus/tree");
   return getArray<unknown>(unwrapEnvelope<unknown[]>(response.data))
     .map(mapMenuRecord)
@@ -126,16 +65,10 @@ export async function fetchMenuTree() {
 }
 
 export async function updateMenu(id: string, payload: MenuMutationPayload) {
-  if (shellEnv.useMockAuth) {
-    return { id, ...payload };
-  }
   const response = await apiClient.put(`/menus/${id}`, { id, ...payload });
   return unwrapEnvelope<unknown>(response.data);
 }
 
 export async function deleteMenu(id: string) {
-  if (shellEnv.useMockAuth) {
-    return;
-  }
   await apiClient.delete(`/menus/${id}`);
 }

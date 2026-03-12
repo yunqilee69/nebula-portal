@@ -7,34 +7,6 @@ interface StorageUploadTaskDetail {
   resultFileId?: string;
 }
 
-const mockFiles: StorageFileItem[] = [
-  {
-    id: "mock-image-1",
-    fileName: "nebula-banner.png",
-    sourceEntity: "platform",
-    sourceId: "shell",
-    sourceType: "default",
-    contentType: "image/png",
-    extension: "png",
-    size: 182400,
-    createdAt: new Date().toISOString(),
-    previewUrl: "https://dummyimage.com/640x360/0b7285/ffffff&text=Nebula+Banner",
-    fileUrl: "https://dummyimage.com/640x360/0b7285/ffffff&text=Nebula+Banner",
-  },
-  {
-    id: "mock-doc-1",
-    fileName: "platform-specification.pdf",
-    sourceEntity: "document",
-    sourceId: "spec",
-    sourceType: "default",
-    contentType: "application/pdf",
-    extension: "pdf",
-    size: 942080,
-    createdAt: new Date().toISOString(),
-    fileUrl: "https://example.com/platform-specification.pdf",
-  },
-];
-
 function fillTemplate(template: string, id: string) {
   return template.replace("{id}", encodeURIComponent(id));
 }
@@ -102,21 +74,6 @@ function toUploadTaskDetail(payload: unknown): StorageUploadTaskDetail {
   };
 }
 
-function filterMockFiles(query: StorageListQuery) {
-  const keyword = query.fileName?.trim().toLowerCase();
-  const filtered = mockFiles.filter((item) => {
-    const matchesKeyword = keyword ? item.fileName.toLowerCase().includes(keyword) : true;
-    const matchesSourceEntity = query.sourceEntity ? item.sourceEntity === query.sourceEntity : true;
-    const matchesSourceId = query.sourceId ? item.sourceId === query.sourceId : true;
-    return matchesKeyword && matchesSourceEntity && matchesSourceId;
-  });
-  const start = (query.pageNum - 1) * query.pageSize;
-  return {
-    data: filtered.slice(start, start + query.pageSize),
-    total: filtered.length,
-  };
-}
-
 async function createUploadTask(file: File) {
   return requestPost<string>(
     shellEnv.storageUploadTaskPath,
@@ -151,10 +108,6 @@ async function bindUploadTask(taskId: string, payload: Pick<StorageUploadPayload
 }
 
 export async function fetchStoragePage(query: StorageListQuery): Promise<StorageListResult> {
-  if (shellEnv.useMockAuth) {
-    return filterMockFiles(query);
-  }
-
   const payload = await requestGet<unknown>(shellEnv.storageFilePagePath, query, { silent: true, unwrap: false });
   const record = getRecord(payload);
   const envelopeData = getRecord(record?.data) ?? getRecord(record?.result) ?? record;
@@ -170,38 +123,11 @@ export async function fetchStoragePage(query: StorageListQuery): Promise<Storage
 }
 
 export async function fetchStorageFileDetail(fileId: string): Promise<StorageFileItem> {
-  if (shellEnv.useMockAuth) {
-    const matched = mockFiles.find((item) => item.id === fileId);
-    if (!matched) {
-      throw new Error("文件不存在");
-    }
-    return matched;
-  }
-
   const payload = await requestGet<unknown>(fillTemplate(shellEnv.storageFileDetailPathTemplate, fileId), undefined, { silent: true });
   return toStorageFileItem(payload, 0);
 }
 
 export async function uploadStorageFile(payload: StorageUploadPayload): Promise<StorageFileItem> {
-  if (shellEnv.useMockAuth) {
-    const objectUrl = URL.createObjectURL(payload.file);
-    const nextFile: StorageFileItem = {
-      id: `mock-${Date.now()}`,
-      fileName: payload.file.name,
-      fileUrl: objectUrl,
-      previewUrl: payload.file.type.startsWith("image/") ? objectUrl : undefined,
-      contentType: payload.file.type,
-      extension: payload.file.name.split(".").pop(),
-      size: payload.file.size,
-      sourceEntity: payload.sourceEntity,
-      sourceId: payload.sourceId,
-      sourceType: payload.sourceType ?? "default",
-      createdAt: new Date().toISOString(),
-    };
-    mockFiles.unshift(nextFile);
-    return nextFile;
-  }
-
   const taskId = await createUploadTask(payload.file);
   await uploadSimpleFile(taskId, payload.file);
   const completed = await completeUploadTask(taskId);
@@ -210,14 +136,6 @@ export async function uploadStorageFile(payload: StorageUploadPayload): Promise<
 }
 
 export async function deleteStorageFile(fileId: string) {
-  if (shellEnv.useMockAuth) {
-    const index = mockFiles.findIndex((item) => item.id === fileId);
-    if (index >= 0) {
-      mockFiles.splice(index, 1);
-    }
-    return;
-  }
-
   await requestDelete<void>(fillTemplate(shellEnv.storageFileDeletePathTemplate, fileId), {
     successMessage: "删除成功",
   });
