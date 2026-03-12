@@ -1,5 +1,6 @@
+import { LeftOutlined, RightOutlined } from "@ant-design/icons";
 import type { MenuProps } from "antd";
-import { Menu } from "antd";
+import { Button, Menu } from "antd";
 import type { MenuItem } from "@platform/core";
 import { useI18n } from "@platform/core";
 import { useEffect, useMemo, useState } from "react";
@@ -8,6 +9,8 @@ import { getMenuIcon } from "./icon-map";
 
 interface AppSidebarProps {
   menus: MenuItem[];
+  collapsed: boolean;
+  onToggleCollapse: () => void;
 }
 
 function toAntdItems(menus: MenuItem[]): MenuProps["items"] {
@@ -37,7 +40,7 @@ function findMenuById(menus: MenuItem[], key: string): MenuItem | null {
   return null;
 }
 
-export function AppSidebar({ menus }: AppSidebarProps) {
+export function AppSidebar({ menus, collapsed, onToggleCollapse }: AppSidebarProps) {
   const { t } = useI18n();
   const location = useLocation();
   const navigate = useNavigate();
@@ -68,21 +71,39 @@ export function AppSidebar({ menus }: AppSidebarProps) {
   const routeOpenKeys = useMemo(() => selectedKeys.slice(0, -1), [selectedKeys]);
 
   useEffect(() => {
-    setOpenKeys(routeOpenKeys);
-  }, [routeOpenKeys]);
+    setOpenKeys(collapsed ? [] : routeOpenKeys);
+  }, [collapsed, routeOpenKeys]);
 
   return (
-    <aside className="app-sidebar">
+    <aside className={`app-sidebar${collapsed ? " app-sidebar--collapsed" : ""}`}>
       <div className="app-sidebar__brand">
-        <div className="app-sidebar__brand-mark">N</div>
+        <button
+          type="button"
+          className="app-sidebar__brand-mark app-sidebar__brand-trigger"
+          onClick={collapsed ? onToggleCollapse : undefined}
+          aria-label={collapsed ? "Expand sidebar" : undefined}
+        >
+          N
+        </button>
         <div className="app-sidebar__brand-text">
           <div className="app-sidebar__brand-title">{t("app.title")}</div>
-          <div className="app-sidebar__brand-subtitle">{t("app.subtitle")}</div>
         </div>
+        {collapsed ? null : (
+          <Button
+            type="text"
+            size="small"
+            className="app-sidebar__toggle"
+            icon={<LeftOutlined />}
+            onClick={onToggleCollapse}
+            aria-label="Collapse sidebar"
+          />
+        )}
       </div>
       <Menu
         mode="inline"
         className="app-sidebar__menu"
+        inlineCollapsed={collapsed}
+        inlineIndent={18}
         selectedKeys={selectedKeys.slice(-1)}
         openKeys={openKeys}
         onOpenChange={(keys) => setOpenKeys(keys as string[])}

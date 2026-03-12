@@ -52,19 +52,24 @@
   margin-bottom: 0;
 }
 
+.ne-workspace-tabs .ant-tabs-nav-wrap {
+  padding-inline: 0;
+}
+
 .ne-workspace-tabs .ant-tabs-nav::before {
   border-bottom: none !important;
 }
 
 .ne-workspace-tabs .ant-tabs-tab {
+  margin-inline: 0 2px !important;
   border-radius: 6px 6px 0 0 !important;
 }
 
 .ne-workspace-tabs__label {
   display: inline-flex;
   align-items: center;
-  margin: -12px -16px;
-  padding: 12px 16px;
+  margin: -10px -12px;
+  padding: 10px 12px;
 }
 
 .ne-workspace-tabs .ant-tabs-tab-active {

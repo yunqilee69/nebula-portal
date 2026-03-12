@@ -3,7 +3,7 @@ import { useI18n } from "@platform/core";
 import type { ModuleLoadResult } from "@platform/core";
 import { NeWorkspaceTabs } from "@platform/ui";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { AppHeader } from "./app-header";
 import { AppSidebar } from "./app-sidebar";
 import { CachedOutlet } from "./cached-outlet";
@@ -54,6 +54,7 @@ export function BasicLayout({ remoteStatuses }: BasicLayoutProps) {
   const refreshTab = useNavigationStore((state) => state.refreshTab);
   const clearNavigation = useNavigationStore((state) => state.clear);
   const setActiveKey = useNavigationStore((state) => state.setActiveKey);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
   const failedModules = useMemo(
     () => remoteStatuses.filter((item) => item.status === "failed"),
@@ -91,15 +92,26 @@ export function BasicLayout({ remoteStatuses }: BasicLayoutProps) {
 
   return (
     <Layout className="shell-layout">
-      <Sider width={250} theme="light">
-        <AppSidebar menus={menus} />
+      <Sider
+        width={250}
+        collapsedWidth={76}
+        collapsed={sidebarCollapsed}
+        trigger={null}
+        theme="light"
+        className="shell-sider"
+      >
+        <AppSidebar
+          menus={menus}
+          collapsed={sidebarCollapsed}
+          onToggleCollapse={() => setSidebarCollapsed((current) => !current)}
+        />
       </Sider>
       <Layout>
         <Header className="shell-header">
           <AppHeader breadcrumbItems={breadcrumbItems} onLogout={handleLogout} />
         </Header>
         <Content className="shell-content">
-          <div className="shell-workspace-panel shell-panel">
+          <div className="shell-workspace-panel">
             <div className="shell-tabs-surface">
               <NeWorkspaceTabs
                 activeKey={activeKey}
