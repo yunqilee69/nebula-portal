@@ -51,39 +51,39 @@ function parsePagePayload(payload: Record<string, unknown>) {
 }
 
 export async function fetchOrganizationPage(query: OrganizationPageQuery): Promise<OrganizationPageResult> {
-  const response = await apiClient.get("/orgs/page", { params: { req: JSON.stringify(query) } });
+  const response = await apiClient.get("/api/auth/orgs/page", { params: { req: JSON.stringify(query) } });
   return parsePagePayload(unwrapEnvelope<Record<string, unknown>>(response.data));
 }
 
 export async function fetchOrganizationTree() {
-  const response = await apiClient.get("/orgs/tree");
+  const response = await apiClient.get("/api/auth/orgs/tree");
   return getArray<unknown>(unwrapEnvelope<unknown[]>(response.data))
     .map(mapOrganizationTree)
     .filter((item): item is OrganizationTreeItem => item !== null);
 }
 
 export async function fetchOrganizationList() {
-  const response = await apiClient.get("/orgs/list");
+  const response = await apiClient.get("/api/auth/orgs/list");
   return getArray<unknown>(unwrapEnvelope<unknown[]>(response.data))
     .map(mapOrganization)
     .filter((item): item is OrganizationItem => item !== null);
 }
 
 export async function fetchOrganizationDetail(id: string) {
-  const response = await apiClient.get(`/orgs/${id}`);
+  const response = await apiClient.get(`/api/auth/orgs/${id}`);
   return mapOrganization(unwrapEnvelope<unknown>(response.data));
 }
 
 export async function createOrganization(payload: OrganizationMutationPayload) {
-  const response = await apiClient.post("/orgs", payload);
+  const response = await apiClient.post("/api/auth/orgs", payload);
   return unwrapEnvelope<unknown>(response.data);
 }
 
 export async function updateOrganization(id: string, payload: OrganizationMutationPayload) {
-  const response = await apiClient.put(`/orgs/${id}`, { id, ...payload });
+  const response = await apiClient.put(`/api/auth/orgs/${id}`, { id, ...payload });
   return unwrapEnvelope<unknown>(response.data);
 }
 
 export async function deleteOrganization(id: string) {
-  await apiClient.delete(`/orgs/${id}`);
+  await apiClient.delete(`/api/auth/orgs/${id}`);
 }

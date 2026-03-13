@@ -87,22 +87,22 @@ function toRequestPayload(payload: UserMutationPayload) {
 }
 
 export async function fetchUserPage(query: UserPageQuery): Promise<UserPageResult> {
-  const payload = await requestGet<Record<string, unknown>>("/users/page", { req: JSON.stringify(query) });
+  const payload = await requestGet<Record<string, unknown>>("/api/auth/users/page", { req: JSON.stringify(query) });
   return parseUserPage(payload);
 }
 
 export async function fetchUserDetail(id: string): Promise<UserDetail | null> {
-  const response = await requestGet<unknown>(`/users/${id}`);
+  const response = await requestGet<unknown>(`/api/auth/users/${id}`);
   return mapUser(response);
 }
 
 export async function createUser(payload: UserMutationPayload) {
-  return requestPost<unknown>("/users", toRequestPayload(payload));
+  return requestPost<unknown>("/api/auth/users", toRequestPayload(payload));
 }
 
 export async function updateUser(id: string, payload: UserMutationPayload) {
   const nextPayload = toRequestPayload(payload);
-  return requestPut<unknown>(`/users/${id}`, {
+  return requestPut<unknown>(`/api/auth/users/${id}`, {
     id,
     nickname: nextPayload.nickname,
     avatar: nextPayload.avatar,
@@ -116,5 +116,5 @@ export async function updateUser(id: string, payload: UserMutationPayload) {
 }
 
 export async function deleteUser(id: string) {
-  await requestDelete<void>(`/users/${id}`);
+  await requestDelete<void>(`/api/auth/users/${id}`);
 }
