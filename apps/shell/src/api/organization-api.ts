@@ -51,7 +51,7 @@ function parsePagePayload(payload: Record<string, unknown>) {
 }
 
 export async function fetchOrganizationPage(query: OrganizationPageQuery): Promise<OrganizationPageResult> {
-  const response = await apiClient.get("/api/auth/orgs/page", { params: { req: JSON.stringify(query) } });
+  const response = await apiClient.post("/api/auth/orgs/page", { req: JSON.stringify(query) });
   return parsePagePayload(unwrapEnvelope<Record<string, unknown>>(response.data));
 }
 

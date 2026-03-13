@@ -15,9 +15,7 @@ function mapRole(item: unknown): RoleItem | null {
 }
 
 export async function fetchRolePage() {
-  const response = await apiClient.get("/api/auth/roles/page", {
-    params: { req: JSON.stringify({ pageNum: 1, pageSize: 20 }) },
-  });
+  const response = await apiClient.post("/api/auth/roles/page", { req: JSON.stringify({ pageNum: 1, pageSize: 20 }) });
   const payload = unwrapEnvelope<Record<string, unknown>>(response.data);
   return getArray<unknown>(payload.data).map(mapRole).filter((item): item is RoleItem => item !== null);
 }
