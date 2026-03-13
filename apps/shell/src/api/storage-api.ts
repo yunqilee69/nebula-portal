@@ -108,7 +108,7 @@ async function bindUploadTask(taskId: string, payload: Pick<StorageUploadPayload
 }
 
 export async function fetchStoragePage(query: StorageListQuery): Promise<StorageListResult> {
-  const payload = await requestGet<unknown>(shellEnv.storageFilePagePath, query, { silent: true, unwrap: false });
+  const payload = await requestPost<unknown>(shellEnv.storageFilePagePath, query, { silent: true, unwrap: false });
   const record = getRecord(payload);
   const envelopeData = getRecord(record?.data) ?? getRecord(record?.result) ?? record;
   const pageData = getRecord(envelopeData?.data) ?? envelopeData;

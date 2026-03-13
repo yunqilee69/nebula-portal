@@ -68,7 +68,7 @@ function parsePageResult<T>(payload: Record<string, unknown>, mapper: (value: un
 }
 
 export async function fetchDictTypePage(query: DictTypePageQuery): Promise<DictTypePageResult> {
-  const payload = await requestGet<Record<string, unknown>>("/api/dict/types/page", { req: JSON.stringify(query) });
+  const payload = await requestPost<Record<string, unknown>>("/api/dict/types/page", { req: JSON.stringify(query) });
   return parsePageResult(payload, mapDictType) satisfies DictTypePageResult;
 }
 
@@ -95,7 +95,7 @@ export async function deleteDictType(id: string) {
 }
 
 export async function fetchDictItemPage(query: DictItemPageQuery): Promise<DictItemPageResult> {
-  const payload = await requestGet<Record<string, unknown>>("/api/dict/items/page", { req: JSON.stringify(query) });
+  const payload = await requestPost<Record<string, unknown>>("/api/dict/items/page", { req: JSON.stringify(query) });
   return parsePageResult(payload, mapDictItem) satisfies DictItemPageResult;
 }
 
