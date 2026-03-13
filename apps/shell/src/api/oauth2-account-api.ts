@@ -44,21 +44,21 @@ function parsePage(payload: Record<string, unknown>) {
 }
 
 export async function fetchOAuth2AccountPage(query: OAuth2AccountPageQuery): Promise<OAuth2AccountPageResult> {
-  const payload = await requestGet<Record<string, unknown>>("/oauth2/accounts/page", { req: JSON.stringify(query) });
+  const payload = await requestGet<Record<string, unknown>>("/api/auth/oauth2/accounts/page", { req: JSON.stringify(query) });
   return parsePage(payload);
 }
 
 export async function fetchOAuth2AccountDetail(id: string): Promise<OAuth2AccountDetail | null> {
-  const payload = await requestGet<unknown>(`/oauth2/accounts/${id}`);
+  const payload = await requestGet<unknown>(`/api/auth/oauth2/accounts/${id}`);
   return mapAccount(payload);
 }
 
 export async function createOAuth2Account(payload: OAuth2AccountMutationPayload) {
-  return requestPost<unknown>("/oauth2/accounts", payload);
+  return requestPost<unknown>("/api/auth/oauth2/accounts", payload);
 }
 
 export async function updateOAuth2Account(id: string, payload: OAuth2AccountMutationPayload) {
-  return requestPut<unknown>(`/oauth2/accounts/${id}`, {
+  return requestPut<unknown>(`/api/auth/oauth2/accounts/${id}`, {
     id,
     providerId: payload.providerId,
     providerUserId: payload.providerUserId,
@@ -67,5 +67,5 @@ export async function updateOAuth2Account(id: string, payload: OAuth2AccountMuta
 }
 
 export async function deleteOAuth2Account(id: string) {
-  await requestDelete<void>(`/oauth2/accounts/${id}`);
+  await requestDelete<void>(`/api/auth/oauth2/accounts/${id}`);
 }

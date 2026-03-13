@@ -47,23 +47,23 @@ function parsePage(payload: Record<string, unknown>) {
 }
 
 export async function fetchOAuth2ClientPage(query: OAuth2ClientPageQuery): Promise<OAuth2ClientPageResult> {
-  const payload = await requestGet<Record<string, unknown>>("/oauth2/clients/page", { req: JSON.stringify(query) });
+  const payload = await requestGet<Record<string, unknown>>("/api/auth/oauth2/clients/page", { req: JSON.stringify(query) });
   return parsePage(payload);
 }
 
 export async function fetchOAuth2ClientDetail(id: string): Promise<OAuth2ClientDetail | null> {
-  const payload = await requestGet<unknown>(`/oauth2/clients/${id}`);
+  const payload = await requestGet<unknown>(`/api/auth/oauth2/clients/${id}`);
   return mapClient(payload);
 }
 
 export async function createOAuth2Client(payload: OAuth2ClientMutationPayload) {
-  return requestPost<unknown>("/oauth2/clients", payload);
+  return requestPost<unknown>("/api/auth/oauth2/clients", payload);
 }
 
 export async function updateOAuth2Client(id: string, payload: OAuth2ClientMutationPayload) {
-  return requestPut<unknown>(`/oauth2/clients/${id}`, { id, ...payload });
+  return requestPut<unknown>(`/api/auth/oauth2/clients/${id}`, { id, ...payload });
 }
 
 export async function deleteOAuth2Client(id: string) {
-  await requestDelete<void>(`/oauth2/clients/${id}`);
+  await requestDelete<void>(`/api/auth/oauth2/clients/${id}`);
 }
