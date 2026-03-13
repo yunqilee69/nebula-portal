@@ -19,9 +19,7 @@ function mapSiteMessage(item: unknown): NotificationItem {
 }
 
 export async function fetchCurrentNotifications() {
-  const response = await apiClient.get(shellEnv.notifyPath, {
-    params: { req: JSON.stringify({ pageNum: 1, pageSize: 8, readStatus: 0 }) },
-  });
+  const response = await apiClient.post(shellEnv.notifyPath, { req: JSON.stringify({ pageNum: 1, pageSize: 8, readStatus: 0 }) });
   const payload = unwrapEnvelope<Record<string, unknown>>(response.data);
 
   return getArray<unknown>(payload.data ?? payload).map<NotificationItem>(mapSiteMessage);

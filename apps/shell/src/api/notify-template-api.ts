@@ -43,7 +43,7 @@ function parsePage(payload: Record<string, unknown>) {
 }
 
 export async function fetchNotifyTemplatePage(query: NotifyTemplatePageQuery): Promise<NotifyTemplatePageResult> {
-  const payload = await requestGet<Record<string, unknown>>("/api/notify/templates/page", { req: JSON.stringify(query) });
+  const payload = await requestPost<Record<string, unknown>>("/api/notify/templates/page", { req: JSON.stringify(query) });
   return parsePage(payload);
 }
 

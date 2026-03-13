@@ -1,5 +1,5 @@
 import type { NotifyRecordDetail, NotifyRecordItem, NotifyRecordPageQuery, NotifyRecordPageResult } from "@platform/core";
-import { getArray, getRecord, getString, requestGet } from "./client";
+import { getArray, getRecord, getString, requestGet, requestPost } from "./client";
 
 function mapRecord(item: unknown): NotifyRecordDetail | null {
   const record = getRecord(item);
@@ -36,7 +36,7 @@ function parsePage(payload: Record<string, unknown>) {
 }
 
 export async function fetchNotifyRecordPage(query: NotifyRecordPageQuery): Promise<NotifyRecordPageResult> {
-  const payload = await requestGet<Record<string, unknown>>("/api/notify/records/page", { req: JSON.stringify(query) });
+  const payload = await requestPost<Record<string, unknown>>("/api/notify/records/page", { req: JSON.stringify(query) });
   return parsePage(payload);
 }
 
