@@ -44,7 +44,7 @@ function parsePage(payload: Record<string, unknown>) {
 }
 
 export async function fetchOAuth2AccountPage(query: OAuth2AccountPageQuery): Promise<OAuth2AccountPageResult> {
-  const payload = await requestGet<Record<string, unknown>>("/api/auth/oauth2/accounts/page", { req: JSON.stringify(query) });
+  const payload = await requestPost<Record<string, unknown>>("/api/auth/oauth2/accounts/page", { req: JSON.stringify(query) });
   return parsePage(payload);
 }
 
