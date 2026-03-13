@@ -35,7 +35,7 @@ function mapSystemParam(item: unknown): SystemParamItem | null {
 }
 
 export async function fetchSystemParamPage(query: SystemParamPageQuery): Promise<SystemParamPageResult> {
-  const response = await apiClient.post(shellEnv.systemParamPagePath, { req: JSON.stringify(query) });
+  const response = await apiClient.post(shellEnv.systemParamPagePath, query);
   const payload = unwrapEnvelope<Record<string, unknown>>(response.data);
 
   const data = getArray<unknown>(payload.data ?? payload.records ?? payload.rows)
