@@ -201,6 +201,12 @@ body,
   flex: 1;
   min-height: 0;
   overflow: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.app-sidebar__menu::-webkit-scrollbar {
+  display: none;
 }
 
 .app-sidebar .ant-menu {
@@ -290,6 +296,8 @@ body,
 }
 
 .shell-content-body {
+  display: flex;
+  flex-direction: column;
   flex: 1;
   min-height: 0;
   padding: 12px;
@@ -304,6 +312,21 @@ body,
 .shell-content-stack,
 .shell-content-stack__item {
   min-height: 100%;
+}
+
+.shell-content-stack {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.shell-content-stack__item,
+.shell-content-route {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  flex-direction: column;
 }
 
 .shell-panel .ant-card-head,
