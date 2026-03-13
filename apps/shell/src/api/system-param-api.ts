@@ -47,15 +47,15 @@ export async function fetchSystemParamPage(query: SystemParamPageQuery): Promise
 }
 
 export async function createSystemParam(payload: SystemParamMutationPayload) {
-  const response = await apiClient.post("/system-params", payload);
+  const response = await apiClient.post("/api/param/system-params", payload);
   return unwrapEnvelope<unknown>(response.data);
 }
 
 export async function updateSystemParam(id: string, payload: SystemParamMutationPayload) {
-  const response = await apiClient.put(`/system-params/${id}`, payload);
+  const response = await apiClient.put(`/api/param/system-params/${id}`, payload);
   return unwrapEnvelope<unknown>(response.data);
 }
 
 export async function deleteSystemParam(id: string) {
-  await apiClient.delete(`/system-params/${id}`);
+  await apiClient.delete(`/api/param/system-params/${id}`);
 }

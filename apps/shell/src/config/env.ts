@@ -5,22 +5,22 @@ export const shellEnv = {
   refreshPath: import.meta.env.VITE_AUTH_REFRESH_PATH ?? "/api/auth/refresh",
   logoutPath: import.meta.env.VITE_AUTH_LOGOUT_PATH ?? "/api/auth/logout",
   currentUserPath: import.meta.env.VITE_AUTH_CURRENT_USER_PATH ?? "/api/auth/current-user",
-  menuPath: import.meta.env.VITE_MENU_CURRENT_PATH ?? "/menus/tree",
-  dictItemPathTemplate: import.meta.env.VITE_DICT_ITEM_PATH_TEMPLATE ?? "/dict/items/type/{typeCode}",
+  menuPath: import.meta.env.VITE_MENU_CURRENT_PATH ?? "/api/auth/menus/tree",
+  dictItemPathTemplate: import.meta.env.VITE_DICT_ITEM_PATH_TEMPLATE ?? "/api/dict/items/type/{typeCode}",
   dictTypeCodes: (import.meta.env.VITE_DICT_TYPE_CODES ?? "file_type")
     .split(",")
     .map((item: string) => item.trim())
     .filter(Boolean),
   systemParamKeyPathTemplate:
-    import.meta.env.VITE_SYSTEM_PARAM_KEY_PATH_TEMPLATE ?? "/system-params/key/{paramKey}",
+    import.meta.env.VITE_SYSTEM_PARAM_KEY_PATH_TEMPLATE ?? "/api/param/system-params/key/{paramKey}",
   configKeys: (import.meta.env.VITE_SYSTEM_PARAM_KEYS ?? "upload_max_size,theme.primaryColor,theme.radius,theme.mode")
     .split(",")
     .map((item: string) => item.trim())
     .filter(Boolean),
-  systemParamPagePath: import.meta.env.VITE_SYSTEM_PARAM_PAGE_PATH ?? "/system-params/page",
-  notifyPath: import.meta.env.VITE_NOTIFY_CURRENT_PATH ?? "/notify/site-messages/page",
+  systemParamPagePath: import.meta.env.VITE_SYSTEM_PARAM_PAGE_PATH ?? "/api/param/system-params/page",
+  notifyPath: import.meta.env.VITE_NOTIFY_CURRENT_PATH ?? "/api/notify/site-messages/page",
   notifyReadPathTemplate:
-    import.meta.env.VITE_NOTIFY_READ_PATH_TEMPLATE ?? "/notify/site-messages/{id}/read",
+    import.meta.env.VITE_NOTIFY_READ_PATH_TEMPLATE ?? "/api/notify/site-messages/{id}/read",
   localeCurrentPath: import.meta.env.VITE_I18N_CURRENT_LOCALE_PATH ?? "",
   localeSwitchPath: import.meta.env.VITE_I18N_SWITCH_LOCALE_PATH ?? "",
   storageUploadTaskPath: import.meta.env.VITE_STORAGE_UPLOAD_TASK_PATH ?? "/storage/upload-tasks",
