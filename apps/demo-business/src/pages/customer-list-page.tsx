@@ -1,6 +1,6 @@
 import { Button, Space, Table } from "antd";
 import { NePermission, useAppContext } from "@platform/core";
-import { NePage, NePanel } from "@platform/ui";
+import { NePage, NeTablePanel } from "@platform/ui";
 
 const rows = [
   { id: "c001", name: "Acme Corp", owner: "Lydia", level: "A" },
@@ -29,7 +29,7 @@ export function CustomerListPage() {
         </Space>
       }
     >
-      <NePanel title="Customer List">
+      <NeTablePanel summary={`Total ${rows.length} customers`}>
         <Table
           rowKey="id"
           pagination={false}
@@ -62,7 +62,7 @@ export function CustomerListPage() {
             },
           ]}
         />
-      </NePanel>
+      </NeTablePanel>
     </NePage>
   );
 }

@@ -228,9 +228,9 @@ export function ButtonPermissionPage() {
           ) : null}
         </NePanel>
       </div>
-      <NePanel title={t("common.buttonGrantList")}>
+      <NeTablePanel toolbar={t("common.buttonGrantList")} summary={t("common.recordCount", undefined, { count: permissions.length })}>
         <Table<PermissionItem> rowKey="id" dataSource={permissions} columns={permissionColumns} pagination={false} />
-      </NePanel>
+      </NeTablePanel>
       <NeFormDrawer title={editingButton ? `${t("common.edit")}${t("common.button")}` : t("common.newButton")} open={buttonDrawerOpen} onClose={() => setButtonDrawerOpen(false)} onSubmit={() => buttonForm.submit()} submitting={submittingButton}>
         <Form
           form={buttonForm}
