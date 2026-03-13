@@ -13,13 +13,13 @@ function mapSiteMessage(item: unknown): NotificationItem {
     id: getString(record.id) ?? crypto.randomUUID(),
     title: getString(record.title) ?? "Notification",
     type: normalizeType(record.type),
-    read: record.read === true || record.readStatus === 1,
+    read: record.read === true || record.readStatus === true || record.readStatus === 1,
     createdAt: getString(record.createTime) ?? getString(record.createdAt),
   };
 }
 
 export async function fetchCurrentNotifications() {
-  const response = await apiClient.post(shellEnv.notifyPath, { req: JSON.stringify({ pageNum: 1, pageSize: 8, readStatus: 0 }) });
+  const response = await apiClient.post(shellEnv.notifyPath, { pageNum: 1, pageSize: 8, readStatus: false });
   const payload = unwrapEnvelope<Record<string, unknown>>(response.data);
 
   return getArray<unknown>(payload.data ?? payload).map<NotificationItem>(mapSiteMessage);

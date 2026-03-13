@@ -36,7 +36,7 @@ function parsePage(payload: Record<string, unknown>) {
 }
 
 export async function fetchNotifyRecordPage(query: NotifyRecordPageQuery): Promise<NotifyRecordPageResult> {
-  const payload = await requestPost<Record<string, unknown>>("/api/notify/records/page", { req: JSON.stringify(query) });
+  const payload = await requestPost<Record<string, unknown>>("/api/notify/records/page", query);
   return parsePage(payload);
 }
 
