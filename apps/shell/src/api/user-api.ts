@@ -87,7 +87,7 @@ function toRequestPayload(payload: UserMutationPayload) {
 }
 
 export async function fetchUserPage(query: UserPageQuery): Promise<UserPageResult> {
-  const payload = await requestPost<Record<string, unknown>>("/api/auth/users/page", { req: JSON.stringify(query) });
+  const payload = await requestPost<Record<string, unknown>>("/api/auth/users/page", query);
   return parseUserPage(payload);
 }
 
