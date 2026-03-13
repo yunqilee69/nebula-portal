@@ -40,7 +40,7 @@ function parsePagePayload(payload: Record<string, unknown>) {
 }
 
 export async function fetchPermissionPage(query: PermissionPageQuery): Promise<PermissionPageResult> {
-  const response = await apiClient.get("/api/auth/permissions/page", { params: { query: JSON.stringify(query) } });
+  const response = await apiClient.post("/api/auth/permissions/page", { query: JSON.stringify(query) });
   return parsePagePayload(unwrapEnvelope<Record<string, unknown>>(response.data));
 }
 
