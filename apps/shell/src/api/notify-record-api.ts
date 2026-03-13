@@ -36,11 +36,11 @@ function parsePage(payload: Record<string, unknown>) {
 }
 
 export async function fetchNotifyRecordPage(query: NotifyRecordPageQuery): Promise<NotifyRecordPageResult> {
-  const payload = await requestGet<Record<string, unknown>>("/notify/records/page", { req: JSON.stringify(query) });
+  const payload = await requestGet<Record<string, unknown>>("/api/notify/records/page", { req: JSON.stringify(query) });
   return parsePage(payload);
 }
 
 export async function fetchNotifyRecordDetail(id: string): Promise<NotifyRecordDetail | null> {
-  const payload = await requestGet<unknown>(`/notify/records/${id}`);
+  const payload = await requestGet<unknown>(`/api/notify/records/${id}`);
   return mapRecord(payload);
 }

@@ -68,21 +68,21 @@ function parsePageResult<T>(payload: Record<string, unknown>, mapper: (value: un
 }
 
 export async function fetchDictTypePage(query: DictTypePageQuery): Promise<DictTypePageResult> {
-  const payload = await requestGet<Record<string, unknown>>("/dict/types/page", { req: JSON.stringify(query) });
+  const payload = await requestGet<Record<string, unknown>>("/api/dict/types/page", { req: JSON.stringify(query) });
   return parsePageResult(payload, mapDictType) satisfies DictTypePageResult;
 }
 
 export async function fetchDictTypeDetail(id: string): Promise<DictTypeDetail | null> {
-  const payload = await requestGet<unknown>(`/dict/types/${id}`);
+  const payload = await requestGet<unknown>(`/api/dict/types/${id}`);
   return mapDictType(payload);
 }
 
 export async function createDictType(payload: DictTypeMutationPayload) {
-  return requestPost<unknown>("/dict/types", payload);
+  return requestPost<unknown>("/api/dict/types", payload);
 }
 
 export async function updateDictType(id: string, payload: DictTypeMutationPayload) {
-  return requestPut<unknown>(`/dict/types/${id}`, {
+  return requestPut<unknown>(`/api/dict/types/${id}`, {
     typeName: payload.typeName,
     status: payload.status,
     cacheEnabled: payload.cacheEnabled,
@@ -91,25 +91,25 @@ export async function updateDictType(id: string, payload: DictTypeMutationPayloa
 }
 
 export async function deleteDictType(id: string) {
-  await requestDelete<void>(`/dict/types/${id}`);
+  await requestDelete<void>(`/api/dict/types/${id}`);
 }
 
 export async function fetchDictItemPage(query: DictItemPageQuery): Promise<DictItemPageResult> {
-  const payload = await requestGet<Record<string, unknown>>("/dict/items/page", { req: JSON.stringify(query) });
+  const payload = await requestGet<Record<string, unknown>>("/api/dict/items/page", { req: JSON.stringify(query) });
   return parsePageResult(payload, mapDictItem) satisfies DictItemPageResult;
 }
 
 export async function fetchDictItemDetail(id: string): Promise<DictItemDetail | null> {
-  const payload = await requestGet<unknown>(`/dict/items/${id}`);
+  const payload = await requestGet<unknown>(`/api/dict/items/${id}`);
   return mapDictItem(payload);
 }
 
 export async function createDictItem(payload: DictItemMutationPayload) {
-  return requestPost<unknown>("/dict/items", payload);
+  return requestPost<unknown>("/api/dict/items", payload);
 }
 
 export async function updateDictItem(id: string, payload: DictItemMutationPayload) {
-  return requestPut<unknown>(`/dict/items/${id}`, {
+  return requestPut<unknown>(`/api/dict/items/${id}`, {
     itemLabel: payload.itemLabel,
     itemValue: payload.itemValue,
     sort: payload.sort,
@@ -122,7 +122,7 @@ export async function updateDictItem(id: string, payload: DictItemMutationPayloa
 }
 
 export async function deleteDictItem(id: string) {
-  await requestDelete<void>(`/dict/items/${id}`);
+  await requestDelete<void>(`/api/dict/items/${id}`);
 }
 
 export async function fetchDictTypeList() {

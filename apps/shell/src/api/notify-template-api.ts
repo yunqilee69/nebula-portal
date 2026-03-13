@@ -43,21 +43,21 @@ function parsePage(payload: Record<string, unknown>) {
 }
 
 export async function fetchNotifyTemplatePage(query: NotifyTemplatePageQuery): Promise<NotifyTemplatePageResult> {
-  const payload = await requestGet<Record<string, unknown>>("/notify/templates/page", { req: JSON.stringify(query) });
+  const payload = await requestGet<Record<string, unknown>>("/api/notify/templates/page", { req: JSON.stringify(query) });
   return parsePage(payload);
 }
 
 export async function fetchNotifyTemplateDetail(id: string): Promise<NotifyTemplateDetail | null> {
-  const payload = await requestGet<unknown>(`/notify/templates/${id}`);
+  const payload = await requestGet<unknown>(`/api/notify/templates/${id}`);
   return mapTemplate(payload);
 }
 
 export async function createNotifyTemplate(payload: NotifyTemplateMutationPayload) {
-  return requestPost<unknown>("/notify/templates", payload);
+  return requestPost<unknown>("/api/notify/templates", payload);
 }
 
 export async function updateNotifyTemplate(id: string, payload: NotifyTemplateMutationPayload) {
-  return requestPut<unknown>(`/notify/templates/${id}`, {
+  return requestPut<unknown>(`/api/notify/templates/${id}`, {
     templateName: payload.templateName,
     subjectTemplate: payload.subjectTemplate,
     contentTemplate: payload.contentTemplate,
@@ -68,9 +68,9 @@ export async function updateNotifyTemplate(id: string, payload: NotifyTemplateMu
 }
 
 export async function deleteNotifyTemplate(id: string) {
-  await requestDelete<void>(`/notify/templates/${id}`);
+  await requestDelete<void>(`/api/notify/templates/${id}`);
 }
 
 export async function sendNotification(payload: SendNotifyPayload) {
-  return requestPost<unknown>("/notify/send", payload);
+  return requestPost<unknown>("/api/notify/send", payload);
 }
