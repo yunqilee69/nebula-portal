@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import type { AuthSession } from "@platform/core";
+import { normalizeSessionExpiry } from "./session-utils";
 
 const STORAGE_KEY = "nebula-shell-session";
 const ACCESS_TOKEN_COOKIE_KEY = "nebula_access_token";
@@ -36,6 +37,10 @@ function syncSessionCookies(session: AuthSession | null) {
   }
 }
 
+function normalizeSession(session: AuthSession | null) {
+  return session ? normalizeSessionExpiry(session) : null;
+}
+
 interface AuthState {
   session: AuthSession | null;
   hydrated: boolean;
@@ -62,16 +67,17 @@ export const useAuthStore = create<AuthState>((set) => ({
   session: null,
   hydrated: false,
   setSession: (session) => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(session));
-    syncSessionCookies(session);
-    set({ session, hydrated: true });
+    const normalizedSession = normalizeSessionExpiry(session);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(normalizedSession));
+    syncSessionCookies(normalizedSession);
+    set({ session: normalizedSession, hydrated: true });
   },
   patchSession: (patch) => {
     const current = useAuthStore.getState().session;
     if (!current) {
       return;
     }
-    const next = { ...current, ...patch };
+    const next = normalizeSessionExpiry({ ...current, ...patch });
     localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
     syncSessionCookies(next);
     set({ session: next, hydrated: true });
@@ -82,7 +88,10 @@ export const useAuthStore = create<AuthState>((set) => ({
     set({ session: null, hydrated: true });
   },
   hydrate: () => {
-    const session = readStoredSession();
+    const session = normalizeSession(readStoredSession());
+    if (session) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(session));
+    }
     syncSessionCookies(session);
     set({ session, hydrated: true });
   },
