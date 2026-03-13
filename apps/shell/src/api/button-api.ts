@@ -29,25 +29,25 @@ function parsePagePayload(payload: Record<string, unknown>) {
 }
 
 export async function fetchButtonPage(query: ButtonPageQuery): Promise<ButtonPageResult> {
-  const response = await apiClient.get("/buttons/page", { params: { query: JSON.stringify(query) } });
+  const response = await apiClient.get("/api/auth/buttons/page", { params: { query: JSON.stringify(query) } });
   return parsePagePayload(unwrapEnvelope<Record<string, unknown>>(response.data));
 }
 
 export async function fetchButtonDetail(id: string) {
-  const response = await apiClient.get(`/buttons/${id}`);
+  const response = await apiClient.get(`/api/auth/buttons/${id}`);
   return mapButton(unwrapEnvelope<unknown>(response.data));
 }
 
 export async function createButton(payload: ButtonMutationPayload) {
-  const response = await apiClient.post("/buttons", payload);
+  const response = await apiClient.post("/api/auth/buttons", payload);
   return unwrapEnvelope<unknown>(response.data);
 }
 
 export async function updateButton(id: string, payload: ButtonMutationPayload) {
-  const response = await apiClient.put(`/buttons/${id}`, { id, ...payload });
+  const response = await apiClient.put(`/api/auth/buttons/${id}`, { id, ...payload });
   return unwrapEnvelope<unknown>(response.data);
 }
 
 export async function deleteButton(id: string) {
-  await apiClient.delete(`/buttons/${id}`);
+  await apiClient.delete(`/api/auth/buttons/${id}`);
 }

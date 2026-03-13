@@ -40,22 +40,22 @@ function parsePagePayload(payload: Record<string, unknown>) {
 }
 
 export async function fetchPermissionPage(query: PermissionPageQuery): Promise<PermissionPageResult> {
-  const response = await apiClient.get("/permissions/page", { params: { query: JSON.stringify(query) } });
+  const response = await apiClient.get("/api/auth/permissions/page", { params: { query: JSON.stringify(query) } });
   return parsePagePayload(unwrapEnvelope<Record<string, unknown>>(response.data));
 }
 
 export async function createPermission(payload: PermissionMutationPayload) {
   const normalized = { ...payload, effect: payload.effect ?? "Allow", scope: payload.scope ?? "ALL" };
-  const response = await apiClient.post("/permissions", normalized);
+  const response = await apiClient.post("/api/auth/permissions", normalized);
   return unwrapEnvelope<unknown>(response.data);
 }
 
 export async function updatePermission(id: string, payload: PermissionMutationPayload) {
   const normalized = { ...payload, id, effect: payload.effect ?? "Allow", scope: payload.scope ?? "ALL" };
-  const response = await apiClient.put(`/permissions/${id}`, normalized);
+  const response = await apiClient.put(`/api/auth/permissions/${id}`, normalized);
   return unwrapEnvelope<unknown>(response.data);
 }
 
 export async function deletePermission(id: string) {
-  await apiClient.delete(`/permissions/${id}`);
+  await apiClient.delete(`/api/auth/permissions/${id}`);
 }

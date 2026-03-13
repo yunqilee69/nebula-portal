@@ -15,7 +15,7 @@ function mapRole(item: unknown): RoleItem | null {
 }
 
 export async function fetchRolePage() {
-  const response = await apiClient.get("/roles/page", {
+  const response = await apiClient.get("/api/auth/roles/page", {
     params: { req: JSON.stringify({ pageNum: 1, pageSize: 20 }) },
   });
   const payload = unwrapEnvelope<Record<string, unknown>>(response.data);
@@ -23,14 +23,14 @@ export async function fetchRolePage() {
 }
 
 export async function fetchRoleList() {
-  const response = await apiClient.get("/roles/list");
+  const response = await apiClient.get("/api/auth/roles/list");
   return getArray<unknown>(unwrapEnvelope<unknown[]>(response.data))
     .map(mapRole)
     .filter((item): item is RoleItem => item !== null);
 }
 
 export async function fetchRoleDetail(id: string): Promise<RoleDetail> {
-  const response = await apiClient.get(`/roles/${id}`);
+  const response = await apiClient.get(`/api/auth/roles/${id}`);
   const payload = unwrapEnvelope<Record<string, unknown>>(response.data);
   return {
     id: getString(payload.id) ?? id,
@@ -44,15 +44,15 @@ export async function fetchRoleDetail(id: string): Promise<RoleDetail> {
 }
 
 export async function createRole(payload: RoleMutationPayload) {
-  const response = await apiClient.post("/roles", { ...payload, permissionIds: payload.permissionIds ?? [] });
+  const response = await apiClient.post("/api/auth/roles", { ...payload, permissionIds: payload.permissionIds ?? [] });
   return unwrapEnvelope<unknown>(response.data);
 }
 
 export async function updateRole(id: string, payload: RoleMutationPayload) {
-  const response = await apiClient.put(`/roles/${id}`, { id, ...payload, permissionIds: payload.permissionIds ?? [] });
+  const response = await apiClient.put(`/api/auth/roles/${id}`, { id, ...payload, permissionIds: payload.permissionIds ?? [] });
   return unwrapEnvelope<unknown>(response.data);
 }
 
 export async function deleteRole(id: string) {
-  await apiClient.delete(`/roles/${id}`);
+  await apiClient.delete(`/api/auth/roles/${id}`);
 }
