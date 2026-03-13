@@ -29,7 +29,7 @@ function parsePagePayload(payload: Record<string, unknown>) {
 }
 
 export async function fetchButtonPage(query: ButtonPageQuery): Promise<ButtonPageResult> {
-  const response = await apiClient.post("/api/auth/buttons/page", { query: JSON.stringify(query) });
+  const response = await apiClient.post("/api/auth/buttons/page", query);
   return parsePagePayload(unwrapEnvelope<Record<string, unknown>>(response.data));
 }
 

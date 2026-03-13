@@ -42,7 +42,7 @@ function mapMenuRecord(item: unknown): MenuItem | null {
 }
 
 export async function fetchMenuPage(query: MenuPageQuery): Promise<MenuPageResult> {
-  const response = await apiClient.post("/api/auth/menus/page", { query: JSON.stringify(query) });
+  const response = await apiClient.post("/api/auth/menus/page", query);
   const payload = unwrapEnvelope<Record<string, unknown>>(response.data);
 
   const data = getArray<unknown>(payload.data)
