@@ -24,7 +24,7 @@ function normalizeMenus(payload: unknown): MenuItem[] {
     if (!record) {
       return null;
     }
-    const isExternal = record.isExternal === true;
+    const isExternal = record.externalFlag === true || record.isExternal === true;
     const externalUrl = getString(record.externalUrl);
     return {
       id: getString(record.id) ?? crypto.randomUUID(),
@@ -39,6 +39,7 @@ function normalizeMenus(payload: unknown): MenuItem[] {
       linkUrl: externalUrl,
       icon: getString(record.icon),
       visible: record.hidden === true ? 0 : 1,
+      permission: getString(record.permission) ?? getString(record.code),
       children: Array.isArray(record.children)
         ? record.children.map(mapNode).filter((child): child is MenuItem => child !== null)
         : undefined,

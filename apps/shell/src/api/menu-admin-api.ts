@@ -20,7 +20,7 @@ function mapMenuRecord(item: unknown): MenuItem | null {
   if (!record) {
     return null;
   }
-  const isExternal = record.isExternal === true;
+  const isExternal = record.externalFlag === true || record.isExternal === true;
   return {
     id: getString(record.id) ?? crypto.randomUUID(),
     parentId: getString(record.parentId),
@@ -42,7 +42,7 @@ function mapMenuRecord(item: unknown): MenuItem | null {
 }
 
 export async function fetchMenuPage(query: MenuPageQuery): Promise<MenuPageResult> {
-  const response = await apiClient.get("/menus/page", { params: { query: JSON.stringify(query) } });
+  const response = await apiClient.get("/api/auth/menus/page", { params: { query: JSON.stringify(query) } });
   const payload = unwrapEnvelope<Record<string, unknown>>(response.data);
 
   const data = getArray<unknown>(payload.data)
@@ -53,22 +53,22 @@ export async function fetchMenuPage(query: MenuPageQuery): Promise<MenuPageResul
 }
 
 export async function createMenu(payload: MenuMutationPayload) {
-  const response = await apiClient.post("/menus", payload);
+  const response = await apiClient.post("/api/auth/menus", payload);
   return unwrapEnvelope<unknown>(response.data);
 }
 
 export async function fetchMenuTree() {
-  const response = await apiClient.get("/menus/tree");
+  const response = await apiClient.get("/api/auth/menus/tree");
   return getArray<unknown>(unwrapEnvelope<unknown[]>(response.data))
     .map(mapMenuRecord)
     .filter((item): item is MenuItem => item !== null);
 }
 
 export async function updateMenu(id: string, payload: MenuMutationPayload) {
-  const response = await apiClient.put(`/menus/${id}`, { id, ...payload });
+  const response = await apiClient.put(`/api/auth/menus/${id}`, { id, ...payload });
   return unwrapEnvelope<unknown>(response.data);
 }
 
 export async function deleteMenu(id: string) {
-  await apiClient.delete(`/menus/${id}`);
+  await apiClient.delete(`/api/auth/menus/${id}`);
 }
