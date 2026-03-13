@@ -1,7 +1,7 @@
 import { message } from "antd";
 import axios from "axios";
 import type { AxiosRequestConfig } from "axios";
-import type { ApiEnvelope } from "@platform/core";
+import type { ApiEnvelope, AuthSession } from "@platform/core";
 import { shellEnv } from "../config/env";
 import { getToken, useAuthStore } from "../modules/auth/auth-store";
 
@@ -30,9 +30,17 @@ export interface ApiRequestOptions {
   unwrap?: boolean;
 }
 
+interface RetryableAxiosRequestConfig extends AxiosRequestConfig {
+  _retry?: boolean;
+}
+
+let refreshPromise: Promise<AuthSession> | null = null;
+
 apiClient.interceptors.request.use((config) => {
   const token = getToken();
-  if (token) {
+  const hasAuthorizationHeader = Boolean(config.headers?.Authorization);
+
+  if (token && !hasAuthorizationHeader && !isAuthLifecycleRequest(config)) {
     config.headers.Authorization = `Bearer ${token}`;
   }
   return config;
@@ -101,6 +109,34 @@ function getEnvelopeMessage(payload: unknown) {
   return getString(record.message) ?? getString(record.msg);
 }
 
+function isAuthLifecycleRequest(config?: AxiosRequestConfig) {
+  const url = config?.url ?? "";
+  return [shellEnv.loginPath, shellEnv.refreshPath, shellEnv.logoutPath, shellEnv.currentUserPath].some((path) => url.includes(path));
+}
+
+async function ensureRefreshedSession() {
+  if (refreshPromise) {
+    return refreshPromise;
+  }
+
+  const refreshToken = useAuthStore.getState().session?.refreshToken;
+  if (!refreshToken) {
+    throw new ApiClientError("Session expired", 401);
+  }
+
+  refreshPromise = import("./auth-api")
+    .then(({ refreshSession }) => refreshSession(refreshToken))
+    .then((session) => {
+      useAuthStore.getState().setSession(session);
+      return session;
+    })
+    .finally(() => {
+      refreshPromise = null;
+    });
+
+  return refreshPromise;
+}
+
 apiClient.interceptors.response.use(
   (response) => {
     const envelopeCode = getEnvelopeCode(response.data);
@@ -110,10 +146,26 @@ apiClient.interceptors.response.use(
     }
     return response;
   },
-  (error) => {
-    if (error.response?.status === 401) {
+  async (error) => {
+    const originalRequest = error.config as RetryableAxiosRequestConfig | undefined;
+
+    if (error.response?.status === 401 && originalRequest && !originalRequest._retry && !isAuthLifecycleRequest(originalRequest)) {
+      originalRequest._retry = true;
+
+      try {
+        const session = await ensureRefreshedSession();
+        originalRequest.headers = {
+          ...(originalRequest.headers ?? {}),
+          Authorization: `Bearer ${session.token}`,
+        };
+        return apiClient.request(originalRequest);
+      } catch {
+        useAuthStore.getState().clearSession();
+      }
+    } else if (error.response?.status === 401) {
       useAuthStore.getState().clearSession();
     }
+
     return Promise.reject(error);
   },
 );
