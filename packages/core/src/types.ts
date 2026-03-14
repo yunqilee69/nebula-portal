@@ -619,7 +619,10 @@ export type ConfigMap = Record<string, string | number | boolean | null>;
 export interface NotificationItem {
   id: string;
   title: string;
+  content?: string;
   type: "info" | "warning" | "error";
+  category?: "notification" | "announcement" | "unknown";
+  actionable?: boolean;
   read?: boolean;
   createdAt?: string;
 }
