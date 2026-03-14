@@ -10,25 +10,26 @@ import { LoginPage } from "./modules/auth/login-page";
 import { useAuthStore } from "./modules/auth/auth-store";
 import { resolveRefreshDelay, shouldRefreshSession } from "./modules/auth/session-utils";
 import { BasicLayout } from "./layout/basic-layout";
-import { DashboardPage } from "./pages/dashboard-page";
-import { ButtonPermissionPage } from "./pages/button-permission-page";
-import { DictManagementPage } from "./pages/dict-management-page";
-import { IframePage } from "./pages/iframe-page";
-import { MenuManagementPage } from "./pages/menu-management-page";
-import { MenuPermissionPage } from "./pages/menu-permission-page";
-import { NotifyRecordPage } from "./pages/notify-record-page";
-import { NotifyTemplateManagementPage } from "./pages/notify-template-management-page";
-import { NotificationsPage } from "./pages/notifications-page";
-import { NotFoundPage } from "./pages/not-found-page";
-import { OAuth2AccountManagementPage } from "./pages/oauth2-account-management-page";
-import { OAuth2ClientManagementPage } from "./pages/oauth2-client-management-page";
-import { OrganizationManagementPage } from "./pages/organization-management-page";
-import { OrgPermissionPage } from "./pages/org-permission-page";
-import { RoleAccessPage } from "./pages/role-access-page";
-import { StorageCenterPage } from "./pages/storage-center-page";
-import { SystemParamsPage } from "./pages/system-params-page";
-import { UnavailablePage } from "./pages/unavailable-page";
-import { UserManagementPage } from "./pages/user-management-page";
+import { UnauthorizedPage } from "./pages/401";
+import { NotFoundPage } from "./pages/404";
+import { DashboardPage } from "./pages/dashboard";
+import { IframePage } from "./pages/iframe";
+import { UnavailablePage } from "./pages/unavailable";
+import { ButtonPermissionPage } from "./pages/button-permission/list";
+import { DictManagementPage } from "./pages/dict/list";
+import { MenuManagementPage } from "./pages/menu/list";
+import { MenuPermissionPage } from "./pages/menu-permission/list";
+import { NotificationsPage } from "./pages/notification/list";
+import { NotifyRecordPage } from "./pages/notify-record/list";
+import { NotifyTemplateManagementPage } from "./pages/notify-template/list";
+import { OAuth2AccountManagementPage } from "./pages/oauth2-account/list";
+import { OAuth2ClientManagementPage } from "./pages/oauth2-client/list";
+import { OrganizationManagementPage } from "./pages/organization/list";
+import { OrgPermissionPage } from "./pages/org-permission/list";
+import { RoleAccessPage } from "./pages/role-access/list";
+import { StorageCenterPage } from "./pages/storage/list";
+import { SystemParamsPage } from "./pages/system-param/list";
+import { UserManagementPage } from "./pages/user/list";
 import { loadRemoteModules } from "./modules/runtime/remote-modules";
 import { buildAppContext, preloadShellData } from "./modules/runtime/bootstrap";
 import { useDictStore } from "./modules/dict/dict-store";
@@ -204,6 +205,8 @@ function AppRouter() {
 
   const routes = [
     { path: "/login", element: session?.token ? <Navigate to="/" replace /> : <LoginPage /> },
+    { path: "/401", element: <UnauthorizedPage /> },
+    { path: "/404", element: <NotFoundPage /> },
     {
       path: "/",
       element: (
@@ -213,25 +216,25 @@ function AppRouter() {
       ),
       children: [
         { index: true, element: <DashboardPage /> },
-        { path: "platform/menus", element: <MenuManagementPage /> },
-        { path: "platform/organizations", element: <OrganizationManagementPage /> },
-        { path: "platform/users", element: <UserManagementPage /> },
-        { path: "platform/dicts", element: <DictManagementPage /> },
-        { path: "platform/oauth2-clients", element: <OAuth2ClientManagementPage /> },
-        { path: "platform/oauth2-accounts", element: <OAuth2AccountManagementPage /> },
-        { path: "platform/org-permissions", element: <OrgPermissionPage /> },
-        { path: "platform/menu-permissions", element: <MenuPermissionPage /> },
-        { path: "platform/button-permissions", element: <ButtonPermissionPage /> },
-        { path: "platform/params", element: <SystemParamsPage /> },
-        { path: "platform/notify-templates", element: <NotifyTemplateManagementPage /> },
-        { path: "platform/notify-records", element: <NotifyRecordPage /> },
-        { path: "platform/notifications", element: <NotificationsPage /> },
-        { path: "platform/access", element: <RoleAccessPage /> },
-        { path: "platform/storage", element: <StorageCenterPage /> },
+        { path: "menu/list", element: <MenuManagementPage /> },
+        { path: "organization/list", element: <OrganizationManagementPage /> },
+        { path: "user/list", element: <UserManagementPage /> },
+        { path: "dict/list", element: <DictManagementPage /> },
+        { path: "oauth2-client/list", element: <OAuth2ClientManagementPage /> },
+        { path: "oauth2-account/list", element: <OAuth2AccountManagementPage /> },
+        { path: "org-permission/list", element: <OrgPermissionPage /> },
+        { path: "menu-permission/list", element: <MenuPermissionPage /> },
+        { path: "button-permission/list", element: <ButtonPermissionPage /> },
+        { path: "system-param/list", element: <SystemParamsPage /> },
+        { path: "notify-template/list", element: <NotifyTemplateManagementPage /> },
+        { path: "notify-record/list", element: <NotifyRecordPage /> },
+        { path: "notification/list", element: <NotificationsPage /> },
+        { path: "role-access/list", element: <RoleAccessPage /> },
+        { path: "storage/list", element: <StorageCenterPage /> },
         { path: "iframe", element: <IframePage /> },
         ...dynamicRoutes.map((route) => ({ path: route.path.replace(/^\//, ""), element: route.element })),
         ...moduleRoutes.map((route) => ({ path: route.path.replace(/^\//, ""), element: route.element })),
-        { path: "*", element: <NotFoundPage /> },
+        { path: "*", element: <Navigate to="/404" replace /> },
       ],
     },
     { path: "*", element: <Navigate to={session?.token ? "/" : "/login"} replace /> },

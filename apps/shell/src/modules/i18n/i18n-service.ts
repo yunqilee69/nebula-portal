@@ -1,26 +1,20 @@
 import type { LocaleCode } from "@platform/core";
 import { eventBus } from "@platform/core";
 import { fetchCurrentLocalePreference, updateLocalePreference } from "../../api/i18n-api";
+import { patchDefaultShellMenus } from "../menu/default-menus";
 import { useMenuStore } from "../menu/menu-store";
-import { buildPlatformMenus } from "../platform/platform-menus";
 import { useI18nStore } from "./i18n-store";
 
-function patchPlatformMenus(locale: LocaleCode) {
+function patchLocalMenus(locale: LocaleCode) {
   const currentMenus = useMenuStore.getState().menus;
-  const localizedPlatformRoot = buildPlatformMenus(locale)[0];
-  if (!currentMenus.some((item) => item.id === "platform-root")) {
-    return;
-  }
-  useMenuStore.getState().setMenus(
-    currentMenus.map((item) => (item.id === "platform-root" ? localizedPlatformRoot : item)),
-  );
+  useMenuStore.getState().setMenus(patchDefaultShellMenus(currentMenus, locale));
 }
 
 export async function hydrateShellLocale() {
   try {
     const locale = await fetchCurrentLocalePreference();
     useI18nStore.getState().setLocale(locale);
-    patchPlatformMenus(locale);
+    patchLocalMenus(locale);
   } finally {
     useI18nStore.getState().markHydrated();
   }
@@ -29,7 +23,7 @@ export async function hydrateShellLocale() {
 export async function applyShellLocale(locale: LocaleCode) {
   const resolved = await updateLocalePreference(locale);
   useI18nStore.getState().setLocale(resolved);
-  patchPlatformMenus(resolved);
+  patchLocalMenus(resolved);
   eventBus.emit("i18n:locale-changed", { locale: resolved });
   return resolved;
 }

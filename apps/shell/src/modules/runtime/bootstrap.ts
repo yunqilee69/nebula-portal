@@ -9,22 +9,14 @@ import { useConfigStore } from "../config/config-store";
 import { useDictStore } from "../dict/dict-store";
 import { hasStoredDictRecords } from "../dict/dict-store";
 import { ensureDictRecords } from "../dict/dict-store";
+import { withDefaultShellMenus } from "../menu/default-menus";
 import { useMenuStore } from "../menu/menu-store";
 import { useNotifyStore } from "../notify/notify-store";
-import { buildPlatformMenus } from "../platform/platform-menus";
 import { applyShellLocale } from "../i18n/i18n-service";
 import { translateShellMessage } from "../i18n/translate";
 import { useI18nStore } from "../i18n/i18n-store";
 import { useAuthStore } from "../auth/auth-store";
 import { useResourceStore } from "./resource-store";
-
-function withPlatformMenus(menus: MenuItem[]) {
-  const existingRoot = menus.find((item) => item.id === "platform-root");
-  if (existingRoot) {
-    return menus;
-  }
-  return [...menus, ...buildPlatformMenus(useI18nStore.getState().locale)];
-}
 
 export async function preloadShellData() {
   useResourceStore.getState().start("menus");
@@ -41,8 +33,9 @@ export async function preloadShellData() {
   ]);
 
   useMenuStore.getState().setMenus(
-    withPlatformMenus(
+    withDefaultShellMenus(
       menusResult.status === "fulfilled" ? menusResult.value : [],
+      useI18nStore.getState().locale,
     ),
   );
   if (menusResult.status === "fulfilled") {
