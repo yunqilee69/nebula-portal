@@ -32,6 +32,10 @@ function resolveAdjacentActiveKey(tabs: WorkspaceTabItem[], key: string) {
   return tabs[currentIndex + 1]?.key ?? tabs[currentIndex - 1]?.key;
 }
 
+function isTabPersistent(tab: WorkspaceTabItem) {
+  return tab.closable === false;
+}
+
 export const useNavigationStore = create<NavigationState>((set) => ({
   tabs: [],
   activeKey: undefined,
@@ -67,6 +71,12 @@ export const useNavigationStore = create<NavigationState>((set) => ({
     })),
   closeTab: (key) =>
     set((state) => {
+      const targetTab = state.tabs.find((item) => item.key === key);
+
+      if (!targetTab || isTabPersistent(targetTab)) {
+        return state;
+      }
+
       const tabs = state.tabs.filter((item) => item.key !== key);
       const { [key]: _removedRefreshKey, ...refreshKeys } = state.refreshKeys;
 
@@ -78,12 +88,20 @@ export const useNavigationStore = create<NavigationState>((set) => ({
     }),
   closeOtherTabs: (key) =>
     set((state) => {
-      const tabs = state.tabs.filter((item) => item.key === key);
+      const tabs = state.tabs.filter((item) => item.key === key || isTabPersistent(item));
+
+      if (!tabs.some((item) => item.key === key)) {
+        return state;
+      }
+
+      const refreshKeys = Object.fromEntries(
+        tabs.map((item) => [item.key, state.refreshKeys[item.key] ?? 0]),
+      );
 
       return {
         tabs,
         activeKey: key,
-        refreshKeys: { [key]: state.refreshKeys[key] ?? 0 },
+        refreshKeys,
       };
     }),
   refreshTab: (key) =>
