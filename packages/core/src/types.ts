@@ -18,6 +18,7 @@ export interface AuthSession {
   refreshTokenExpiresIn?: number;
   user: UserProfile;
   permissions: string[];
+  menuList?: MenuItem[];
 }
 
 export interface MenuPageQuery {

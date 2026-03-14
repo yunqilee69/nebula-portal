@@ -13,7 +13,7 @@ function normalizeMenuType(type: unknown): MenuItem["type"] {
   return 2;
 }
 
-function normalizeMenus(payload: unknown): MenuItem[] {
+export function normalizeMenus(payload: unknown): MenuItem[] {
   const result = unwrapEnvelope<unknown>(payload);
   if (!Array.isArray(result)) {
     return [];

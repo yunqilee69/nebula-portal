@@ -1,5 +1,6 @@
 import type { AuthSession, UserProfile } from "@platform/core";
 import { getArray, getRecord, getString, unwrapEnvelope } from "../../api/client";
+import { normalizeMenus } from "../../api/menu-api";
 import { normalizeSessionExpiry } from "./session-utils";
 
 export function toUserProfile(candidate: unknown): UserProfile {
@@ -29,6 +30,7 @@ export function normalizeCurrentUser(payload: unknown) {
   return {
     user: toUserProfile(data),
     permissions: getArray<string>(data.permissions ?? data.permissionCodeList),
+    menuList: normalizeMenus(data.menuList ?? data.menus ?? []),
   };
 }
 
@@ -45,5 +47,6 @@ export function buildSessionFromPayload(
     refreshTokenExpiresIn,
     user: currentUser.user,
     permissions: currentUser.permissions,
+    menuList: currentUser.menuList,
   });
 }

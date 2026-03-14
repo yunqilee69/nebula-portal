@@ -15,6 +15,7 @@ import { buildPlatformMenus } from "../platform/platform-menus";
 import { applyShellLocale } from "../i18n/i18n-service";
 import { translateShellMessage } from "../i18n/translate";
 import { useI18nStore } from "../i18n/i18n-store";
+import { useAuthStore } from "../auth/auth-store";
 import { useResourceStore } from "./resource-store";
 
 function withPlatformMenus(menus: MenuItem[]) {
@@ -30,8 +31,11 @@ export async function preloadShellData() {
   useResourceStore.getState().start("config");
   useResourceStore.getState().start("notifications");
 
+  const sessionMenus = useAuthStore.getState().session?.menuList;
+  const menuPromise = sessionMenus ? Promise.resolve(sessionMenus) : fetchCurrentMenus();
+
   const [menusResult, configResult, notifyResult] = await Promise.allSettled([
-    fetchCurrentMenus(),
+    menuPromise,
     fetchCurrentConfig(),
     fetchCurrentNotifications(),
   ]);
