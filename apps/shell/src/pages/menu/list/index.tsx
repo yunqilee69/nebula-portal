@@ -4,7 +4,7 @@ import type { MenuItem, MenuMutationPayload, MenuPageQuery } from "@platform/cor
 import { NePermission, useI18n } from "@platform/core";
 import { useEffect, useMemo, useState } from "react";
 import { createMenu, deleteMenu, fetchMenuPage, fetchMenuTree, updateMenu } from "../../../api/menu-admin-api";
-import { NeFormDrawer, NePage, NeSearchPanel, NeTablePanel } from "@platform/ui";
+import { NeModal, NePage, NeSearchPanel, NeTablePanel } from "@platform/ui";
 
 const initialQuery: MenuPageQuery = {
   pageNum: 1,
@@ -23,14 +23,17 @@ const initialForm: MenuMutationPayload = {
   status: 1,
 };
 
-function menuTypeLabel(type: MenuItem["type"]) {
+function menuTypeLabel(
+  type: MenuItem["type"],
+  t: (key: string, fallback?: string, variables?: Record<string, string | number>) => string,
+) {
   if (type === 1) {
-    return <Tag color="processing">目录</Tag>;
+    return <Tag color="processing">{t("common.directory")}</Tag>;
   }
   if (type === 3) {
-    return <Tag color="warning">权限</Tag>;
+    return <Tag color="warning">{t("common.permission")}</Tag>;
   }
-  return <Tag color="success">菜单</Tag>;
+  return <Tag color="success">{t("common.menu")}</Tag>;
 }
 
 function toMutationPayload(values: MenuMutationPayload) {
@@ -138,7 +141,7 @@ export function MenuManagementPage() {
     () => [
       { title: t("common.name"), dataIndex: "name" },
       { title: t("common.codeOrPath"), render: (_: unknown, row: MenuItem) => row.path ?? row.permission ?? "-" },
-      { title: t("common.type"), render: (_: unknown, row: MenuItem) => menuTypeLabel(row.type) },
+       { title: t("common.type"), render: (_: unknown, row: MenuItem) => menuTypeLabel(row.type, t) },
       { title: t("common.component"), dataIndex: "component", render: (value: string | undefined) => value ?? "-" },
       {
         title: t("common.status"),
@@ -245,16 +248,19 @@ export function MenuManagementPage() {
           pagination={false}
         />
       </NeTablePanel>
-      <NeFormDrawer
+      <NeModal
         title={editing ? t("menuManagement.editMenu") : t("menuManagement.createMenu")}
         open={drawerOpen}
         onClose={() => setDrawerOpen(false)}
-        onSubmit={() => drawerForm.submit()}
-        submitting={submitting}
+        width={720}
+        confirmText={t("common.save")}
+        cancelText={t("common.cancel")}
+        onConfirm={() => drawerForm.submit()}
+        confirmLoading={submitting}
       >
         <Form
           form={drawerForm}
-          layout="vertical"
+          layout="vertical" className="ne-modal-form-grid"
           initialValues={initialForm}
           onFinish={async (values) => {
             if (editingHasChildren && values.type !== "DIRECTORY") {
@@ -277,7 +283,7 @@ export function MenuManagementPage() {
             }
           }}
         >
-          <Form.Item name="name" label={t("common.name")} rules={[{ required: true, message: `请输入${t("common.name")}` }]}><Input /></Form.Item>
+          <Form.Item name="name" label={t("common.name")} rules={[{ required: true, message: t("validation.enterField", undefined, { field: t("common.name") }) }]}><Input /></Form.Item>
           <Form.Item name="parentId" label={t("common.parent")}>
             <Select
               allowClear
@@ -293,7 +299,7 @@ export function MenuManagementPage() {
           <Form.Item
             name="type"
             label={t("common.type")}
-            rules={[{ required: true, message: `请选择${t("common.type")}` }]}
+            rules={[{ required: true, message: t("validation.selectField", undefined, { field: t("common.type") }) }]}
             extra={currentType !== "DIRECTORY" ? t("menuManagement.nonDirectoryHint") : undefined}
           >
             <Select
@@ -307,7 +313,7 @@ export function MenuManagementPage() {
           <Form.Item name="sort" label={t("common.sort")}><InputNumber min={0} style={{ width: "100%" }} /></Form.Item>
           <Form.Item name="status" label={t("common.status")}><Select options={[{ label: t("common.enabled"), value: 1 }, { label: t("common.disabled"), value: 0 }]} /></Form.Item>
         </Form>
-      </NeFormDrawer>
+      </NeModal>
     </NePage>
   );
 }

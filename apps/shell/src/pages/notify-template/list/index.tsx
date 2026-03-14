@@ -4,7 +4,7 @@ import type { NotifyTemplateDetail, NotifyTemplateItem, NotifyTemplateMutationPa
 import { useI18n } from "@platform/core";
 import { useEffect, useMemo, useState } from "react";
 import { createNotifyTemplate, deleteNotifyTemplate, fetchNotifyTemplateDetail, fetchNotifyTemplatePage, sendNotification, updateNotifyTemplate } from "../../../api/notify-template-api";
-import { NeDetailDrawer, NeFormDrawer, NePage, NeSearchPanel, NeTablePanel } from "@platform/ui";
+import { NeDetailDrawer, NeModal, NePage, NeSearchPanel, NeTablePanel } from "@platform/ui";
 
 const initialQuery: NotifyTemplatePageQuery = { pageNum: 1, pageSize: 10, orderName: "updateTime", orderType: "desc" };
 const initialForm: NotifyTemplateMutationPayload = { templateCode: "", templateName: "", channelType: "SITE", subjectTemplate: "", contentTemplate: "", status: 1, isBuiltin: 0, remark: "" };
@@ -209,10 +209,19 @@ export function NotifyTemplateManagementPage() {
         ) : null}
       </NeDetailDrawer>
 
-      <NeFormDrawer title={editing ? t("notifyTemplate.edit") : t("notifyTemplate.create")} open={drawerOpen} onClose={() => setDrawerOpen(false)} onSubmit={() => drawerForm.submit()} submitting={submitting}>
+      <NeModal
+        title={editing ? t("notifyTemplate.edit") : t("notifyTemplate.create")}
+        open={drawerOpen}
+        onClose={() => setDrawerOpen(false)}
+        width={720}
+        confirmText={t("common.save")}
+        cancelText={t("common.cancel")}
+        onConfirm={() => drawerForm.submit()}
+        confirmLoading={submitting}
+      >
         <Form
           form={drawerForm}
-          layout="vertical"
+          layout="vertical" className="ne-modal-form-grid"
           initialValues={initialForm}
           onFinish={async (values) => {
             setSubmitting(true);
@@ -233,17 +242,26 @@ export function NotifyTemplateManagementPage() {
           <Form.Item name="templateName" label={t("common.templateName")} rules={[{ required: true, message: t("validation.enterField", undefined, { field: t("common.templateName") }) }]}><Input /></Form.Item>
           <Form.Item name="channelType" label={t("common.channel")} rules={[{ required: true, message: t("validation.selectField", undefined, { field: t("common.channel") }) }]}><Select options={channelOptions} /></Form.Item>
           <Form.Item name="subjectTemplate" label={t("common.subjectTemplate")}><Input /></Form.Item>
-          <Form.Item name="contentTemplate" label={t("common.contentTemplate")} rules={[{ required: true, message: t("validation.enterField", undefined, { field: t("common.contentTemplate") }) }]}><Input.TextArea rows={4} /></Form.Item>
+          <Form.Item name="contentTemplate" label={t("common.contentTemplate")} rules={[{ required: true, message: t("validation.enterField", undefined, { field: t("common.contentTemplate") }) }]} className="ne-modal-form-grid__full"><Input.TextArea rows={4} /></Form.Item>
           <Form.Item name="isBuiltin" label={t("common.builtin")}><Select options={[{ label: t("common.no"), value: 0 }, { label: t("common.yes"), value: 1 }]} /></Form.Item>
           <Form.Item name="status" label={t("common.status")}><Select options={[{ label: t("common.enabled"), value: 1 }, { label: t("common.disabled"), value: 0 }]} /></Form.Item>
-          <Form.Item name="remark" label={t("common.remark")}><Input.TextArea rows={3} /></Form.Item>
+          <Form.Item name="remark" label={t("common.remark")} className="ne-modal-form-grid__full"><Input.TextArea rows={3} /></Form.Item>
         </Form>
-      </NeFormDrawer>
+      </NeModal>
 
-      <NeFormDrawer title={t("notifyTemplate.sendDialogTitle")} open={sendOpen} onClose={() => setSendOpen(false)} onSubmit={() => sendForm.submit()} submitting={sendSubmitting}>
+      <NeModal
+        title={t("notifyTemplate.sendDialogTitle")}
+        open={sendOpen}
+        onClose={() => setSendOpen(false)}
+        width={720}
+        confirmText={t("common.save")}
+        cancelText={t("common.cancel")}
+        onConfirm={() => sendForm.submit()}
+        confirmLoading={sendSubmitting}
+      >
         <Form
           form={sendForm}
-          layout="vertical"
+          layout="vertical" className="ne-modal-form-grid"
           initialValues={initialSendForm}
           onFinish={async (values) => {
             setSendSubmitting(true);
@@ -277,17 +295,17 @@ export function NotifyTemplateManagementPage() {
         >
           <Form.Item name="channelType" label={t("common.channel")} rules={[{ required: true, message: t("validation.selectField", undefined, { field: t("common.channel") }) }]}><Select options={channelOptions} /></Form.Item>
           <Form.Item name="templateCode" label={t("common.templateCode")}><Input /></Form.Item>
-          <Form.Item name="templateParamsText" label={t("common.templateParamsJson")}><Input.TextArea rows={4} /></Form.Item>
+          <Form.Item name="templateParamsText" label={t("common.templateParamsJson")} className="ne-modal-form-grid__full"><Input.TextArea rows={4} /></Form.Item>
           <Form.Item name="subject" label={t("common.subject")}><Input /></Form.Item>
-          <Form.Item name="content" label={t("common.content")}><Input.TextArea rows={4} /></Form.Item>
+          <Form.Item name="content" label={t("common.content")} className="ne-modal-form-grid__full"><Input.TextArea rows={4} /></Form.Item>
           <Form.Item name="receiver" label={t("common.receiver")}><Input /></Form.Item>
           <Form.Item name="ccReceiver" label={t("common.ccReceiver")}><Input /></Form.Item>
           <Form.Item name="receiverUserId" label={t("common.receiverUserId")}><Input /></Form.Item>
           <Form.Item name="bizType" label={t("common.bizType")}><Input /></Form.Item>
           <Form.Item name="bizNo" label={t("common.bizNo")}><Input /></Form.Item>
-          <Form.Item name="extJson" label={t("common.extJson")}><Input.TextArea rows={3} /></Form.Item>
+          <Form.Item name="extJson" label={t("common.extJson")} className="ne-modal-form-grid__full"><Input.TextArea rows={3} /></Form.Item>
         </Form>
-      </NeFormDrawer>
+      </NeModal>
     </NePage>
   );
 }

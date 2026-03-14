@@ -4,7 +4,7 @@ import type { OrganizationItem, OrganizationMutationPayload, OrganizationPageQue
 import { NePermission, useI18n } from "@platform/core";
 import { useEffect, useMemo, useState } from "react";
 import { createOrganization, deleteOrganization, fetchOrganizationDetail, fetchOrganizationPage, fetchOrganizationTree, updateOrganization } from "../../../api/organization-api";
-import { NeDetailDrawer, NeFormDrawer, NePage, NePanel, NeSearchPanel, NeTablePanel } from "@platform/ui";
+import { NeDetailDrawer, NeModal, NePage, NePanel, NeSearchPanel, NeTablePanel } from "@platform/ui";
 
 const initialQuery: OrganizationPageQuery = {
   pageNum: 1,
@@ -247,10 +247,19 @@ export function OrganizationManagementPage() {
           </Descriptions>
         ) : null}
       </NeDetailDrawer>
-      <NeFormDrawer title={editing ? t("organization.edit") : t("organization.new")} open={drawerOpen} onClose={() => setDrawerOpen(false)} onSubmit={() => drawerForm.submit()} submitting={submitting}>
+      <NeModal
+        title={editing ? t("organization.edit") : t("organization.new")}
+        open={drawerOpen}
+        onClose={() => setDrawerOpen(false)}
+        width={720}
+        confirmText={t("common.save")}
+        cancelText={t("common.cancel")}
+        onConfirm={() => drawerForm.submit()}
+        confirmLoading={submitting}
+      >
         <Form
           form={drawerForm}
-          layout="vertical"
+          layout="vertical" className="ne-modal-form-grid"
           initialValues={initialForm}
           onFinish={async (values) => {
             setSubmitting(true);
@@ -271,13 +280,13 @@ export function OrganizationManagementPage() {
           <Form.Item name="code" label={t("common.code")} rules={[{ required: true, message: t("validation.enterField", undefined, { field: t("common.code") }) }]}><Input /></Form.Item>
           <Form.Item name="leader" label={t("common.leader")}><Input /></Form.Item>
           <Form.Item name="phone" label={t("common.phone")}><Input /></Form.Item>
-          <Form.Item name="address" label={t("common.address")}><Input.TextArea rows={3} /></Form.Item>
+           <Form.Item name="address" label={t("common.address")} className="ne-modal-form-grid__full"><Input.TextArea rows={3} /></Form.Item>
           <Form.Item name="parentId" label={t("organization.parentOrg")}>
             <Select allowClear options={parentOptions.filter((option) => option.value !== editing?.id)} />
           </Form.Item>
           <Form.Item name="status" label={t("common.status")}><Select options={[{ label: t("common.enabled"), value: 1 }, { label: t("common.disabled"), value: 0 }]} /></Form.Item>
         </Form>
-      </NeFormDrawer>
+      </NeModal>
     </NePage>
   );
 }

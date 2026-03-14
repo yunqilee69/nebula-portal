@@ -6,7 +6,7 @@ import { useEffect, useMemo, useState } from "react";
 import { fetchOrganizationList } from "../../../api/organization-api";
 import { fetchRoleList } from "../../../api/role-api";
 import { createUser, deleteUser, fetchUserDetail, fetchUserPage, updateUser } from "../../../api/user-api";
-import { NeDetailDrawer, NeFormDrawer, NePage, NeSearchPanel, NeTablePanel } from "@platform/ui";
+import { NeDetailDrawer, NeModal, NePage, NeSearchPanel, NeTablePanel } from "@platform/ui";
 
 const initialQuery: UserPageQuery = {
   pageNum: 1,
@@ -206,10 +206,10 @@ export function UserManagementPage() {
             <Input allowClear placeholder={t("common.search")} />
           </Form.Item>
           <Form.Item name="email" label={t("common.email")}>
-            <Input allowClear placeholder="name@example.com" />
+            <Input allowClear placeholder={t("common.emailExample")} />
           </Form.Item>
           <Form.Item name="phone" label={t("common.phone")}>
-            <Input allowClear placeholder="13800000000" />
+            <Input allowClear placeholder={t("common.phoneExample")} />
           </Form.Item>
           <Form.Item name="status" label={t("common.status")}>
             <Select style={{ width: 140 }} allowClear options={[{ label: t("common.enabled"), value: 1 }, { label: t("common.disabled"), value: 0 }]} />
@@ -264,16 +264,19 @@ export function UserManagementPage() {
           </Descriptions>
         ) : null}
       </NeDetailDrawer>
-      <NeFormDrawer
+      <NeModal
         title={editing ? t("userManagement.editUser") : t("userManagement.createUser")}
         open={drawerOpen}
         onClose={() => setDrawerOpen(false)}
-        onSubmit={() => drawerForm.submit()}
-        submitting={submitting || metaLoading}
+        width={720}
+        confirmText={t("common.save")}
+        cancelText={t("common.cancel")}
+        onConfirm={() => drawerForm.submit()}
+        confirmLoading={submitting || metaLoading}
       >
         <Form
           form={drawerForm}
-          layout="vertical"
+          layout="vertical" className="ne-modal-form-grid"
           initialValues={initialForm}
           onFinish={async (values) => {
             setSubmitting(true);
@@ -313,17 +316,17 @@ export function UserManagementPage() {
           <Form.Item name="status" label={t("common.status")}>
             <Select options={[{ label: t("common.enabled"), value: 1 }, { label: t("common.disabled"), value: 0 }]} />
           </Form.Item>
-          <Form.Item name="roleIds" label={t("common.role")}>
+          <Form.Item name="roleIds" label={t("common.role")} className="ne-modal-form-grid__full">
             <Select mode="multiple" allowClear options={roleOptions} />
           </Form.Item>
-          <Form.Item name="orgIds" label={t("common.organization")}>
+          <Form.Item name="orgIds" label={t("common.organization")} className="ne-modal-form-grid__full">
             <Select mode="multiple" allowClear options={organizationOptions} />
           </Form.Item>
-          <Form.Item name="remark" label={t("common.remark")}>
+          <Form.Item name="remark" label={t("common.remark")} className="ne-modal-form-grid__full">
             <Input.TextArea rows={3} />
           </Form.Item>
         </Form>
-      </NeFormDrawer>
+      </NeModal>
     </NePage>
   );
 }

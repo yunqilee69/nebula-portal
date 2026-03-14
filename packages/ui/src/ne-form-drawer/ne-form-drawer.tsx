@@ -1,5 +1,5 @@
-import { Button, Drawer } from "antd";
 import type { ReactNode } from "react";
+import { NeModal } from "../ne-modal/ne-modal";
 
 /**
  * Props accepted by {@link NeFormDrawer}.
@@ -39,9 +39,6 @@ export interface NeFormDrawerProps {
   children: ReactNode;
 }
 
-/**
- * Nebula standard form drawer that provides a consistent save action for create and edit flows.
- */
 export function NeFormDrawer({
   title,
   open,
@@ -53,18 +50,17 @@ export function NeFormDrawer({
   children,
 }: NeFormDrawerProps) {
   return (
-    <Drawer
+    <NeModal
       title={title}
       open={open}
       onClose={onClose}
+      onConfirm={onSubmit}
       width={width}
-      extra={
-        <Button type="primary" loading={submitting} onClick={onSubmit}>
-          {submitText}
-        </Button>
-      }
+      confirmText={submitText}
+      confirmLoading={submitting}
+      cancelText="Cancel"
     >
       {children}
-    </Drawer>
+    </NeModal>
   );
 }

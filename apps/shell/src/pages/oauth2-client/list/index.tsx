@@ -4,7 +4,7 @@ import type { OAuth2ClientDetail, OAuth2ClientItem, OAuth2ClientMutationPayload,
 import { useI18n } from "@platform/core";
 import { useEffect, useMemo, useState } from "react";
 import { createOAuth2Client, deleteOAuth2Client, fetchOAuth2ClientDetail, fetchOAuth2ClientPage, updateOAuth2Client } from "../../../api/oauth2-client-api";
-import { NeDetailDrawer, NeFormDrawer, NePage, NeSearchPanel, NeTablePanel } from "@platform/ui";
+import { NeDetailDrawer, NeModal, NePage, NeSearchPanel, NeTablePanel } from "@platform/ui";
 
 const initialQuery: OAuth2ClientPageQuery = { pageNum: 1, pageSize: 10, orderName: "updateTime", orderType: "desc" };
 const initialForm: OAuth2ClientMutationPayload = {
@@ -184,10 +184,19 @@ export function OAuth2ClientManagementPage() {
         ) : null}
       </NeDetailDrawer>
 
-      <NeFormDrawer title={editing ? t("oauth2Client.edit") : t("oauth2Client.create")} open={drawerOpen} onClose={() => setDrawerOpen(false)} onSubmit={() => drawerForm.submit()} submitting={submitting}>
+      <NeModal
+        title={editing ? t("oauth2Client.edit") : t("oauth2Client.create")}
+        open={drawerOpen}
+        onClose={() => setDrawerOpen(false)}
+        width={720}
+        confirmText={t("common.save")}
+        cancelText={t("common.cancel")}
+        onConfirm={() => drawerForm.submit()}
+        confirmLoading={submitting}
+      >
         <Form
           form={drawerForm}
-          layout="vertical"
+          layout="vertical" className="ne-modal-form-grid"
           initialValues={initialForm}
           onFinish={async (values) => {
             setSubmitting(true);
@@ -219,7 +228,7 @@ export function OAuth2ClientManagementPage() {
           <Form.Item name="scopes" label={t("common.scopes")}>
             <Input />
           </Form.Item>
-          <Form.Item name="redirectUris" label={t("common.redirectUris")}>
+          <Form.Item name="redirectUris" label={t("common.redirectUris")} className="ne-modal-form-grid__full">
             <Input.TextArea rows={2} />
           </Form.Item>
           <Form.Item name="autoApprove" label={t("common.autoApprove")}>
@@ -231,14 +240,14 @@ export function OAuth2ClientManagementPage() {
           <Form.Item name="refreshTokenValidity" label={t("common.refreshTokenValidity")}>
             <InputNumber min={60} style={{ width: "100%" }} />
           </Form.Item>
-          <Form.Item name="additionalInformation" label={t("common.additionalInformation")}>
+          <Form.Item name="additionalInformation" label={t("common.additionalInformation")} className="ne-modal-form-grid__full">
             <Input.TextArea rows={3} />
           </Form.Item>
           <Form.Item name="status" label={t("common.status")}>
             <Select options={[{ label: t("common.enabled"), value: 1 }, { label: t("common.disabled"), value: 0 }]} />
           </Form.Item>
         </Form>
-      </NeFormDrawer>
+      </NeModal>
     </NePage>
   );
 }

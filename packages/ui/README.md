@@ -38,7 +38,7 @@ import { NePage, NePanel, NeStatusTag } from "@platform/ui";
 
 - 通用页面容器优先使用 `NePage`
 - 页面中的内容分区优先使用 `NePanel`
-- 新增、编辑弹层优先使用 `NeFormDrawer`
+- 新增、编辑弹层优先使用 `NeModal`
 - 居中的业务弹层优先使用 `NeModal`
 - 只读详情弹层优先使用 `NeDetailDrawer`
 - 页面级导航优先使用 `NeBreadcrumbs` 和 `NeWorkspaceTabs`

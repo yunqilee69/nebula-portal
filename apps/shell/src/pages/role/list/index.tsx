@@ -4,7 +4,7 @@ import type { RoleDetail, RoleItem, RoleMutationPayload, RolePageQuery } from "@
 import { NePermission, useI18n } from "@platform/core";
 import { useEffect, useMemo, useState } from "react";
 import { createRole, deleteRole, fetchRoleDetail, fetchRoleList, fetchRolePage, updateRole } from "../../../api/role-api";
-import { NeDetailDrawer, NeFormDrawer, NePage, NeSearchPanel, NeTablePanel } from "@platform/ui";
+import { NeDetailDrawer, NeModal, NePage, NeSearchPanel, NeTablePanel } from "@platform/ui";
 
 const initialQuery: RolePageQuery = {
   pageNum: 1,
@@ -250,16 +250,19 @@ export function RoleManagementPage() {
           </Space>
         ) : null}
       </NeDetailDrawer>
-      <NeFormDrawer
+      <NeModal
         title={editing ? t("roleManagement.editRole") : t("roleManagement.createRole")}
         open={drawerOpen}
         onClose={() => setDrawerOpen(false)}
-        onSubmit={() => drawerForm.submit()}
-        submitting={submitting || metaLoading}
+        width={720}
+        confirmText={t("common.save")}
+        cancelText={t("common.cancel")}
+        onConfirm={() => drawerForm.submit()}
+        confirmLoading={submitting || metaLoading}
       >
         <Form
           form={drawerForm}
-          layout="vertical"
+          layout="vertical" className="ne-modal-form-grid"
           initialValues={initialForm}
           onFinish={async (values) => {
             setSubmitting(true);
@@ -282,15 +285,15 @@ export function RoleManagementPage() {
           <Form.Item name="code" label={t("common.code")} rules={[{ required: true, message: t("validation.enterField", undefined, { field: t("common.code") }) }]}>
             <Input />
           </Form.Item>
-          <Form.Item name="description" label={t("common.description")}>
+          <Form.Item name="description" label={t("common.description")} className="ne-modal-form-grid__full">
             <Input.TextArea rows={3} />
           </Form.Item>
           <Form.Item name="status" label={t("common.status")}>
             <Select options={[{ label: t("common.enabled"), value: 1 }, { label: t("common.disabled"), value: 0 }]} />
           </Form.Item>
-          <Typography.Text type="secondary">{t("roleManagement.permissionHint")}</Typography.Text>
+          <Typography.Text type="secondary" className="ne-modal-form-grid__full">{t("roleManagement.permissionHint")}</Typography.Text>
         </Form>
-      </NeFormDrawer>
+      </NeModal>
     </NePage>
   );
 }

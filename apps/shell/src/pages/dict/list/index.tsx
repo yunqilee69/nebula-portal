@@ -13,7 +13,7 @@ import {
   updateDictItem,
   updateDictType,
 } from "../../../api/dict-admin-api";
-import { NeFormDrawer, NePage, NePanel, NeSearchPanel, NeTablePanel } from "@platform/ui";
+import { NeModal, NePage, NePanel, NeSearchPanel, NeTablePanel } from "@platform/ui";
 
 const initialTypeQuery = { pageNum: 1, pageSize: 10, orderName: "updateTime", orderType: "desc" };
 const initialItemQuery = { pageNum: 1, pageSize: 10, orderName: "sort", orderType: "asc" };
@@ -290,8 +290,8 @@ export function DictManagementPage() {
         </div>
       </div>
 
-      <NeFormDrawer title={editingType ? t("dict.editType") : t("dict.createType")} open={typeDrawerOpen} onClose={() => setTypeDrawerOpen(false)} onSubmit={() => typeDrawerForm.submit()} submitting={typeSubmitting}>
-        <Form form={typeDrawerForm} layout="vertical" initialValues={initialTypeForm} onFinish={async (values) => {
+      <NeModal title={editingType ? t("dict.editType") : t("dict.createType")} open={typeDrawerOpen} onClose={() => setTypeDrawerOpen(false)} width={720} confirmText={t("common.save")} cancelText={t("common.cancel")} onConfirm={() => typeDrawerForm.submit()} confirmLoading={typeSubmitting}>
+        <Form form={typeDrawerForm} layout="vertical" className="ne-modal-form-grid" initialValues={initialTypeForm} onFinish={async (values) => {
           setTypeSubmitting(true);
           try {
             if (editingType) {
@@ -308,12 +308,12 @@ export function DictManagementPage() {
           <Form.Item name="typeCode" label={t("common.code")} rules={[{ required: true, message: t("validation.enterField", undefined, { field: t("common.code") }) }]}><Input disabled={Boolean(editingType)} /></Form.Item>
           <Form.Item name="typeName" label={t("common.name")} rules={[{ required: true, message: t("validation.enterField", undefined, { field: t("common.name") }) }]}><Input /></Form.Item>
           <Form.Item name="status" label={t("common.status")}><Select options={[{ label: t("common.enabled"), value: 1 }, { label: t("common.disabled"), value: 0 }]} /></Form.Item>
-          <Form.Item name="remark" label={t("common.remark")}><Input.TextArea rows={3} /></Form.Item>
+          <Form.Item name="remark" label={t("common.remark")} className="ne-modal-form-grid__full"><Input.TextArea rows={3} /></Form.Item>
         </Form>
-      </NeFormDrawer>
+      </NeModal>
 
-      <NeFormDrawer title={editingItem ? t("dict.editItem") : t("dict.createItem")} open={itemDrawerOpen} onClose={() => setItemDrawerOpen(false)} onSubmit={() => itemDrawerForm.submit()} submitting={itemSubmitting}>
-        <Form form={itemDrawerForm} layout="vertical" initialValues={initialItemForm} onFinish={async (values) => {
+      <NeModal title={editingItem ? t("dict.editItem") : t("dict.createItem")} open={itemDrawerOpen} onClose={() => setItemDrawerOpen(false)} width={720} confirmText={t("common.save")} cancelText={t("common.cancel")} onConfirm={() => itemDrawerForm.submit()} confirmLoading={itemSubmitting}>
+        <Form form={itemDrawerForm} layout="vertical" className="ne-modal-form-grid" initialValues={initialItemForm} onFinish={async (values) => {
           setItemSubmitting(true);
           try {
             if (editingItem) {
@@ -327,18 +327,18 @@ export function DictManagementPage() {
             setItemSubmitting(false);
           }
         }}>
-          <Form.Item name="typeCode" label={t("common.code")} rules={[{ required: true, message: t("validation.selectField", undefined, { field: t("common.name") }) }]}><Input disabled={Boolean(selectedType)} /></Form.Item>
+          <Form.Item name="typeCode" label={t("common.code")} rules={[{ required: true, message: t("validation.enterField", undefined, { field: t("common.code") }) }]}><Input disabled={Boolean(selectedType)} /></Form.Item>
           <Form.Item name="itemCode" label={t("common.itemCode")} rules={[{ required: true, message: t("validation.enterField", undefined, { field: t("common.itemCode") }) }]}><Input disabled={Boolean(editingItem)} /></Form.Item>
           <Form.Item name="itemLabel" label={t("common.itemLabel")} rules={[{ required: true, message: t("validation.enterField", undefined, { field: t("common.itemLabel") }) }]}><Input /></Form.Item>
           <Form.Item name="itemValue" label={t("common.itemValue")} rules={[{ required: true, message: t("validation.enterField", undefined, { field: t("common.itemValue") }) }]}><Input /></Form.Item>
           <Form.Item name="sort" label={t("common.sort")}><InputNumber min={0} style={{ width: "100%" }} /></Form.Item>
           <Form.Item name="isDefault" label={t("dict.isDefault")}><Select options={[{ label: t("common.no"), value: 0 }, { label: t("common.yes"), value: 1 }]} /></Form.Item>
           <Form.Item name="tagColor" label={t("common.tagColor")}><Input /></Form.Item>
-          <Form.Item name="extraJson" label={t("common.extJson")}><Input.TextArea rows={3} /></Form.Item>
+          <Form.Item name="extraJson" label={t("common.extJson")} className="ne-modal-form-grid__full"><Input.TextArea rows={3} /></Form.Item>
           <Form.Item name="status" label={t("common.status")}><Select options={[{ label: t("common.enabled"), value: 1 }, { label: t("common.disabled"), value: 0 }]} /></Form.Item>
-          <Form.Item name="remark" label={t("common.remark")}><Input.TextArea rows={3} /></Form.Item>
+          <Form.Item name="remark" label={t("common.remark")} className="ne-modal-form-grid__full"><Input.TextArea rows={3} /></Form.Item>
         </Form>
-      </NeFormDrawer>
+      </NeModal>
     </NePage>
   );
 }

@@ -4,7 +4,7 @@ import type { OAuth2AccountDetail, OAuth2AccountItem, OAuth2AccountMutationPaylo
 import { useI18n } from "@platform/core";
 import { useEffect, useMemo, useState } from "react";
 import { createOAuth2Account, deleteOAuth2Account, fetchOAuth2AccountDetail, fetchOAuth2AccountPage, updateOAuth2Account } from "../../../api/oauth2-account-api";
-import { NeDetailDrawer, NeFormDrawer, NePage, NeSearchPanel, NeTablePanel } from "@platform/ui";
+import { NeDetailDrawer, NeModal, NePage, NeSearchPanel, NeTablePanel } from "@platform/ui";
 
 const initialQuery: OAuth2AccountPageQuery = { pageNum: 1, pageSize: 10, orderName: "updateTime", orderType: "desc" };
 const initialForm: OAuth2AccountMutationPayload = { userId: "", providerId: "github", providerUserId: "", providerAttributes: "" };
@@ -176,10 +176,19 @@ export function OAuth2AccountManagementPage() {
         ) : null}
       </NeDetailDrawer>
 
-      <NeFormDrawer title={editing ? t("oauth2Account.edit") : t("oauth2Account.create")} open={drawerOpen} onClose={() => setDrawerOpen(false)} onSubmit={() => drawerForm.submit()} submitting={submitting}>
+      <NeModal
+        title={editing ? t("oauth2Account.edit") : t("oauth2Account.create")}
+        open={drawerOpen}
+        onClose={() => setDrawerOpen(false)}
+        width={720}
+        confirmText={t("common.save")}
+        cancelText={t("common.cancel")}
+        onConfirm={() => drawerForm.submit()}
+        confirmLoading={submitting}
+      >
         <Form
           form={drawerForm}
-          layout="vertical"
+          layout="vertical" className="ne-modal-form-grid"
           initialValues={initialForm}
           onFinish={async (values) => {
             setSubmitting(true);
@@ -205,11 +214,11 @@ export function OAuth2AccountManagementPage() {
           <Form.Item name="providerUserId" label={t("common.providerUserId")}>
             <Input />
           </Form.Item>
-          <Form.Item name="providerAttributes" label={t("common.attributes")}>
+          <Form.Item name="providerAttributes" label={t("common.attributes")} className="ne-modal-form-grid__full">
             <Input.TextArea rows={4} />
           </Form.Item>
         </Form>
-      </NeFormDrawer>
+      </NeModal>
     </NePage>
   );
 }

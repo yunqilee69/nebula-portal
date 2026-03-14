@@ -7,7 +7,7 @@ import { fetchButtonPage } from "../../../api/button-api";
 import { fetchMenuTree } from "../../../api/menu-admin-api";
 import { fetchOrganizationList } from "../../../api/organization-api";
 import { createPermission, deletePermission, fetchPermissionPage, updatePermission } from "../../../api/permission-api";
-import { NeFormDrawer, NePage, NePanel, NeTablePanel } from "@platform/ui";
+import { NeModal, NePage, NePanel, NeTablePanel } from "@platform/ui";
 
 function flattenMenus(items: MenuItem[]): Array<{ label: string; value: string }> {
   return items.flatMap((item) => [
@@ -164,10 +164,10 @@ export function OrgPermissionPage() {
       >
         <Table<PermissionItem> rowKey="id" loading={loading} dataSource={permissions} columns={columns} pagination={false} />
       </NeTablePanel>
-      <NeFormDrawer title={editing ? t("orgPermission.edit") : t("orgPermission.create")} open={drawerOpen} onClose={() => setDrawerOpen(false)} onSubmit={() => form.submit()} submitting={submitting}>
+      <NeModal title={editing ? t("orgPermission.edit") : t("orgPermission.create")} open={drawerOpen} onClose={() => setDrawerOpen(false)} width={720} confirmText={t("common.save")} cancelText={t("common.cancel")} onConfirm={() => form.submit()} confirmLoading={submitting}>
         <Form
           form={form}
-          layout="vertical"
+          layout="vertical" className="ne-modal-form-grid"
           onFinish={async (values) => {
             setSubmitting(true);
             try {
@@ -192,13 +192,13 @@ export function OrgPermissionPage() {
           <Form.Item name="resourceType" label={t("orgPermission.resourceType")} rules={[{ required: true, message: t("validation.selectField", undefined, { field: t("orgPermission.resourceType") }) }]}> 
             <Select options={[{ label: t("common.menu"), value: "MENU" }, { label: t("common.button"), value: "BUTTON" }]} />
           </Form.Item>
-          <Form.Item name="resourceId" label={t("orgPermission.resource")} rules={[{ required: true, message: t("validation.selectField", undefined, { field: t("orgPermission.resource") }) }]}> 
+          <Form.Item name="resourceId" label={t("orgPermission.resource")} rules={[{ required: true, message: t("validation.selectField", undefined, { field: t("orgPermission.resource") }) }]} className="ne-modal-form-grid__full"> 
             <Select options={currentResourceType === "BUTTON" ? buttonOptions : menuOptions} showSearch optionFilterProp="label" />
           </Form.Item>
           <Form.Item name="effect" label={t("common.effect")} initialValue="Allow"><Select options={[{ label: t("permission.allow"), value: "Allow" }, { label: t("permission.deny"), value: "Deny" }]} /></Form.Item>
           <Form.Item name="scope" label={t("common.scope")} initialValue="ALL"><Select options={[{ label: t("permission.scope.all"), value: "ALL" }, { label: t("permission.scope.currentOrg"), value: "CURRENT_ORG" }, { label: t("permission.scope.cascade"), value: "CASCADE" }]} /></Form.Item>
         </Form>
-      </NeFormDrawer>
+      </NeModal>
     </NePage>
   );
 }

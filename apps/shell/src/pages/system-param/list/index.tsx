@@ -4,7 +4,7 @@ import type { SystemParamItem, SystemParamMutationPayload, SystemParamPageQuery 
 import { NePermission, useI18n } from "@platform/core";
 import { useEffect, useMemo, useState } from "react";
 import { createSystemParam, deleteSystemParam, fetchSystemParamPage, updateSystemParam } from "../../../api/system-param-api";
-import { NeDetailDrawer, NeFormDrawer, NePage, NeSearchPanel, NeTablePanel } from "@platform/ui";
+import { NeDetailDrawer, NeModal, NePage, NeSearchPanel, NeTablePanel } from "@platform/ui";
 import { useResourceStore } from "../../../modules/runtime/resource-store";
 
 const initialQuery: SystemParamPageQuery = {
@@ -131,7 +131,7 @@ export function SystemParamsPage() {
           onFinish={(values) => setQuery((current) => ({ ...current, ...values, pageNum: 1 }))}
         >
           <Form.Item name="paramKey" label={t("common.paramKey")}>
-            <Input allowClear placeholder="theme.primaryColor" />
+            <Input allowClear placeholder={t("common.paramKeyExample")} />
           </Form.Item>
           <Form.Item name="paramName" label={t("common.name")}>
             <Input allowClear placeholder={t("common.primaryColorExample")} />
@@ -210,16 +210,19 @@ export function SystemParamsPage() {
           </Descriptions>
         ) : null}
       </NeDetailDrawer>
-      <NeFormDrawer
+      <NeModal
         title={editing ? t("systemParams.editParam") : t("systemParams.createParam")}
         open={editorOpen}
         onClose={() => setEditorOpen(false)}
-        onSubmit={() => drawerForm.submit()}
-        submitting={submitting}
+        width={720}
+        confirmText={t("common.save")}
+        cancelText={t("common.cancel")}
+        onConfirm={() => drawerForm.submit()}
+        confirmLoading={submitting}
       >
         <Form
           form={drawerForm}
-          layout="vertical"
+          layout="vertical" className="ne-modal-form-grid"
           onFinish={async (values) => {
             setSubmitting(true);
             try {
@@ -240,15 +243,15 @@ export function SystemParamsPage() {
           <Form.Item name="groupCode" label={t("common.group")} rules={[{ required: true, message: t("validation.enterField", undefined, { field: t("common.group") }) }]}><Input /></Form.Item>
           <Form.Item name="paramKey" label={t("common.paramKey")} rules={[{ required: true, message: t("validation.enterField", undefined, { field: t("common.paramKey") }) }]}><Input disabled={Boolean(editing)} /></Form.Item>
           <Form.Item name="paramName" label={t("common.name")} rules={[{ required: true, message: t("validation.enterField", undefined, { field: t("common.name") }) }]}><Input /></Form.Item>
-          <Form.Item name="paramValue" label={t("common.value")}><Input.TextArea rows={3} /></Form.Item>
+          <Form.Item name="paramValue" label={t("common.value")} className="ne-modal-form-grid__full"><Input.TextArea rows={3} /></Form.Item>
           <Form.Item name="dataType" label={t("common.type")} rules={[{ required: true, message: t("validation.selectField", undefined, { field: t("common.type") }) }]}> 
-            <Select options={[{ label: "String", value: "STRING" }, { label: "Integer", value: "INTEGER" }, { label: "Boolean", value: "BOOLEAN" }]} />
+            <Select options={[{ label: t("common.dataTypeString"), value: "STRING" }, { label: t("common.dataTypeInteger"), value: "INTEGER" }, { label: t("common.dataTypeBoolean"), value: "BOOLEAN" }]} />
           </Form.Item>
           <Form.Item name="status" label={t("common.status")}><Select options={[{ label: t("common.enabled"), value: 1 }, { label: t("common.disabled"), value: 0 }]} /></Form.Item>
           <Form.Item name="isSensitive" label={t("common.sensitive")}><Select options={[{ label: t("common.no"), value: 0 }, { label: t("common.yes"), value: 1 }]} /></Form.Item>
           <Form.Item name="isDynamic" label={t("common.dynamic")}><Select options={[{ label: t("common.no"), value: 0 }, { label: t("common.yes"), value: 1 }]} /></Form.Item>
         </Form>
-      </NeFormDrawer>
+      </NeModal>
     </NePage>
   );
 }
