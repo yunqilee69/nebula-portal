@@ -7,7 +7,7 @@ import { createButton, deleteButton, fetchButtonPage, updateButton } from "../..
 import { fetchMenuTree } from "../../../api/menu-admin-api";
 import { fetchOrganizationList } from "../../../api/organization-api";
 import { createPermission, deletePermission, fetchPermissionPage, updatePermission } from "../../../api/permission-api";
-import { fetchRolePage } from "../../../api/role-api";
+import { fetchRoleList } from "../../../api/role-api";
 import { NeFormDrawer, NePage, NePanel, NeSearchPanel, NeTablePanel } from "@platform/ui";
 
 function flattenMenus(items: MenuItem[]): Array<{ label: string; value: string }> {
@@ -49,7 +49,7 @@ export function ButtonPermissionPage() {
   );
 
   async function loadBase() {
-    const [menuResult, roleResult, orgResult] = await Promise.all([fetchMenuTree(), fetchRolePage(), fetchOrganizationList()]);
+    const [menuResult, roleResult, orgResult] = await Promise.all([fetchMenuTree(), fetchRoleList(), fetchOrganizationList()]);
     setMenus(menuResult);
     setRoles(roleResult);
     setOrganizations(orgResult);

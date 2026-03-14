@@ -67,7 +67,17 @@ export interface RoleItem {
   id: string;
   name: string;
   code: string;
+  description?: string;
+  parentId?: string;
   status?: number;
+  createTime?: string;
+  updateTime?: string;
+}
+
+export interface RolePermissionItem {
+  id: string;
+  name: string;
+  code: string;
 }
 
 export interface RoleDetail {
@@ -75,7 +85,26 @@ export interface RoleDetail {
   name: string;
   code: string;
   description?: string;
-  permissions: string[];
+  parentId?: string;
+  status?: number;
+  createTime?: string;
+  updateTime?: string;
+  permissions: RolePermissionItem[];
+}
+
+export interface RolePageQuery {
+  pageNum: number;
+  pageSize: number;
+  orderName?: string;
+  orderType?: string;
+  name?: string;
+  code?: string;
+  status?: number;
+}
+
+export interface RolePageResult {
+  data: RoleItem[];
+  total: number;
 }
 
 export interface UserRoleRef {
@@ -167,8 +196,9 @@ export interface RoleMutationPayload {
   name: string;
   code: string;
   description?: string;
+  parentId?: string;
   status?: number;
-  permissionIds?: number[];
+  permissionIds?: Array<string | number>;
 }
 
 export interface OrganizationItem {
