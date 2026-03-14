@@ -16,6 +16,7 @@ function mapOrganization(item: unknown): OrganizationItem | null {
     id: getString(record.id) ?? crypto.randomUUID(),
     name: getString(record.name) ?? "Unnamed Organization",
     code: getString(record.code) ?? "",
+    type: getString(record.type) as OrganizationItem["type"],
     leader: getString(record.leader),
     phone: getString(record.phone),
     address: getString(record.address),

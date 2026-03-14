@@ -205,6 +205,7 @@ export interface OrganizationItem {
   id: string;
   name: string;
   code: string;
+  type?: "COMPANY" | "DEPARTMENT" | "TEAM";
   leader?: string;
   phone?: string;
   address?: string;
