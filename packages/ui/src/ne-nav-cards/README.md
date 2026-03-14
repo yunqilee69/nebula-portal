@@ -43,7 +43,7 @@ export function PortalNav() {
           key: "menu",
           title: "菜单管理",
           description: "维护平台菜单、路由和权限编码",
-          onClick: () => navigate("/platform/menus"),
+          onClick: () => navigate("/menu/list"),
           footer: <NeStatusTag tone="processing" label="推荐" />,
         },
       ]}

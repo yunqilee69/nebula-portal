@@ -18,6 +18,8 @@
 - Exported component identifiers remain `PascalCase`, such as `NePage` and `NeFormDrawer`
 - In `apps/shell/src/modules`, each business capability keeps an independent lower-case module directory, such as `auth`, `runtime`, and `theme`
 - Files inside `apps/shell/src/modules` must continue using `kebab-case`, such as `auth-store.ts`, `theme-config.ts`, and `notification-panel.tsx`
+- Files inside any `pages` directory must map directly to the page URL. Each URL segment maps to one directory segment, and the page file must be the leaf `index.md`. For example, the page URL `/menu/list` must use the file path `pages/menu/list/index.md`
+- A page directory may contain additional custom components or helper files that are only used by that page, and they should live beside `index.md` in the same directory
 - Shared runtime-only entry files that are conventional and already standardized, such as `index.ts`, `main.tsx`, and `register.ts`, may remain as-is
 
 ## Execution Note

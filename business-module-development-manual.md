@@ -16,15 +16,15 @@ The shell already provides these platform responsibilities and pages:
 
 Current platform pages:
 
-- `Menu Management` -> `/platform/menus`
-- `Organization Management` -> `/platform/organizations`
-- `Organization Permissions` -> `/platform/org-permissions`
-- `Menu Permissions` -> `/platform/menu-permissions`
-- `Button Permissions` -> `/platform/button-permissions`
-- `System Parameters` -> `/platform/params`
-- `Notifications` -> `/platform/notifications`
-- `Access Mapping` -> `/platform/access`
-- `Storage Center` -> `/platform/storage`
+- `Menu Management` -> `/menu/list`
+- `Organization Management` -> `/organization/list`
+- `Organization Permissions` -> `/org-permission/list`
+- `Menu Permissions` -> `/menu-permission/list`
+- `Button Permissions` -> `/button-permission/list`
+- `System Parameters` -> `/system-param/list`
+- `Notifications` -> `/notification/list`
+- `Access Mapping` -> `/role-access/list`
+- `Storage Center` -> `/storage/list`
 
 ## 2. Workspace Structure
 
@@ -255,7 +255,6 @@ Useful references:
 
 - `packages/core/src/routes.tsx`
 - `packages/core/src/platform-pages.ts`
-- `apps/shell/src/modules/platform/platform-menus.ts`
 - `apps/shell/src/app.tsx`
 
 ## 10. Data Fetching Pattern

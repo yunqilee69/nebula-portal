@@ -21,7 +21,7 @@
 import { NeWorkspaceTabs } from "@platform/ui";
 
 <NeWorkspaceTabs
-  activeKey="/platform/storage"
-  items={[{ key: "/platform/storage", label: "存储中心" }]}
+  activeKey="/storage/list"
+  items={[{ key: "/storage/list", label: "存储中心" }]}
 />
 ```
