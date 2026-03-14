@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import type { AuthSession } from "@platform/core";
+import { hasPermissionCode } from "@platform/core";
 import { normalizeSessionExpiry } from "./session-utils";
 
 const STORAGE_KEY = "nebula-shell-session";
@@ -103,5 +104,5 @@ export function getToken() {
 
 export function hasPermission(code: string) {
   const session = useAuthStore.getState().session;
-  return session ? session.permissions.includes(code) : false;
+  return session ? hasPermissionCode(session.permissions, code) : false;
 }

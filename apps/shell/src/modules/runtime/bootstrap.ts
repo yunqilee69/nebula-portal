@@ -1,4 +1,4 @@
-import { eventBus } from "@platform/core";
+import { eventBus, hasAllPermissionCode, hasAllRoleCode, hasAnyPermissionCode, hasAnyRoleCode, hasPermissionCode, hasRoleCode } from "@platform/core";
 import type { AppContextValue, AuthSession, LocaleCode, MenuItem } from "@platform/core";
 import { fetchCurrentConfig } from "../../api/config-api";
 import { fetchCurrentMenus } from "../../api/menu-api";
@@ -62,14 +62,19 @@ export function buildAppContext(
   logout: () => void,
   getSession: () => AuthSession | null,
 ): AppContextValue {
+  const getPermissions = () => getSession()?.permissions ?? [];
+  const getRoles = () => getSession()?.user.roles ?? [];
+
   return {
     auth: {
       getToken: () => getSession()?.token ?? null,
       getSession,
-      hasPermission: (code) => {
-        const session = getSession();
-        return session ? session.permissions.includes(code) : false;
-      },
+      hasPermission: (code) => hasPermissionCode(getPermissions(), code),
+      hasAnyCode: (codes) => hasAnyPermissionCode(getPermissions(), codes),
+      hasAllCode: (codes) => hasAllPermissionCode(getPermissions(), codes),
+      hasRole: (role) => hasRoleCode(getRoles(), role),
+      hasAnyRole: (roles) => hasAnyRoleCode(getRoles(), roles),
+      hasAllRole: (roles) => hasAllRoleCode(getRoles(), roles),
       redirectToLogin: navigateToLogin,
       logout,
     },
