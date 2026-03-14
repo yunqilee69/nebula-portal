@@ -13,6 +13,7 @@ export function NotificationsPage() {
   const items = useNotifyStore((state) => state.items);
   const setItems = useNotifyStore((state) => state.setItems);
   const markRead = useNotifyStore((state) => state.markRead);
+  const markReadMany = useNotifyStore((state) => state.markReadMany);
   const [selected, setSelected] = useState<NotificationItem | null>(null);
   const resource = useResourceStore((state) => state.resources.notifications);
   const start = useResourceStore((state) => state.start);
@@ -42,11 +43,19 @@ export function NotificationsPage() {
             <Button
               icon={<CheckOutlined />}
               onClick={async () => {
-                await Promise.all(items.filter((item) => !item.read).map(async (item) => {
-                  await markNotificationRead(item.id);
-                  markRead(item.id);
-                }));
+                const pendingItems = items.filter((item) => !item.read && item.actionable !== false);
+                const results = await Promise.allSettled(
+                  pendingItems.map(async (item) => {
+                    await markNotificationRead(item.id);
+                    return item.id;
+                  }),
+                );
+                const successIds = results.flatMap((result) => (result.status === "fulfilled" ? [result.value] : []));
+                if (successIds.length) {
+                  markReadMany(successIds);
+                }
               }}
+              disabled={!items.some((item) => !item.read && item.actionable !== false)}
             >
               {t("notifications.markAllRead")}
             </Button>
@@ -80,6 +89,10 @@ export function NotificationsPage() {
               render: (_: unknown, row: NotificationItem) => row.read ? <Tag>{t("notifications.read")}</Tag> : <Tag color="processing">{t("notifications.unread")}</Tag>,
             },
             {
+              title: t("notify.categoryGroup"),
+              render: (_: unknown, row: NotificationItem) => row.category === "announcement" ? <Tag color="gold">{t("notify.category.announcement")}</Tag> : row.category === "unknown" ? <Tag>{t("notify.category.unknown")}</Tag> : <Tag color="processing">{t("notify.category.notification")}</Tag>,
+            },
+            {
               title: t("common.actions"),
               render: (_: unknown, row: NotificationItem) =>
                 row.read ? null : (
@@ -87,12 +100,16 @@ export function NotificationsPage() {
                     <Button
                       type="link"
                       size="small"
+                      disabled={row.actionable === false}
                       onClick={async () => {
+                        if (row.actionable === false) {
+                          return;
+                        }
                         await markNotificationRead(row.id);
                         markRead(row.id);
                       }}
                     >
-                      {t("notify.markRead")}
+                      {row.actionable === false ? t("notify.unavailableRead") : t("notify.markRead")}
                     </Button>
                   </NePermission>
                 ),
