@@ -9,11 +9,12 @@ const rows = [
 
 export function CustomerListPage() {
   const ctx = useAppContext();
+  const { t } = ctx.i18n;
 
   return (
-    <NePage
-      title="Customer Center"
-      subtitle="This remote module consumes shell auth, config, dictionaries, and event bus APIs."
+      <NePage
+        title={t("demoCustomer.listTitle")}
+        subtitle={t("demoCustomer.listSubtitle")}
       extra={
         <Space>
           <Button
@@ -21,41 +22,41 @@ export function CustomerListPage() {
               ctx.bus.emit("business:demo_ping", { at: new Date().toISOString() });
             }}
           >
-            Emit Event
+            {t("demoCustomer.emitEvent")}
           </Button>
           <NePermission code="crm:customer:create">
-            <Button type="primary">New Customer</Button>
+            <Button type="primary">{t("demoCustomer.newCustomer")}</Button>
           </NePermission>
         </Space>
       }
     >
-      <NeTablePanel summary={`Total ${rows.length} customers`}>
+      <NeTablePanel summary={t("demoCustomer.total", undefined, { count: rows.length })}>
         <Table
           rowKey="id"
           pagination={false}
           dataSource={rows}
           columns={[
-            { title: "Customer", dataIndex: "name" },
-            { title: "Owner", dataIndex: "owner" },
-            { title: "Level", dataIndex: "level" },
+            { title: t("demoCustomer.customer"), dataIndex: "name" },
+            { title: t("demoCustomer.owner"), dataIndex: "owner" },
+            { title: t("demoCustomer.level"), dataIndex: "level" },
             {
-              title: "Actions",
+              title: t("common.actions"),
               render: (_, row) => (
                 <Space>
                   <NePermission code="crm:customer:edit">
-                    <Button size="small">Edit</Button>
+                    <Button size="small">{t("common.edit")}</Button>
                   </NePermission>
                   <Button
                     size="small"
                     onClick={() => {
                       ctx.bus.emit("notify:new", {
                         id: row.id,
-                        title: `Opened ${row.name}`,
+                        title: t("demoCustomer.opened", undefined, { name: row.name }),
                         type: "info",
                       });
                     }}
                   >
-                    Notify
+                    {t("demoCustomer.notify")}
                   </Button>
                 </Space>
               ),

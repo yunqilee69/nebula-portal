@@ -4,17 +4,18 @@ import { NePage, NePanel } from "@platform/ui";
 
 export function CustomerDetailPage() {
   const ctx = useAppContext();
+  const { t } = ctx.i18n;
   const uploadLimitValue = ctx.config.get("upload_max_size");
   const uploadLimit = typeof uploadLimitValue === "number" ? uploadLimitValue : 0;
 
   return (
-    <NePage title="Customer Detail" subtitle="Example detail page rendered from a federated remote module.">
-      <NePanel title="Context Snapshot">
+    <NePage title={t("demoCustomer.detailTitle")} subtitle={t("demoCustomer.detailSubtitle")}>
+      <NePanel title={t("demoCustomer.contextSnapshot")}>
         <Descriptions column={1}>
-          <Descriptions.Item label="Current User">{ctx.auth.getSession()?.user.username ?? "-"}</Descriptions.Item>
-          <Descriptions.Item label="Permissions">{ctx.auth.getSession()?.permissions.join(", ") || "-"}</Descriptions.Item>
-          <Descriptions.Item label="Upload Limit">{uploadLimit.toString()}</Descriptions.Item>
-          <Descriptions.Item label="Dictionary:file_type">
+          <Descriptions.Item label={t("demoCustomer.currentUser")}>{ctx.auth.getSession()?.user.username ?? "-"}</Descriptions.Item>
+          <Descriptions.Item label={t("demoCustomer.permissions")}>{ctx.auth.getSession()?.permissions.join(", ") || "-"}</Descriptions.Item>
+          <Descriptions.Item label={t("demoCustomer.uploadLimit")}>{uploadLimit.toString()}</Descriptions.Item>
+          <Descriptions.Item label={t("demoCustomer.dictionaryFileType")}>
             {ctx.dict.get("file_type").map((item) => item.label).join(", ") || "-"}
           </Descriptions.Item>
         </Descriptions>

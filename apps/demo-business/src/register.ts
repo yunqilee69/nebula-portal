@@ -45,7 +45,7 @@ const module: PlatformModule = {
   async bootstrap(ctx: AppContextValue) {
     ctx.bus.emit("notify:new", {
       id: "demo-module-loaded",
-      title: `Module ${ctx.auth.getSession()?.user.username ?? "user"} is ready`,
+      title: ctx.i18n.t("demoCustomer.moduleReady", undefined, { user: ctx.auth.getSession()?.user.username ?? "user" }),
       type: "info",
     });
   },
