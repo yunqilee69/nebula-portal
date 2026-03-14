@@ -24,6 +24,20 @@ export function OAuth2AccountManagementPage() {
   const [detail, setDetail] = useState<OAuth2AccountDetail | null>(null);
   const [error, setError] = useState<string | null>(null);
 
+  const providerOptions = useMemo(
+    () => [
+      { label: t("oauth2.provider.github"), value: "github" },
+      { label: t("oauth2.provider.google"), value: "google" },
+      { label: t("oauth2.provider.wechat"), value: "wechat" },
+      { label: t("oauth2.provider.alipay"), value: "alipay" },
+    ],
+    [t],
+  );
+
+  function getProviderLabel(value: string | undefined) {
+    return providerOptions.find((item) => item.value === value)?.label ?? value ?? "-";
+  }
+
   async function loadRows(nextQuery: OAuth2AccountPageQuery) {
     setLoading(true);
     setError(null);
@@ -34,7 +48,7 @@ export function OAuth2AccountManagementPage() {
     } catch (caughtError) {
       setRows([]);
       setTotal(0);
-      setError(caughtError instanceof Error ? caughtError.message : "Failed to load OAuth2 accounts");
+      setError(caughtError instanceof Error ? caughtError.message : t("oauth2Account.loadFailed"));
     } finally {
       setLoading(false);
     }
@@ -51,96 +65,149 @@ export function OAuth2AccountManagementPage() {
 
   const columns = useMemo(
     () => [
-      { title: "User ID", dataIndex: "userId" },
-      { title: "Provider", render: (_: unknown, row: OAuth2AccountItem) => row.provider ?? "-" },
-      { title: "Account", render: (_: unknown, row: OAuth2AccountItem) => row.oauth2AccountId ?? "-" },
-      { title: t("common.status"), render: (_: unknown, row: OAuth2AccountItem) => row.status === 1 ? <Tag color="success">{t("common.enabled")}</Tag> : <Tag>{row.status ?? "-"}</Tag> },
+      { title: t("common.userId"), dataIndex: "userId" },
+      { title: t("common.provider"), render: (_: unknown, row: OAuth2AccountItem) => getProviderLabel(row.provider) },
+      { title: t("common.account"), render: (_: unknown, row: OAuth2AccountItem) => row.oauth2AccountId ?? "-" },
+      {
+        title: t("common.status"),
+        render: (_: unknown, row: OAuth2AccountItem) => row.status === 1 ? <Tag color="success">{t("common.enabled")}</Tag> : <Tag>{row.status ?? "-"}</Tag>,
+      },
       {
         title: t("common.actions"),
         render: (_: unknown, row: OAuth2AccountItem) => (
           <Space>
-            <Button size="small" icon={<EditOutlined />} onClick={(event) => {
-              event.stopPropagation();
-              setEditing(row);
-              fetchOAuth2AccountDetail(row.id).then((resolved) => {
-                drawerForm.setFieldsValue({
-                  userId: resolved?.userId ?? row.userId,
-                  providerId: resolved?.providerId ?? row.provider ?? "github",
-                  providerUserId: resolved?.providerUserId ?? row.oauth2AccountId ?? "",
-                  providerAttributes: resolved?.providerAttributes ?? "",
-                });
-                setDrawerOpen(true);
-              }).catch(() => undefined);
-            }}>{t("common.edit")}</Button>
-            <Popconfirm title={t("common.confirmDelete")} onConfirm={async (event) => {
-              event?.stopPropagation();
-              await deleteOAuth2Account(row.id);
-              await loadRows(query);
-            }}>
-              <Button size="small" danger icon={<DeleteOutlined />}>{t("common.delete")}</Button>
+            <Button
+              size="small"
+              icon={<EditOutlined />}
+              onClick={(event) => {
+                event.stopPropagation();
+                setEditing(row);
+                fetchOAuth2AccountDetail(row.id)
+                  .then((resolved) => {
+                    drawerForm.setFieldsValue({
+                      userId: resolved?.userId ?? row.userId,
+                      providerId: resolved?.providerId ?? row.provider ?? "github",
+                      providerUserId: resolved?.providerUserId ?? row.oauth2AccountId ?? "",
+                      providerAttributes: resolved?.providerAttributes ?? "",
+                    });
+                    setDrawerOpen(true);
+                  })
+                  .catch(() => undefined);
+              }}
+            >
+              {t("common.edit")}
+            </Button>
+            <Popconfirm
+              title={t("common.confirmDelete")}
+              onConfirm={async (event) => {
+                event?.stopPropagation();
+                await deleteOAuth2Account(row.id);
+                await loadRows(query);
+              }}
+            >
+              <Button size="small" danger icon={<DeleteOutlined />}>
+                {t("common.delete")}
+              </Button>
             </Popconfirm>
           </Space>
         ),
       },
     ],
-    [drawerForm, query, t],
+    [drawerForm, providerOptions, query, t],
   );
 
   return (
     <NePage>
-      <NeSearchPanel title="OAuth2 账户筛选" labels={{ expand: t("common.expand"), collapse: t("common.collapse"), reset: t("common.reset") }} onReset={() => {
-        filterForm.resetFields();
-        setQuery(initialQuery);
-      }}>
+      <NeSearchPanel
+        title={t("oauth2Account.filterTitle")}
+        labels={{ expand: t("common.expand"), collapse: t("common.collapse"), reset: t("common.reset") }}
+        onReset={() => {
+          filterForm.resetFields();
+          setQuery(initialQuery);
+        }}
+      >
         <Form form={filterForm} layout="inline" initialValues={initialQuery} onFinish={(values) => setQuery((current) => ({ ...current, ...values, pageNum: 1 }))}>
-          <Form.Item name="userId" label="User ID"><Input allowClear /></Form.Item>
-          <Form.Item name="providerId" label="Provider"><Select allowClear style={{ width: 160 }} options={[{ label: "GitHub", value: "github" }, { label: "Google", value: "google" }, { label: "Wechat", value: "wechat" }, { label: "Alipay", value: "alipay" }]} /></Form.Item>
-          <Form.Item><Button type="primary" htmlType="submit" icon={<SearchOutlined />}>{t("common.search")}</Button></Form.Item>
+          <Form.Item name="userId" label={t("common.userId")}>
+            <Input allowClear />
+          </Form.Item>
+          <Form.Item name="providerId" label={t("common.provider")}>
+            <Select allowClear style={{ width: 160 }} options={providerOptions} />
+          </Form.Item>
+          <Form.Item>
+            <Button type="primary" htmlType="submit" icon={<SearchOutlined />}>
+              {t("common.search")}
+            </Button>
+          </Form.Item>
         </Form>
         {error ? <Typography.Paragraph type="danger" style={{ marginTop: 16, marginBottom: 0 }}>{error}</Typography.Paragraph> : null}
       </NeSearchPanel>
 
-      <NeTablePanel toolbar={<Button type="primary" icon={<PlusOutlined />} onClick={() => {
-        setEditing(null);
-        drawerForm.setFieldsValue(initialForm);
-        setDrawerOpen(true);
-      }}>{t("common.create")} OAuth2 Account</Button>} summary={t("common.recordCount", undefined, { count: total })} pagination={<Pagination align="end" current={query.pageNum} pageSize={query.pageSize} total={total} onChange={(pageNum, pageSize) => setQuery((current) => ({ ...current, pageNum, pageSize }))} />}>
+      <NeTablePanel
+        toolbar={
+          <Button
+            type="primary"
+            icon={<PlusOutlined />}
+            onClick={() => {
+              setEditing(null);
+              drawerForm.setFieldsValue(initialForm);
+              setDrawerOpen(true);
+            }}
+          >
+            {t("oauth2Account.create")}
+          </Button>
+        }
+        summary={t("common.recordCount", undefined, { count: total })}
+        pagination={<Pagination align="end" current={query.pageNum} pageSize={query.pageSize} total={total} onChange={(pageNum, pageSize) => setQuery((current) => ({ ...current, pageNum, pageSize }))} />}
+      >
         <Table<OAuth2AccountItem> rowKey="id" loading={loading} dataSource={rows} columns={columns} pagination={false} onRow={(record) => ({ onClick: () => openDetail(record.id).catch(() => undefined) })} />
       </NeTablePanel>
 
-      <NeDetailDrawer title="OAuth2 Account Detail" open={detailOpen && Boolean(detail)} onClose={() => setDetailOpen(false)} width={560}>
+      <NeDetailDrawer title={t("oauth2Account.detailTitle")} open={detailOpen && Boolean(detail)} onClose={() => setDetailOpen(false)} width={560}>
         {detail ? (
           <Descriptions column={1} bordered>
-            <Descriptions.Item label="User ID">{detail.userId}</Descriptions.Item>
-            <Descriptions.Item label="Username">{detail.username ?? "-"}</Descriptions.Item>
-            <Descriptions.Item label="Nickname">{detail.nickname ?? "-"}</Descriptions.Item>
-            <Descriptions.Item label="Provider">{detail.providerId ?? detail.provider ?? "-"}</Descriptions.Item>
-            <Descriptions.Item label="Provider User ID">{detail.providerUserId ?? "-"}</Descriptions.Item>
-            <Descriptions.Item label="Linked At">{detail.linkedAt ?? "-"}</Descriptions.Item>
-            <Descriptions.Item label="Attributes">{detail.providerAttributes ?? "-"}</Descriptions.Item>
+            <Descriptions.Item label={t("common.userId")}>{detail.userId}</Descriptions.Item>
+            <Descriptions.Item label={t("common.username")}>{detail.username ?? "-"}</Descriptions.Item>
+            <Descriptions.Item label={t("common.nickname")}>{detail.nickname ?? "-"}</Descriptions.Item>
+            <Descriptions.Item label={t("common.provider")}>{getProviderLabel(detail.providerId ?? detail.provider)}</Descriptions.Item>
+            <Descriptions.Item label={t("common.providerUserId")}>{detail.providerUserId ?? "-"}</Descriptions.Item>
+            <Descriptions.Item label={t("common.linkedAt")}>{detail.linkedAt ?? "-"}</Descriptions.Item>
+            <Descriptions.Item label={t("common.attributes")}>{detail.providerAttributes ?? "-"}</Descriptions.Item>
           </Descriptions>
         ) : null}
       </NeDetailDrawer>
 
-      <NeFormDrawer title={editing ? `${t("common.edit")} OAuth2 Account` : `${t("common.create")} OAuth2 Account`} open={drawerOpen} onClose={() => setDrawerOpen(false)} onSubmit={() => drawerForm.submit()} submitting={submitting}>
-        <Form form={drawerForm} layout="vertical" initialValues={initialForm} onFinish={async (values) => {
-          setSubmitting(true);
-          try {
-            if (editing) {
-              await updateOAuth2Account(editing.id, values);
-            } else {
-              await createOAuth2Account(values);
+      <NeFormDrawer title={editing ? t("oauth2Account.edit") : t("oauth2Account.create")} open={drawerOpen} onClose={() => setDrawerOpen(false)} onSubmit={() => drawerForm.submit()} submitting={submitting}>
+        <Form
+          form={drawerForm}
+          layout="vertical"
+          initialValues={initialForm}
+          onFinish={async (values) => {
+            setSubmitting(true);
+            try {
+              if (editing) {
+                await updateOAuth2Account(editing.id, values);
+              } else {
+                await createOAuth2Account(values);
+              }
+              setDrawerOpen(false);
+              await loadRows(query);
+            } finally {
+              setSubmitting(false);
             }
-            setDrawerOpen(false);
-            await loadRows(query);
-          } finally {
-            setSubmitting(false);
-          }
-        }}>
-          <Form.Item name="userId" label="User ID" rules={[{ required: true, message: "请输入用户 ID" }]}><Input disabled={Boolean(editing)} /></Form.Item>
-          <Form.Item name="providerId" label="Provider" rules={[{ required: true, message: "请选择提供商" }]}><Select options={[{ label: "GitHub", value: "github" }, { label: "Google", value: "google" }, { label: "Wechat", value: "wechat" }, { label: "Alipay", value: "alipay" }]} /></Form.Item>
-          <Form.Item name="providerUserId" label="Provider User ID"><Input /></Form.Item>
-          <Form.Item name="providerAttributes" label="Provider Attributes"><Input.TextArea rows={4} /></Form.Item>
+          }}
+        >
+          <Form.Item name="userId" label={t("common.userId")} rules={[{ required: true, message: t("validation.enterField", undefined, { field: t("common.userId") }) }]}>
+            <Input disabled={Boolean(editing)} />
+          </Form.Item>
+          <Form.Item name="providerId" label={t("common.provider")} rules={[{ required: true, message: t("validation.selectField", undefined, { field: t("common.provider") }) }]}>
+            <Select options={providerOptions} />
+          </Form.Item>
+          <Form.Item name="providerUserId" label={t("common.providerUserId")}>
+            <Input />
+          </Form.Item>
+          <Form.Item name="providerAttributes" label={t("common.attributes")}>
+            <Input.TextArea rows={4} />
+          </Form.Item>
         </Form>
       </NeFormDrawer>
     </NePage>
