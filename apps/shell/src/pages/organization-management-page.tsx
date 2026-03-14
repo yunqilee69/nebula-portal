@@ -81,7 +81,7 @@ export function OrganizationManagementPage() {
       setTree(treeResult);
       setSelected((current) => current ?? pageResult.data[0] ?? null);
     } catch (caughtError) {
-      setError(caughtError instanceof Error ? caughtError.message : "Failed to load organizations");
+      setError(caughtError instanceof Error ? caughtError.message : t("organization.loadFailed"));
       setRows([]);
       setTotal(0);
       setTree([]);
@@ -267,8 +267,8 @@ export function OrganizationManagementPage() {
             }
           }}
         >
-          <Form.Item name="name" label={t("common.name")} rules={[{ required: true, message: "请输入组织名称" }]}><Input /></Form.Item>
-          <Form.Item name="code" label={t("common.code")} rules={[{ required: true, message: "请输入组织编码" }]}><Input /></Form.Item>
+          <Form.Item name="name" label={t("common.name")} rules={[{ required: true, message: t("validation.enterField", undefined, { field: t("common.name") }) }]}><Input /></Form.Item>
+          <Form.Item name="code" label={t("common.code")} rules={[{ required: true, message: t("validation.enterField", undefined, { field: t("common.code") }) }]}><Input /></Form.Item>
           <Form.Item name="leader" label={t("common.leader")}><Input /></Form.Item>
           <Form.Item name="phone" label={t("common.phone")}><Input /></Form.Item>
           <Form.Item name="address" label={t("common.address")}><Input.TextArea rows={3} /></Form.Item>

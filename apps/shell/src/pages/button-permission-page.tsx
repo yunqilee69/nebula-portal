@@ -128,7 +128,7 @@ export function ButtonPermissionPage() {
 
   const permissionColumns = useMemo(
     () => [
-      { title: t("common.subjectType"), render: (_: unknown, row: PermissionItem) => <Tag color={row.subjectType === "ORG" ? "geekblue" : "gold"}>{row.subjectType}</Tag> },
+      { title: t("common.subjectType"), render: (_: unknown, row: PermissionItem) => <Tag color={row.subjectType === "ORG" ? "geekblue" : "gold"}>{row.subjectType === "ORG" ? t("common.organization") : t("common.role")}</Tag> },
       {
         title: t("common.subject"),
         render: (_: unknown, row: PermissionItem) =>
@@ -136,8 +136,8 @@ export function ButtonPermissionPage() {
             ? organizations.find((item) => item.id === row.subjectId)?.name ?? row.subjectId
             : roles.find((item) => item.id === row.subjectId)?.name ?? row.subjectId,
       },
-      { title: t("common.effect"), render: (_: unknown, row: PermissionItem) => <Tag color={row.effect === "Allow" ? "success" : "error"}>{row.effect}</Tag> },
-      { title: t("common.scope"), dataIndex: "scope", render: (value: string | undefined) => value ?? "ALL" },
+      { title: t("common.effect"), render: (_: unknown, row: PermissionItem) => <Tag color={row.effect === "Allow" ? "success" : "error"}>{row.effect === "Allow" ? t("permission.allow") : t("permission.deny")}</Tag> },
+      { title: t("common.scope"), dataIndex: "scope", render: (value: string | undefined) => value === "CURRENT_ROLE" ? t("permission.scope.currentRole") : value === "CURRENT_ORG" ? t("permission.scope.currentOrg") : value === "ALL" ? t("permission.scope.all") : value ?? t("permission.scope.all") },
       {
         title: t("common.actions"),
         render: (_: unknown, row: PermissionItem) => (
@@ -231,7 +231,7 @@ export function ButtonPermissionPage() {
       <NeTablePanel toolbar={t("common.buttonGrantList")} summary={t("common.recordCount", undefined, { count: permissions.length })}>
         <Table<PermissionItem> rowKey="id" dataSource={permissions} columns={permissionColumns} pagination={false} />
       </NeTablePanel>
-      <NeFormDrawer title={editingButton ? `${t("common.edit")}${t("common.button")}` : t("common.newButton")} open={buttonDrawerOpen} onClose={() => setButtonDrawerOpen(false)} onSubmit={() => buttonForm.submit()} submitting={submittingButton}>
+      <NeFormDrawer title={editingButton ? t("common.editButton") : t("common.newButton")} open={buttonDrawerOpen} onClose={() => setButtonDrawerOpen(false)} onSubmit={() => buttonForm.submit()} submitting={submittingButton}>
         <Form
           form={buttonForm}
           layout="vertical"
@@ -250,15 +250,15 @@ export function ButtonPermissionPage() {
             }
           }}
         >
-          <Form.Item name="menuId" label={t("common.menu")} rules={[{ required: true, message: "请选择菜单" }]}><Select options={menuOptions} showSearch optionFilterProp="label" /></Form.Item>
-          <Form.Item name="name" label={t("common.name")} rules={[{ required: true, message: "请输入按钮名称" }]}><Input /></Form.Item>
-          <Form.Item name="code" label={t("common.code")} rules={[{ required: true, message: "请输入按钮编码" }]}><Input /></Form.Item>
+          <Form.Item name="menuId" label={t("common.menu")} rules={[{ required: true, message: t("validation.selectField", undefined, { field: t("common.menu") }) }]}><Select options={menuOptions} showSearch optionFilterProp="label" /></Form.Item>
+          <Form.Item name="name" label={t("common.name")} rules={[{ required: true, message: t("validation.enterField", undefined, { field: t("common.button") }) }]}><Input /></Form.Item>
+          <Form.Item name="code" label={t("common.code")} rules={[{ required: true, message: t("validation.enterField", undefined, { field: t("common.code") }) }]}><Input /></Form.Item>
           <Form.Item name="type" label={t("common.type")}><Input placeholder={t("common.typeExample")} /></Form.Item>
           <Form.Item name="sort" label={t("common.sort")}><InputNumber min={0} style={{ width: "100%" }} /></Form.Item>
           <Form.Item name="status" label={t("common.status")}><Select options={[{ label: t("common.enabled"), value: 1 }, { label: t("common.disabled"), value: 0 }]} /></Form.Item>
         </Form>
       </NeFormDrawer>
-      <NeFormDrawer title={editingPermission ? `${t("common.edit")}${t("common.button")}授权` : `${t("common.create")}${t("common.button")}授权`} open={permissionDrawerOpen} onClose={() => setPermissionDrawerOpen(false)} onSubmit={() => permissionForm.submit()} submitting={submittingPermission}>
+      <NeFormDrawer title={editingPermission ? t("buttonPermission.editGrant") : t("buttonPermission.createGrant")} open={permissionDrawerOpen} onClose={() => setPermissionDrawerOpen(false)} onSubmit={() => permissionForm.submit()} submitting={submittingPermission}>
         <Form
           form={permissionForm}
           layout="vertical"
@@ -279,12 +279,12 @@ export function ButtonPermissionPage() {
             }
           }}
         >
-          <Form.Item name="subjectType" label={t("common.subjectType")} rules={[{ required: true, message: "请选择主体类型" }]}><Select options={[{ label: t("common.role"), value: "ROLE" }, { label: t("common.organization"), value: "ORG" }]} /></Form.Item>
-          <Form.Item name="subjectId" label={t("common.subject")} rules={[{ required: true, message: "请选择主体" }]}><Select options={subjectOptions} showSearch optionFilterProp="label" /></Form.Item>
+          <Form.Item name="subjectType" label={t("common.subjectType")} rules={[{ required: true, message: t("validation.selectField", undefined, { field: t("common.subjectType") }) }]}><Select options={[{ label: t("common.role"), value: "ROLE" }, { label: t("common.organization"), value: "ORG" }]} /></Form.Item>
+          <Form.Item name="subjectId" label={t("common.subject")} rules={[{ required: true, message: t("validation.selectField", undefined, { field: t("common.subject") }) }]}><Select options={subjectOptions} showSearch optionFilterProp="label" /></Form.Item>
           <Form.Item name="resourceType" initialValue="BUTTON" hidden><Select /></Form.Item>
-          <Form.Item name="resourceId" label={t("common.button")} rules={[{ required: true, message: "请选择按钮" }]}><Select options={buttons.map((item) => ({ label: `${item.name} (${item.code})`, value: item.id }))} showSearch optionFilterProp="label" /></Form.Item>
-          <Form.Item name="effect" label={t("common.effect")} initialValue="Allow"><Select options={[{ label: "Allow", value: "Allow" }, { label: "Deny", value: "Deny" }]} /></Form.Item>
-          <Form.Item name="scope" label={t("common.scope")} initialValue="ALL"><Select options={[{ label: "ALL", value: "ALL" }, { label: "CURRENT_ROLE", value: "CURRENT_ROLE" }, { label: "CURRENT_ORG", value: "CURRENT_ORG" }]} /></Form.Item>
+          <Form.Item name="resourceId" label={t("common.button")} rules={[{ required: true, message: t("validation.selectField", undefined, { field: t("common.button") }) }]}><Select options={buttons.map((item) => ({ label: `${item.name} (${item.code})`, value: item.id }))} showSearch optionFilterProp="label" /></Form.Item>
+          <Form.Item name="effect" label={t("common.effect")} initialValue="Allow"><Select options={[{ label: t("permission.allow"), value: "Allow" }, { label: t("permission.deny"), value: "Deny" }]} /></Form.Item>
+          <Form.Item name="scope" label={t("common.scope")} initialValue="ALL"><Select options={[{ label: t("permission.scope.all"), value: "ALL" }, { label: t("permission.scope.currentRole"), value: "CURRENT_ROLE" }, { label: t("permission.scope.currentOrg"), value: "CURRENT_ORG" }]} /></Form.Item>
         </Form>
       </NeFormDrawer>
     </NePage>

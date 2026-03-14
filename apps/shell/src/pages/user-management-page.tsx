@@ -84,7 +84,7 @@ export function UserManagementPage() {
     } catch (caughtError) {
       setRows([]);
       setTotal(0);
-      setError(caughtError instanceof Error ? caughtError.message : "Failed to load users");
+      setError(caughtError instanceof Error ? caughtError.message : t("userManagement.loadFailed"));
     } finally {
       setLoading(false);
     }
@@ -231,7 +231,7 @@ export function UserManagementPage() {
               openEditor(null).catch(() => undefined);
             }}
           >
-            {t("common.create")}用户
+            {t("userManagement.createUser")}
           </Button>
         }
         summary={t("common.recordCount", undefined, { count: total })}
@@ -250,7 +250,7 @@ export function UserManagementPage() {
           })}
         />
       </NeTablePanel>
-      <NeDetailDrawer title="用户详情" open={detailOpen && Boolean(detail)} onClose={() => setDetailOpen(false)} width={520}>
+      <NeDetailDrawer title={t("userManagement.detailTitle")} open={detailOpen && Boolean(detail)} onClose={() => setDetailOpen(false)} width={520}>
         {detail ? (
           <Descriptions column={1} bordered>
             <Descriptions.Item label={t("common.username")}>{detail.username}</Descriptions.Item>
@@ -265,7 +265,7 @@ export function UserManagementPage() {
         ) : null}
       </NeDetailDrawer>
       <NeFormDrawer
-        title={editing ? `${t("common.edit")}用户` : `${t("common.create")}用户`}
+        title={editing ? t("userManagement.editUser") : t("userManagement.createUser")}
         open={drawerOpen}
         onClose={() => setDrawerOpen(false)}
         onSubmit={() => drawerForm.submit()}
@@ -290,11 +290,11 @@ export function UserManagementPage() {
             }
           }}
         >
-          <Form.Item name="username" label={t("common.username")} rules={[{ required: true, message: "请输入用户名" }]}>
+          <Form.Item name="username" label={t("common.username")} rules={[{ required: true, message: t("validation.enterField", undefined, { field: t("common.username") }) }]}>
             <Input disabled={Boolean(editing)} />
           </Form.Item>
           {!editing ? (
-            <Form.Item name="password" label="密码" rules={[{ required: true, message: "请输入密码" }]}>
+            <Form.Item name="password" label={t("common.password")} rules={[{ required: true, message: t("validation.enterField", undefined, { field: t("common.password") }) }]}>
               <Input.Password />
             </Form.Item>
           ) : null}

@@ -65,7 +65,7 @@ export function MenuManagementPage() {
       setRows(result.data);
       setTotal(result.total);
     } catch (caughtError) {
-      setError(caughtError instanceof Error ? caughtError.message : "Failed to load menus");
+      setError(caughtError instanceof Error ? caughtError.message : t("menuManagement.loadFailed"));
       setRows([]);
       setTotal(0);
     } finally {
@@ -80,7 +80,7 @@ export function MenuManagementPage() {
   const columns = useMemo(
     () => [
       { title: t("common.name"), dataIndex: "name" },
-      { title: "Code/Path", render: (_: unknown, row: MenuItem) => row.path ?? row.permission ?? "-" },
+      { title: t("common.codeOrPath"), render: (_: unknown, row: MenuItem) => row.path ?? row.permission ?? "-" },
       { title: t("common.type"), render: (_: unknown, row: MenuItem) => menuTypeLabel(row.type) },
       { title: t("common.component"), dataIndex: "component", render: (value: string | undefined) => value ?? "-" },
       {
@@ -171,7 +171,7 @@ export function MenuManagementPage() {
                 setDrawerOpen(true);
               }}
             >
-              {t("common.create")}菜单
+              {t("menuManagement.createMenu")}
             </Button>
           </NePermission>
         }
@@ -187,7 +187,7 @@ export function MenuManagementPage() {
         />
       </NeTablePanel>
       <NeFormDrawer
-        title={editing ? `${t("common.edit")}菜单` : `${t("common.create")}菜单`}
+        title={editing ? t("menuManagement.editMenu") : t("menuManagement.createMenu")}
         open={drawerOpen}
         onClose={() => setDrawerOpen(false)}
         onSubmit={() => drawerForm.submit()}

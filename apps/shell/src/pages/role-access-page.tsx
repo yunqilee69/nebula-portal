@@ -32,7 +32,7 @@ export function RoleAccessPage() {
       setSelectedRoleId((current) => current ?? rows[0]?.id);
       succeed("roles");
     } catch (error) {
-      fail("roles", error instanceof Error ? error.message : "Failed to load roles");
+      fail("roles", error instanceof Error ? error.message : t("roleAccess.loadFailed"));
     }
   }
 
@@ -51,7 +51,7 @@ export function RoleAccessPage() {
         succeed("roles");
       })
       .catch((error) => {
-        fail("roles", error instanceof Error ? error.message : "Failed to load role detail");
+        fail("roles", error instanceof Error ? error.message : t("roleAccess.detailFailed"));
       });
   }, [fail, selectedRoleId, start, succeed]);
 
@@ -85,7 +85,7 @@ export function RoleAccessPage() {
                   setEditorOpen(true);
                 }}
               >
-                {t("common.create")}角色
+                {t("roleAccess.createRole")}
               </Button>
             </NePermission>
             <NePermission code="crm:customer:export">
@@ -176,7 +176,7 @@ export function RoleAccessPage() {
           </NePanel>
         </Col>
       </Row>
-      <NeDetailDrawer title={`角色${t("common.detail")}`} open={drawerOpen && Boolean(detail)} onClose={() => setDrawerOpen(false)} width={460}>
+      <NeDetailDrawer title={t("roleAccess.detailTitle")} open={drawerOpen && Boolean(detail)} onClose={() => setDrawerOpen(false)} width={460}>
         {detail ? (
           <Descriptions column={1} bordered>
             <Descriptions.Item label={t("common.name")}>{detail.name}</Descriptions.Item>
@@ -187,7 +187,7 @@ export function RoleAccessPage() {
         ) : null}
       </NeDetailDrawer>
       <NeFormDrawer
-        title={editing ? `${t("common.edit")}角色` : `${t("common.create")}角色`}
+        title={editing ? t("roleAccess.editRole") : t("roleAccess.createRole")}
         open={editorOpen}
         onClose={() => setEditorOpen(false)}
         onSubmit={() => form.submit()}
@@ -211,8 +211,8 @@ export function RoleAccessPage() {
             }
           }}
         >
-          <Form.Item name="name" label={t("common.name")} rules={[{ required: true, message: "请输入角色名称" }]}><Input /></Form.Item>
-          <Form.Item name="code" label={t("common.code")} rules={[{ required: true, message: "请输入角色编码" }]}><Input /></Form.Item>
+          <Form.Item name="name" label={t("common.name")} rules={[{ required: true, message: t("validation.enterField", undefined, { field: t("common.name") }) }]}><Input /></Form.Item>
+          <Form.Item name="code" label={t("common.code")} rules={[{ required: true, message: t("validation.enterField", undefined, { field: t("common.code") }) }]}><Input /></Form.Item>
           <Form.Item name="description" label={t("common.description")}><Input.TextArea rows={3} /></Form.Item>
           <Form.Item name="status" label={t("common.status")}><Select options={[{ label: t("common.enabled"), value: 1 }, { label: t("common.disabled"), value: 0 }]} /></Form.Item>
         </Form>

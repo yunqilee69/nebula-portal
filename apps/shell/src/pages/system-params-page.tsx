@@ -46,7 +46,7 @@ export function SystemParamsPage() {
         if (!active) {
           return;
         }
-        fail("systemParams", error instanceof Error ? error.message : "Failed to load system params");
+        fail("systemParams", error instanceof Error ? error.message : t("systemParams.loadFailed"));
       });
     return () => {
       active = false;
@@ -55,7 +55,7 @@ export function SystemParamsPage() {
 
   const columns = useMemo(
     () => [
-      { title: "Key", dataIndex: "paramKey" },
+      { title: t("common.key"), dataIndex: "paramKey" },
       { title: t("common.name"), dataIndex: "paramName", render: (value: string | undefined) => value ?? "-" },
       { title: t("common.group"), dataIndex: "groupCode", render: (value: string | undefined) => value ?? "-" },
       { title: t("common.type"), dataIndex: "dataType", render: (value: string | undefined) => value ?? "-" },
@@ -175,7 +175,7 @@ export function SystemParamsPage() {
                   setEditorOpen(true);
                 }}
               >
-                {t("common.create")}参数
+                {t("systemParams.createParam")}
               </Button>
             </NePermission>
             <NePermission code="crm:customer:export">
@@ -197,7 +197,7 @@ export function SystemParamsPage() {
           pagination={false}
         />
       </NeTablePanel>
-      <NeDetailDrawer title={`参数${t("common.detail")}`} open={Boolean(selected)} onClose={() => setSelected(null)}>
+      <NeDetailDrawer title={t("systemParams.detailTitle")} open={Boolean(selected)} onClose={() => setSelected(null)}>
         {selected ? (
           <Descriptions column={1} bordered>
             <Descriptions.Item label={t("common.paramKey")}>{selected.paramKey}</Descriptions.Item>
@@ -211,7 +211,7 @@ export function SystemParamsPage() {
         ) : null}
       </NeDetailDrawer>
       <NeFormDrawer
-        title={editing ? `${t("common.edit")}参数` : `${t("common.create")}参数`}
+        title={editing ? t("systemParams.editParam") : t("systemParams.createParam")}
         open={editorOpen}
         onClose={() => setEditorOpen(false)}
         onSubmit={() => drawerForm.submit()}
@@ -237,11 +237,11 @@ export function SystemParamsPage() {
             }
           }}
         >
-          <Form.Item name="groupCode" label={t("common.group")} rules={[{ required: true, message: "请输入分组" }]}><Input /></Form.Item>
-          <Form.Item name="paramKey" label={t("common.paramKey")} rules={[{ required: true, message: "请输入参数键" }]}><Input disabled={Boolean(editing)} /></Form.Item>
-          <Form.Item name="paramName" label={t("common.name")} rules={[{ required: true, message: `请输入${t("common.name")}` }]}><Input /></Form.Item>
+          <Form.Item name="groupCode" label={t("common.group")} rules={[{ required: true, message: t("validation.enterField", undefined, { field: t("common.group") }) }]}><Input /></Form.Item>
+          <Form.Item name="paramKey" label={t("common.paramKey")} rules={[{ required: true, message: t("validation.enterField", undefined, { field: t("common.paramKey") }) }]}><Input disabled={Boolean(editing)} /></Form.Item>
+          <Form.Item name="paramName" label={t("common.name")} rules={[{ required: true, message: t("validation.enterField", undefined, { field: t("common.name") }) }]}><Input /></Form.Item>
           <Form.Item name="paramValue" label={t("common.value")}><Input.TextArea rows={3} /></Form.Item>
-          <Form.Item name="dataType" label={t("common.type")} rules={[{ required: true, message: `请选择${t("common.type")}` }]}>
+          <Form.Item name="dataType" label={t("common.type")} rules={[{ required: true, message: t("validation.selectField", undefined, { field: t("common.type") }) }]}> 
             <Select options={[{ label: "String", value: "STRING" }, { label: "Integer", value: "INTEGER" }, { label: "Boolean", value: "BOOLEAN" }]} />
           </Form.Item>
           <Form.Item name="status" label={t("common.status")}><Select options={[{ label: t("common.enabled"), value: 1 }, { label: t("common.disabled"), value: 0 }]} /></Form.Item>

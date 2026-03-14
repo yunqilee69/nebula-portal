@@ -68,16 +68,16 @@ export function MenuPermissionPage() {
 
   const columns = useMemo(
     () => [
-      { title: "主体类型", render: (_: unknown, row: PermissionItem) => <Tag color={row.subjectType === "ORG" ? "geekblue" : "gold"}>{row.subjectType}</Tag> },
+      { title: t("common.subjectType"), render: (_: unknown, row: PermissionItem) => <Tag color={row.subjectType === "ORG" ? "geekblue" : "gold"}>{row.subjectType === "ORG" ? t("common.organization") : t("common.role")}</Tag> },
       {
-        title: "主体",
+        title: t("common.subject"),
         render: (_: unknown, row: PermissionItem) =>
           row.subjectType === "ORG"
             ? organizations.find((item) => item.id === row.subjectId)?.name ?? row.subjectId
             : roles.find((item) => item.id === row.subjectId)?.name ?? row.subjectId,
       },
-      { title: "效果", render: (_: unknown, row: PermissionItem) => <Tag color={row.effect === "Allow" ? "success" : "error"}>{row.effect}</Tag> },
-      { title: "范围", dataIndex: "scope", render: (value: string | undefined) => value ?? "ALL" },
+      { title: t("common.effect"), render: (_: unknown, row: PermissionItem) => <Tag color={row.effect === "Allow" ? "success" : "error"}>{row.effect === "Allow" ? t("permission.allow") : t("permission.deny")}</Tag> },
+      { title: t("common.scope"), dataIndex: "scope", render: (value: string | undefined) => value === "CURRENT_ORG" ? t("permission.scope.currentOrg") : value === "CURRENT_ROLE" ? t("permission.scope.currentRole") : value === "ALL" ? t("permission.scope.all") : value ?? t("permission.scope.all") },
       {
         title: t("common.actions"),
         render: (_: unknown, row: PermissionItem) => (
@@ -87,10 +87,10 @@ export function MenuPermissionPage() {
                 setEditing(row);
                 form.setFieldsValue(row);
                 setDrawerOpen(true);
-              }}>编辑</Button>
+              }}>{t("common.edit")}</Button>
             </NePermission>
             <NePermission code="platform:menu-permission:delete">
-              <Popconfirm title="删除该授权吗？" onConfirm={async () => {
+              <Popconfirm title={t("menuPermission.deleteConfirm")} onConfirm={async () => {
                 await deletePermission(row.id);
                 if (selectedMenuId) {
                   await loadPermissions(selectedMenuId);
@@ -149,7 +149,7 @@ export function MenuPermissionPage() {
                 setDrawerOpen(true);
               }}
             >
-              {t("common.create")}菜单授权
+              {t("menuPermission.create")}
             </Button>
           </NePermission>
         }
@@ -157,7 +157,7 @@ export function MenuPermissionPage() {
       >
         <Table<PermissionItem> rowKey="id" loading={loading} dataSource={permissions} columns={columns} pagination={false} />
       </NeTablePanel>
-      <NeFormDrawer title={editing ? `${t("common.edit")}菜单授权` : `${t("common.create")}菜单授权`} open={drawerOpen} onClose={() => setDrawerOpen(false)} onSubmit={() => form.submit()} submitting={submitting}>
+      <NeFormDrawer title={editing ? t("menuPermission.edit") : t("menuPermission.create")} open={drawerOpen} onClose={() => setDrawerOpen(false)} onSubmit={() => form.submit()} submitting={submitting}>
         <Form
           form={form}
           layout="vertical"
@@ -178,18 +178,18 @@ export function MenuPermissionPage() {
             }
           }}
         >
-          <Form.Item name="subjectType" label="主体类型" rules={[{ required: true, message: "请选择主体类型" }]}>
+          <Form.Item name="subjectType" label={t("common.subjectType")} rules={[{ required: true, message: t("validation.selectField", undefined, { field: t("common.subjectType") }) }]}> 
             <Select options={[{ label: t("common.role"), value: "ROLE" }, { label: t("common.organization"), value: "ORG" }]} />
           </Form.Item>
-          <Form.Item name="subjectId" label="主体" rules={[{ required: true, message: "请选择主体" }]}>
+          <Form.Item name="subjectId" label={t("common.subject")} rules={[{ required: true, message: t("validation.selectField", undefined, { field: t("common.subject") }) }]}> 
             <Select options={subjectOptions} showSearch optionFilterProp="label" />
           </Form.Item>
           <Form.Item name="resourceType" initialValue="MENU" hidden><Select /></Form.Item>
-          <Form.Item name="resourceId" label="菜单" rules={[{ required: true, message: "请选择菜单" }]}>
+          <Form.Item name="resourceId" label={t("common.menu")} rules={[{ required: true, message: t("validation.selectField", undefined, { field: t("common.menu") }) }]}> 
             <Select options={allMenus.filter((item) => item.type !== 3).map((item) => ({ label: `${item.name}${item.path ? ` (${item.path})` : ""}`, value: String(item.id) }))} showSearch optionFilterProp="label" />
           </Form.Item>
-          <Form.Item name="effect" label={t("common.effect")} initialValue="Allow"><Select options={[{ label: "Allow", value: "Allow" }, { label: "Deny", value: "Deny" }]} /></Form.Item>
-          <Form.Item name="scope" label={t("common.scope")} initialValue="ALL"><Select options={[{ label: "ALL", value: "ALL" }, { label: "CURRENT_ORG", value: "CURRENT_ORG" }, { label: "CURRENT_ROLE", value: "CURRENT_ROLE" }]} /></Form.Item>
+          <Form.Item name="effect" label={t("common.effect")} initialValue="Allow"><Select options={[{ label: t("permission.allow"), value: "Allow" }, { label: t("permission.deny"), value: "Deny" }]} /></Form.Item>
+          <Form.Item name="scope" label={t("common.scope")} initialValue="ALL"><Select options={[{ label: t("permission.scope.all"), value: "ALL" }, { label: t("permission.scope.currentOrg"), value: "CURRENT_ORG" }, { label: t("permission.scope.currentRole"), value: "CURRENT_ROLE" }]} /></Form.Item>
         </Form>
       </NeFormDrawer>
     </NePage>
