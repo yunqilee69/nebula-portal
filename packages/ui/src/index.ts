@@ -7,6 +7,7 @@ export * from "./ne-exception-result/ne-exception-result";
 export * from "./ne-file-card/ne-file-card";
 export * from "./ne-file-uploader/ne-file-uploader";
 export * from "./ne-form-drawer/ne-form-drawer";
+export * from "./ne-modal/ne-modal";
 export * from "./ne-nav-cards/ne-nav-cards";
 export * from "./ne-page/ne-page";
 export * from "./ne-panel/ne-panel";

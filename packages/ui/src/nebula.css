@@ -183,6 +183,23 @@
   padding: 24px 0;
 }
 
+.ne-modal__body {
+  overflow: auto;
+  padding-right: 4px;
+}
+
+.ne-modal__title {
+  min-width: 0;
+}
+
+.ne-modal__title-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--shell-primary, #1677ff);
+  font-size: 16px;
+}
+
 .ne-file-uploader {
   display: grid;
   gap: 16px;
