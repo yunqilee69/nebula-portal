@@ -27,7 +27,6 @@ function mapDictType(item: unknown): DictTypeDetail | null {
     typeCode: getString(record.typeCode) ?? "",
     typeName: getString(record.typeName) ?? "",
     status: getNumber(record.status),
-    cacheEnabled: getNumber(record.cacheEnabled),
     remark: getString(record.remark),
     createTime: getString(record.createTime),
     updateTime: getString(record.updateTime),
@@ -85,7 +84,6 @@ export async function updateDictType(id: string, payload: DictTypeMutationPayloa
   return requestPut<unknown>(`/api/dict/types/${id}`, {
     typeName: payload.typeName,
     status: payload.status,
-    cacheEnabled: payload.cacheEnabled,
     remark: payload.remark,
   });
 }

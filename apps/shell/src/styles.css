@@ -327,6 +327,7 @@ body,
   flex: 1;
   min-height: 0;
   flex-direction: column;
+  height: 100%;
 }
 
 .shell-panel .ant-card-head,

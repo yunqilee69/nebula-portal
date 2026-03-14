@@ -1,5 +1,5 @@
 import { DeleteOutlined, EditOutlined, PlusOutlined, SearchOutlined } from "@ant-design/icons";
-import { Button, Form, Input, InputNumber, Pagination, Popconfirm, Select, Space, Table, Tag, Typography } from "antd";
+import { Button, Descriptions, Form, Input, InputNumber, Pagination, Popconfirm, Select, Space, Table, Tag, Typography } from "antd";
 import type { DictItemItem, DictItemMutationPayload, DictTypeItem, DictTypeMutationPayload } from "@platform/core";
 import { useI18n } from "@platform/core";
 import { useEffect, useMemo, useState } from "react";
@@ -22,7 +22,6 @@ const initialTypeForm: DictTypeMutationPayload = {
   typeCode: "",
   typeName: "",
   status: 1,
-  cacheEnabled: 1,
   remark: "",
 };
 
@@ -72,7 +71,7 @@ export function DictManagementPage() {
       setTypeTotal(result.total);
       setSelectedType((current) => current ?? result.data[0] ?? null);
     } catch (error) {
-      setTypeError(error instanceof Error ? error.message : "Failed to load dictionary types");
+      setTypeError(error instanceof Error ? error.message : t("dict.loadTypesFailed"));
       setTypes([]);
       setTypeTotal(0);
       setSelectedType(null);
@@ -94,7 +93,7 @@ export function DictManagementPage() {
       setItems(result.data);
       setItemTotal(result.total);
     } catch (error) {
-      setItemError(error instanceof Error ? error.message : "Failed to load dictionary items");
+      setItemError(error instanceof Error ? error.message : t("dict.loadItemsFailed"));
       setItems([]);
       setItemTotal(0);
     } finally {
@@ -112,9 +111,8 @@ export function DictManagementPage() {
 
   const typeColumns = useMemo(
     () => [
-      { title: "Type Code", dataIndex: "typeCode" },
-      { title: "Type Name", dataIndex: "typeName" },
-      { title: "Cache", render: (_: unknown, row: DictTypeItem) => (row.cacheEnabled === 1 ? <Tag color="processing">On</Tag> : <Tag>Off</Tag>) },
+      { title: t("common.code"), dataIndex: "typeCode" },
+      { title: t("common.name"), dataIndex: "typeName" },
       { title: t("common.status"), render: (_: unknown, row: DictTypeItem) => (row.status === 1 ? <Tag color="success">{t("common.enabled")}</Tag> : <Tag color="error">{t("common.disabled")}</Tag>) },
       {
         title: t("common.actions"),
@@ -130,7 +128,6 @@ export function DictManagementPage() {
                   typeCode: row.typeCode,
                   typeName: row.typeName,
                   status: row.status ?? 1,
-                  cacheEnabled: row.cacheEnabled ?? 1,
                   remark: row.remark ?? "",
                 });
                 setTypeDrawerOpen(true);
@@ -162,11 +159,11 @@ export function DictManagementPage() {
 
   const itemColumns = useMemo(
     () => [
-      { title: "Item Code", dataIndex: "itemCode" },
-      { title: "Label", dataIndex: "itemLabel" },
-      { title: "Value", dataIndex: "itemValue" },
+      { title: t("common.itemCode"), dataIndex: "itemCode" },
+      { title: t("common.label"), dataIndex: "itemLabel" },
+      { title: t("common.value"), dataIndex: "itemValue" },
       { title: t("common.sort"), dataIndex: "sort" },
-      { title: "Default", render: (_: unknown, row: DictItemItem) => (row.isDefault === 1 ? <Tag color="gold">Yes</Tag> : <Tag>No</Tag>) },
+      { title: t("common.default"), render: (_: unknown, row: DictItemItem) => (row.isDefault === 1 ? <Tag color="gold">{t("common.yes")}</Tag> : <Tag>{t("common.no")}</Tag>) },
       { title: t("common.status"), render: (_: unknown, row: DictItemItem) => (row.status === 1 ? <Tag color="success">{t("common.enabled")}</Tag> : <Tag color="error">{t("common.disabled")}</Tag>) },
       {
         title: t("common.actions"),
@@ -216,27 +213,25 @@ export function DictManagementPage() {
 
   return (
     <NePage>
-      <div className="shell-split-grid">
-        <NePanel title="Dictionary Type Overview">
-          {selectedType ? (
-            <Typography.Paragraph style={{ marginBottom: 0 }}>
-              <strong>{selectedType.typeName}</strong> ({selectedType.typeCode})
-            </Typography.Paragraph>
-          ) : (
-            <Typography.Text type="secondary">Select a dictionary type to manage its items.</Typography.Text>
-          )}
-        </NePanel>
-        <NePanel title="Selected Type Remark">
-          <Typography.Paragraph style={{ marginBottom: 0 }} type={selectedType?.remark ? undefined : "secondary"}>
-            {selectedType?.remark ?? "No remark"}
-          </Typography.Paragraph>
-        </NePanel>
-      </div>
+      <NePanel title={t("dict.typeOverview")}>
+        {selectedType ? (
+          <Descriptions column={3} size="small" bordered>
+            <Descriptions.Item label={t("common.name")}>{selectedType.typeName}</Descriptions.Item>
+            <Descriptions.Item label={t("common.code")}>{selectedType.typeCode}</Descriptions.Item>
+            <Descriptions.Item label={t("common.status")}>{selectedType.status === 1 ? t("common.enabled") : t("common.disabled")}</Descriptions.Item>
+            <Descriptions.Item label={t("dict.selectedTypeRemark")} span={3}>
+              {selectedType.remark ?? t("dict.noRemark")}
+            </Descriptions.Item>
+          </Descriptions>
+        ) : (
+          <Typography.Text type="secondary">{t("dict.typeSelectHint")}</Typography.Text>
+        )}
+      </NePanel>
 
       <div className="shell-split-grid">
         <div>
           <NeSearchPanel
-            title="字典类型筛选"
+            title={t("dict.typeFilter")}
             labels={{ expand: t("common.expand"), collapse: t("common.collapse"), reset: t("common.reset") }}
             onReset={() => {
               typeFilterForm.resetFields();
@@ -244,8 +239,8 @@ export function DictManagementPage() {
             }}
           >
             <Form form={typeFilterForm} layout="inline" initialValues={initialTypeQuery} onFinish={(values) => setTypeQuery((current) => ({ ...current, ...values, pageNum: 1 }))}>
-              <Form.Item name="typeCode" label="Type Code"><Input allowClear /></Form.Item>
-              <Form.Item name="typeName" label="Type Name"><Input allowClear /></Form.Item>
+              <Form.Item name="typeCode" label={t("common.code")}><Input allowClear /></Form.Item>
+              <Form.Item name="typeName" label={t("common.name")}><Input allowClear /></Form.Item>
               <Form.Item name="status" label={t("common.status")}><Select allowClear style={{ width: 140 }} options={[{ label: t("common.enabled"), value: 1 }, { label: t("common.disabled"), value: 0 }]} /></Form.Item>
               <Form.Item><Button type="primary" htmlType="submit" icon={<SearchOutlined />}>{t("common.search")}</Button></Form.Item>
             </Form>
@@ -256,7 +251,7 @@ export function DictManagementPage() {
               setEditingType(null);
               typeDrawerForm.setFieldsValue(initialTypeForm);
               setTypeDrawerOpen(true);
-            }}>{t("common.create")}类型</Button>}
+            }}>{t("dict.createType")}</Button>}
             summary={t("common.recordCount", undefined, { count: typeTotal })}
             pagination={<Pagination align="end" current={typeQuery.pageNum} pageSize={typeQuery.pageSize} total={typeTotal} onChange={(pageNum, pageSize) => setTypeQuery((current) => ({ ...current, pageNum, pageSize }))} />}
           >
@@ -266,7 +261,7 @@ export function DictManagementPage() {
 
         <div>
           <NeSearchPanel
-            title="字典项筛选"
+            title={t("dict.itemFilter")}
             labels={{ expand: t("common.expand"), collapse: t("common.collapse"), reset: t("common.reset") }}
             onReset={() => {
               itemFilterForm.resetFields();
@@ -274,8 +269,8 @@ export function DictManagementPage() {
             }}
           >
             <Form form={itemFilterForm} layout="inline" initialValues={initialItemQuery} onFinish={(values) => setItemQuery((current) => ({ ...current, ...values, pageNum: 1 }))}>
-              <Form.Item name="itemCode" label="Item Code"><Input allowClear /></Form.Item>
-              <Form.Item name="itemLabel" label="Item Label"><Input allowClear /></Form.Item>
+              <Form.Item name="itemCode" label={t("common.itemCode")}><Input allowClear /></Form.Item>
+              <Form.Item name="itemLabel" label={t("common.itemLabel")}><Input allowClear /></Form.Item>
               <Form.Item name="status" label={t("common.status")}><Select allowClear style={{ width: 140 }} options={[{ label: t("common.enabled"), value: 1 }, { label: t("common.disabled"), value: 0 }]} /></Form.Item>
               <Form.Item><Button type="primary" htmlType="submit" icon={<SearchOutlined />}>{t("common.search")}</Button></Form.Item>
             </Form>
@@ -286,7 +281,7 @@ export function DictManagementPage() {
               setEditingItem(null);
               itemDrawerForm.setFieldsValue({ ...initialItemForm, typeCode: selectedType?.typeCode ?? "" });
               setItemDrawerOpen(true);
-            }}>{t("common.create")}字典项</Button>}
+            }}>{t("dict.createItem")}</Button>}
             summary={t("common.recordCount", undefined, { count: itemTotal })}
             pagination={<Pagination align="end" current={itemQuery.pageNum} pageSize={itemQuery.pageSize} total={itemTotal} onChange={(pageNum, pageSize) => setItemQuery((current) => ({ ...current, pageNum, pageSize }))} />}
           >
@@ -295,7 +290,7 @@ export function DictManagementPage() {
         </div>
       </div>
 
-      <NeFormDrawer title={editingType ? `${t("common.edit")}字典类型` : `${t("common.create")}字典类型`} open={typeDrawerOpen} onClose={() => setTypeDrawerOpen(false)} onSubmit={() => typeDrawerForm.submit()} submitting={typeSubmitting}>
+      <NeFormDrawer title={editingType ? t("dict.editType") : t("dict.createType")} open={typeDrawerOpen} onClose={() => setTypeDrawerOpen(false)} onSubmit={() => typeDrawerForm.submit()} submitting={typeSubmitting}>
         <Form form={typeDrawerForm} layout="vertical" initialValues={initialTypeForm} onFinish={async (values) => {
           setTypeSubmitting(true);
           try {
@@ -310,15 +305,14 @@ export function DictManagementPage() {
             setTypeSubmitting(false);
           }
         }}>
-          <Form.Item name="typeCode" label="Type Code" rules={[{ required: true, message: "请输入字典类型编码" }]}><Input disabled={Boolean(editingType)} /></Form.Item>
-          <Form.Item name="typeName" label="Type Name" rules={[{ required: true, message: "请输入字典类型名称" }]}><Input /></Form.Item>
-          <Form.Item name="cacheEnabled" label="Cache Enabled"><Select options={[{ label: "On", value: 1 }, { label: "Off", value: 0 }]} /></Form.Item>
+          <Form.Item name="typeCode" label={t("common.code")} rules={[{ required: true, message: t("validation.enterField", undefined, { field: t("common.code") }) }]}><Input disabled={Boolean(editingType)} /></Form.Item>
+          <Form.Item name="typeName" label={t("common.name")} rules={[{ required: true, message: t("validation.enterField", undefined, { field: t("common.name") }) }]}><Input /></Form.Item>
           <Form.Item name="status" label={t("common.status")}><Select options={[{ label: t("common.enabled"), value: 1 }, { label: t("common.disabled"), value: 0 }]} /></Form.Item>
           <Form.Item name="remark" label={t("common.remark")}><Input.TextArea rows={3} /></Form.Item>
         </Form>
       </NeFormDrawer>
 
-      <NeFormDrawer title={editingItem ? `${t("common.edit")}字典项` : `${t("common.create")}字典项`} open={itemDrawerOpen} onClose={() => setItemDrawerOpen(false)} onSubmit={() => itemDrawerForm.submit()} submitting={itemSubmitting}>
+      <NeFormDrawer title={editingItem ? t("dict.editItem") : t("dict.createItem")} open={itemDrawerOpen} onClose={() => setItemDrawerOpen(false)} onSubmit={() => itemDrawerForm.submit()} submitting={itemSubmitting}>
         <Form form={itemDrawerForm} layout="vertical" initialValues={initialItemForm} onFinish={async (values) => {
           setItemSubmitting(true);
           try {
@@ -333,14 +327,14 @@ export function DictManagementPage() {
             setItemSubmitting(false);
           }
         }}>
-          <Form.Item name="typeCode" label="Type Code" rules={[{ required: true, message: "请选择字典类型" }]}><Input disabled={Boolean(selectedType)} /></Form.Item>
-          <Form.Item name="itemCode" label="Item Code" rules={[{ required: true, message: "请输入字典项编码" }]}><Input disabled={Boolean(editingItem)} /></Form.Item>
-          <Form.Item name="itemLabel" label="Item Label" rules={[{ required: true, message: "请输入字典项标签" }]}><Input /></Form.Item>
-          <Form.Item name="itemValue" label="Item Value" rules={[{ required: true, message: "请输入字典项值" }]}><Input /></Form.Item>
+          <Form.Item name="typeCode" label={t("common.code")} rules={[{ required: true, message: t("validation.selectField", undefined, { field: t("common.name") }) }]}><Input disabled={Boolean(selectedType)} /></Form.Item>
+          <Form.Item name="itemCode" label={t("common.itemCode")} rules={[{ required: true, message: t("validation.enterField", undefined, { field: t("common.itemCode") }) }]}><Input disabled={Boolean(editingItem)} /></Form.Item>
+          <Form.Item name="itemLabel" label={t("common.itemLabel")} rules={[{ required: true, message: t("validation.enterField", undefined, { field: t("common.itemLabel") }) }]}><Input /></Form.Item>
+          <Form.Item name="itemValue" label={t("common.itemValue")} rules={[{ required: true, message: t("validation.enterField", undefined, { field: t("common.itemValue") }) }]}><Input /></Form.Item>
           <Form.Item name="sort" label={t("common.sort")}><InputNumber min={0} style={{ width: "100%" }} /></Form.Item>
-          <Form.Item name="isDefault" label="Is Default"><Select options={[{ label: "No", value: 0 }, { label: "Yes", value: 1 }]} /></Form.Item>
-          <Form.Item name="tagColor" label="Tag Color"><Input /></Form.Item>
-          <Form.Item name="extraJson" label="Extra JSON"><Input.TextArea rows={3} /></Form.Item>
+          <Form.Item name="isDefault" label={t("dict.isDefault")}><Select options={[{ label: t("common.no"), value: 0 }, { label: t("common.yes"), value: 1 }]} /></Form.Item>
+          <Form.Item name="tagColor" label={t("common.tagColor")}><Input /></Form.Item>
+          <Form.Item name="extraJson" label={t("common.extJson")}><Input.TextArea rows={3} /></Form.Item>
           <Form.Item name="status" label={t("common.status")}><Select options={[{ label: t("common.enabled"), value: 1 }, { label: t("common.disabled"), value: 0 }]} /></Form.Item>
           <Form.Item name="remark" label={t("common.remark")}><Input.TextArea rows={3} /></Form.Item>
         </Form>
