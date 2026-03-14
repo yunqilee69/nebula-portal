@@ -17,6 +17,7 @@ import { NePage, NePanel, NeStatusTag } from "@platform/ui";
 - `NePage`：`packages/ui/src/ne-page/README.md`
 - `NePanel`：`packages/ui/src/ne-panel/README.md`
 - `NeFormDrawer`：`packages/ui/src/ne-form-drawer/README.md`
+- `NeModal`：`packages/ui/src/ne-modal/README.md`
 - `NeDetailDrawer`：`packages/ui/src/ne-detail-drawer/README.md`
 - `NeBreadcrumbs`：`packages/ui/src/ne-breadcrumbs/README.md`
 - `NeWorkspaceTabs`：`packages/ui/src/ne-workspace-tabs/README.md`
@@ -38,6 +39,7 @@ import { NePage, NePanel, NeStatusTag } from "@platform/ui";
 - 通用页面容器优先使用 `NePage`
 - 页面中的内容分区优先使用 `NePanel`
 - 新增、编辑弹层优先使用 `NeFormDrawer`
+- 居中的业务弹层优先使用 `NeModal`
 - 只读详情弹层优先使用 `NeDetailDrawer`
 - 页面级导航优先使用 `NeBreadcrumbs` 和 `NeWorkspaceTabs`
 - 空态和异常页优先使用 `NeEmptyState` 和 `NeExceptionResult`
