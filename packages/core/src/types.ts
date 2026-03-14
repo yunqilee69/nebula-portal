@@ -696,6 +696,11 @@ export interface AppContextValue {
     getToken: () => string | null;
     getSession: () => AuthSession | null;
     hasPermission: (code: string) => boolean;
+    hasAnyCode: (codes: string[]) => boolean;
+    hasAllCode: (codes: string[]) => boolean;
+    hasRole: (role: string) => boolean;
+    hasAnyRole: (roles: string[]) => boolean;
+    hasAllRole: (roles: string[]) => boolean;
     redirectToLogin: () => void;
     logout: () => void;
   };

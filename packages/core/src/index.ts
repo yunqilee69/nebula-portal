@@ -4,6 +4,7 @@ export * from "./event-bus";
 export * from "./i18n";
 export * from "./module-registry";
 export * from "./ne-permission";
+export * from "./permission-utils";
 export * from "./platform-pages";
 export * from "./routes";
 export * from "./types";
