@@ -21,6 +21,7 @@ import { registerShellComponents } from "./modules/runtime/shell-component-regis
 import { useDictStore } from "./modules/dict/dict-store";
 import { useMenuStore } from "./modules/menu/menu-store";
 import { useNotifyStore } from "./modules/notify/notify-store";
+import { useResourceStore } from "./modules/runtime/resource-store";
 registerShellComponents();
 
 
@@ -33,6 +34,7 @@ function AppRouter() {
   const clearSession = useAuthStore((state) => state.clearSession);
   const patchSession = useAuthStore((state) => state.patchSession);
   const menus = useMenuStore((state) => state.menus);
+  const menuResource = useResourceStore((state) => state.resources.menus);
   const dictRecords = useDictStore((state) => state.records);
   const [remoteStatuses, setRemoteStatuses] = useState<ModuleLoadResult[]>([]);
   const [remotesLoaded, setRemotesLoaded] = useState(false);
@@ -212,8 +214,16 @@ function AppRouter() {
     { path: "*", element: <Navigate to={session?.token ? "/" : "/login"} replace /> },
   ];
 
-  if (!hydrated || !authReady) {
+  if (!hydrated || !authReady || waitingForProtectedRoutes) {
     return (
+  const waitingForProtectedRoutes = Boolean(
+    authReady
+      && session?.token
+      && menus.length === 0
+      && !menuResource.lastLoadedAt
+      && !menuResource.error,
+  );
+
       <div style={{ minHeight: "100vh", display: "grid", placeItems: "center" }}>
         <Spin size="large" />
       </div>

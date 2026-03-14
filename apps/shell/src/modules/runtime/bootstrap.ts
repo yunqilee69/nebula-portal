@@ -26,35 +26,35 @@ export async function preloadShellData() {
   const sessionMenus = useAuthStore.getState().session?.menuList;
   const menuPromise = sessionMenus ? Promise.resolve(sessionMenus) : fetchCurrentMenus();
 
-  const [menusResult, configResult, notifyResult] = await Promise.allSettled([
-    menuPromise,
-    fetchCurrentConfig(),
-    fetchCurrentNotifications(),
+  await Promise.all([
+    menuPromise
+      .then((menus) => {
+        useMenuStore.getState().setMenus(withDefaultShellMenus(menus, useI18nStore.getState().locale));
+        useResourceStore.getState().succeed("menus");
+      })
+      .catch((error: unknown) => {
+        useMenuStore.getState().setMenus(withDefaultShellMenus([], useI18nStore.getState().locale));
+        useResourceStore.getState().fail("menus", error instanceof Error ? error.message : "Failed to load menus");
+      }),
+    fetchCurrentConfig()
+      .then((config) => {
+        useConfigStore.getState().setValues(config);
+        useResourceStore.getState().succeed("config");
+      })
+      .catch((error: unknown) => {
+        useConfigStore.getState().setValues({});
+        useResourceStore.getState().fail("config", error instanceof Error ? error.message : "Failed to load config");
+      }),
+    fetchCurrentNotifications()
+      .then((notifications) => {
+        useNotifyStore.getState().setItems(notifications);
+        useResourceStore.getState().succeed("notifications");
+      })
+      .catch((error: unknown) => {
+        useNotifyStore.getState().setItems([]);
+        useResourceStore.getState().fail("notifications", error instanceof Error ? error.message : "Failed to load notifications");
+      }),
   ]);
-
-  useMenuStore.getState().setMenus(
-    withDefaultShellMenus(
-      menusResult.status === "fulfilled" ? menusResult.value : [],
-      useI18nStore.getState().locale,
-    ),
-  );
-  if (menusResult.status === "fulfilled") {
-    useResourceStore.getState().succeed("menus");
-  } else {
-    useResourceStore.getState().fail("menus", menusResult.reason instanceof Error ? menusResult.reason.message : "Failed to load menus");
-  }
-  useConfigStore.getState().setValues(configResult.status === "fulfilled" ? configResult.value : {});
-  if (configResult.status === "fulfilled") {
-    useResourceStore.getState().succeed("config");
-  } else {
-    useResourceStore.getState().fail("config", configResult.reason instanceof Error ? configResult.reason.message : "Failed to load config");
-  }
-  useNotifyStore.getState().setItems(notifyResult.status === "fulfilled" ? notifyResult.value : []);
-  if (notifyResult.status === "fulfilled") {
-    useResourceStore.getState().succeed("notifications");
-  } else {
-    useResourceStore.getState().fail("notifications", notifyResult.reason instanceof Error ? notifyResult.reason.message : "Failed to load notifications");
-  }
 }
 
 export function buildAppContext(
