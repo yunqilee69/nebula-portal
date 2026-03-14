@@ -3,7 +3,7 @@ import { Button, Form, Input, InputNumber, Pagination, Popconfirm, Select, Space
 import type { MenuItem, MenuMutationPayload, MenuPageQuery } from "@platform/core";
 import { NePermission, useI18n } from "@platform/core";
 import { useEffect, useMemo, useState } from "react";
-import { createMenu, deleteMenu, fetchMenuPage, updateMenu } from "../../../api/menu-admin-api";
+import { createMenu, deleteMenu, fetchMenuPage, fetchMenuTree, updateMenu } from "../../../api/menu-admin-api";
 import { NeFormDrawer, NePage, NeSearchPanel, NeTablePanel } from "@platform/ui";
 
 const initialQuery: MenuPageQuery = {
@@ -36,12 +36,61 @@ function menuTypeLabel(type: MenuItem["type"]) {
 function toMutationPayload(values: MenuMutationPayload) {
   return {
     ...values,
+    parentId: values.parentId || undefined,
     code: values.code || undefined,
     path: values.path || undefined,
     component: values.component || undefined,
     sort: values.sort ?? 1,
     status: values.status ?? 1,
   } satisfies MenuMutationPayload;
+}
+
+function flattenDirectoryOptions(nodes: MenuItem[], excludedIds: Set<string>, level = 0): Array<{ label: string; value: string }> {
+  return nodes.flatMap((node) => {
+    const nodeId = String(node.id);
+    const children = flattenDirectoryOptions(node.children ?? [], excludedIds, level + 1);
+
+    if (excludedIds.has(nodeId) || node.type !== 1) {
+      return children;
+    }
+
+    return [{ label: `${"- ".repeat(level)}${node.name}`, value: nodeId }, ...children];
+  });
+}
+
+function collectDescendantIds(node: MenuItem | null): Set<string> {
+  const result = new Set<string>();
+
+  const visit = (item: MenuItem | null) => {
+    if (!item) {
+      return;
+    }
+    result.add(String(item.id));
+    for (const child of item.children ?? []) {
+      visit(child);
+    }
+  };
+
+  visit(node);
+  return result;
+}
+
+function findMenuNode(nodes: MenuItem[], id: string | null): MenuItem | null {
+  if (!id) {
+    return null;
+  }
+
+  for (const node of nodes) {
+    if (String(node.id) === id) {
+      return node;
+    }
+    const childMatch = findMenuNode(node.children ?? [], id);
+    if (childMatch) {
+      return childMatch;
+    }
+  }
+
+  return null;
 }
 
 export function MenuManagementPage() {
@@ -52,21 +101,29 @@ export function MenuManagementPage() {
   const [loading, setLoading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [rows, setRows] = useState<MenuItem[]>([]);
+  const [menuTree, setMenuTree] = useState<MenuItem[]>([]);
   const [total, setTotal] = useState(0);
   const [error, setError] = useState<string | null>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [editing, setEditing] = useState<MenuItem | null>(null);
+  const currentType = Form.useWatch("type", drawerForm) ?? initialForm.type;
+  const editingTreeNode = useMemo(() => findMenuNode(menuTree, editing ? String(editing.id) : null), [editing, menuTree]);
+  const editingDescendantIds = useMemo(() => collectDescendantIds(editingTreeNode ?? editing), [editing, editingTreeNode]);
+  const parentOptions = useMemo(() => flattenDirectoryOptions(menuTree, editingDescendantIds), [editingDescendantIds, menuTree]);
+  const editingHasChildren = Boolean(editingTreeNode?.children?.length);
 
   async function loadRows(nextQuery: MenuPageQuery) {
     setLoading(true);
     setError(null);
     try {
-      const result = await fetchMenuPage(nextQuery);
+      const [result, treeResult] = await Promise.all([fetchMenuPage(nextQuery), fetchMenuTree()]);
       setRows(result.data);
+      setMenuTree(treeResult);
       setTotal(result.total);
     } catch (caughtError) {
       setError(caughtError instanceof Error ? caughtError.message : t("menuManagement.loadFailed"));
       setRows([]);
+      setMenuTree([]);
       setTotal(0);
     } finally {
       setLoading(false);
@@ -100,6 +157,7 @@ export function MenuManagementPage() {
                   setEditing(row);
                   drawerForm.setFieldsValue({
                     name: row.name,
+                    parentId: row.parentId ? String(row.parentId) : undefined,
                     code: row.permission,
                     path: row.path,
                     component: row.component,
@@ -118,7 +176,7 @@ export function MenuManagementPage() {
                 title={t("common.confirmDelete")}
                 onConfirm={async () => {
                   await deleteMenu(String(row.id));
-                  setRows((current) => current.filter((item) => item.id !== row.id));
+                  await loadRows(query);
                 }}
               >
                 <Button size="small" danger icon={<DeleteOutlined />}>
@@ -130,7 +188,7 @@ export function MenuManagementPage() {
         ),
       },
     ],
-    [drawerForm, t],
+    [drawerForm, query, t],
   );
 
   return (
@@ -167,7 +225,7 @@ export function MenuManagementPage() {
               icon={<PlusOutlined />}
               onClick={() => {
                 setEditing(null);
-                drawerForm.setFieldsValue(initialForm);
+                drawerForm.setFieldsValue({ ...initialForm, parentId: undefined });
                 setDrawerOpen(true);
               }}
             >
@@ -183,6 +241,7 @@ export function MenuManagementPage() {
           loading={loading}
           dataSource={rows}
           columns={columns}
+          expandable={{ defaultExpandAllRows: true }}
           pagination={false}
         />
       </NeTablePanel>
@@ -198,6 +257,11 @@ export function MenuManagementPage() {
           layout="vertical"
           initialValues={initialForm}
           onFinish={async (values) => {
+            if (editingHasChildren && values.type !== "DIRECTORY") {
+              drawerForm.setFields([{ name: "type", errors: [t("menuManagement.directoryRequiredForChildren")] }]);
+              return;
+            }
+
             setSubmitting(true);
             try {
               const payload = toMutationPayload(values);
@@ -214,11 +278,31 @@ export function MenuManagementPage() {
           }}
         >
           <Form.Item name="name" label={t("common.name")} rules={[{ required: true, message: `请输入${t("common.name")}` }]}><Input /></Form.Item>
+          <Form.Item name="parentId" label={t("common.parent")}>
+            <Select
+              allowClear
+              options={parentOptions}
+              placeholder={t("menuManagement.rootMenu")}
+              showSearch
+              optionFilterProp="label"
+            />
+          </Form.Item>
           <Form.Item name="code" label={t("common.code")}><Input /></Form.Item>
           <Form.Item name="path" label={t("common.path")}><Input /></Form.Item>
           <Form.Item name="component" label={t("common.component")}><Input /></Form.Item>
-          <Form.Item name="type" label={t("common.type")} rules={[{ required: true, message: `请选择${t("common.type")}` }]}>
-            <Select options={[{ label: t("common.directory"), value: "DIRECTORY" }, { label: t("common.menu"), value: "MENU" }, { label: t("common.button"), value: "BUTTON" }]} />
+          <Form.Item
+            name="type"
+            label={t("common.type")}
+            rules={[{ required: true, message: `请选择${t("common.type")}` }]}
+            extra={currentType !== "DIRECTORY" ? t("menuManagement.nonDirectoryHint") : undefined}
+          >
+            <Select
+              options={[
+                { label: t("common.directory"), value: "DIRECTORY" },
+                { label: t("common.menu"), value: "MENU", disabled: editingHasChildren },
+                { label: t("common.button"), value: "BUTTON", disabled: editingHasChildren },
+              ]}
+            />
           </Form.Item>
           <Form.Item name="sort" label={t("common.sort")}><InputNumber min={0} style={{ width: "100%" }} /></Form.Item>
           <Form.Item name="status" label={t("common.status")}><Select options={[{ label: t("common.enabled"), value: 1 }, { label: t("common.disabled"), value: 0 }]} /></Form.Item>
