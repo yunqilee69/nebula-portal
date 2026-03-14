@@ -116,6 +116,36 @@ body,
   background: linear-gradient(180deg, #ffffff 0%, #f7faff 100%);
 }
 
+.notification-panel__trigger {
+  border-color: var(--shell-border);
+  background: linear-gradient(180deg, #ffffff 0%, #f7faff 100%);
+}
+
+.notification-panel__tabs .ant-tabs-nav {
+  margin-bottom: 12px;
+}
+
+.notification-panel__tabs .ant-tabs-tab {
+  padding-top: 0;
+}
+
+.notification-panel__modal .ant-modal-content {
+  padding-bottom: 20px;
+}
+
+.notification-panel__list {
+  max-height: 460px;
+  overflow: auto;
+}
+
+.notification-panel__item {
+  align-items: flex-start;
+}
+
+.notification-panel__content {
+  margin-bottom: 0 !important;
+}
+
 .shell-workspace-panel {
   display: flex;
   flex: 1;
