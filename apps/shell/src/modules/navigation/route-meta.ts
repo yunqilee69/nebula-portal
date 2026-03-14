@@ -1,4 +1,4 @@
-import { platformPageDefinitions, type MenuItem } from "@platform/core";
+import type { MenuItem } from "@platform/core";
 import type { NeBreadcrumbItem } from "@platform/ui";
 import { useI18nStore } from "../i18n/i18n-store";
 import { translateShellMessage } from "../i18n/translate";
@@ -25,18 +25,14 @@ export function buildBreadcrumbItems(menus: MenuItem[], pathname: string): NeBre
     return lineage.map((item) => ({ key: String(item.id), title: item.name, href: item.path }));
   }
 
-  const platformPage = platformPageDefinitions.find((page) => page.path === pathname);
-  if (platformPage) {
-    const locale = useI18nStore.getState().locale;
-    return [
-      { key: "platform-root", title: translateShellMessage(locale, "platform.root", "平台基座"), href: "/" },
-      { key: platformPage.id, title: translateShellMessage(locale, platformPage.menuNameKey ?? "", platformPage.menuName), href: platformPage.path },
-    ];
-  }
-
   if (pathname === "/") {
     const locale = useI18nStore.getState().locale;
     return [{ key: "home", title: translateShellMessage(locale, "nav.home", "首页"), href: "/" }];
+  }
+
+  if (pathname === "/401" || pathname === "/404") {
+    const locale = useI18nStore.getState().locale;
+    return [{ key: pathname, title: translateShellMessage(locale, pathname === "/401" ? "unauthorized.title" : "notFound.title", pathname === "/401" ? "无权访问" : "页面不存在"), href: pathname }];
   }
 
   return [{ key: pathname, title: pathname }];
@@ -48,10 +44,8 @@ export function resolveRouteLabel(menus: MenuItem[], pathname: string) {
     return (lineage.at(-1) as MenuItem).name;
   }
 
-  const platformPage = platformPageDefinitions.find((page) => page.path === pathname);
-  if (platformPage) {
-    const locale = useI18nStore.getState().locale;
-    return translateShellMessage(locale, platformPage.menuNameKey ?? "", platformPage.menuName);
+  if (pathname === "/401" || pathname === "/404") {
+    return translateShellMessage(useI18nStore.getState().locale, pathname === "/401" ? "unauthorized.title" : "notFound.title", pathname === "/401" ? "无权访问" : "页面不存在");
   }
 
   const breadcrumbs = buildBreadcrumbItems(menus, pathname);

@@ -10,7 +10,7 @@ Nebula 中台基座的共享核心契约包。
 - 权限：`NePermission`、`usePermission`
 - 国际化：`I18nProvider`、`useI18n`
 - 事件总线：`eventBus`
-- 平台路由与页面元数据：`buildRoutesFromMenus`、`buildModuleRoutes`、`platformPageDefinitions`
+- 平台路由构建能力：`buildRoutesFromMenus`、`buildModuleRoutes`
 
 ## PlatformModule 接入约定
 
