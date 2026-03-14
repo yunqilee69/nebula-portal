@@ -1,10 +1,12 @@
 import { Button, Input, Modal, Pagination, Space, Typography } from "antd";
 import type { StorageFileItem } from "@platform/core";
 import { useI18n } from "@platform/core";
-import { NeEmptyState, NeExceptionResult, NeFileCard, NeFileUploader, NePage, NePanel, NeSearchPanel } from "@platform/ui";
+import { DEFAULT_PAGE_SIZE_OPTIONS, NeEmptyState, NeExceptionResult, NeFileCard, NeFileUploader, NePage, NePanel, NeSearchPanel, getPaginationConfig } from "@platform/ui";
 import { useEffect, useMemo, useState } from "react";
 import { buildStorageDownloadUrl, buildStoragePreviewUrl, deleteStorageFile, fetchStoragePage, uploadStorageFile } from "../../../api/storage-api";
 import { useConfigStore } from "../../../modules/config/config-store";
+
+const defaultStoragePageSize: number = DEFAULT_PAGE_SIZE_OPTIONS[0];
 
 export function StorageCenterPage() {
   const { t } = useI18n();
@@ -12,6 +14,7 @@ export function StorageCenterPage() {
   const [searchValue, setSearchValue] = useState("");
   const [keyword, setKeyword] = useState("");
   const [pageNum, setPageNum] = useState(1);
+  const [pageSize, setPageSize] = useState(defaultStoragePageSize);
   const [files, setFiles] = useState<StorageFileItem[]>([]);
   const [recentUploads, setRecentUploads] = useState<StorageFileItem[]>([]);
   const [total, setTotal] = useState(0);
@@ -25,7 +28,7 @@ export function StorageCenterPage() {
     setLoading(true);
     setError(undefined);
     try {
-      const result = await fetchStoragePage({ pageNum, pageSize: 8, fileName: keyword });
+      const result = await fetchStoragePage({ pageNum, pageSize, fileName: keyword });
       setFiles(result.data);
       setTotal(result.total);
     } catch (loadError) {
@@ -37,7 +40,7 @@ export function StorageCenterPage() {
 
   useEffect(() => {
     loadFiles().catch(() => undefined);
-  }, [keyword, pageNum]);
+  }, [keyword, pageNum, pageSize]);
 
   const helperText = useMemo(() => t("storage.helper", undefined, { size: (uploadLimit / (1024 * 1024)).toFixed(0) }), [t, uploadLimit]);
 
@@ -50,6 +53,7 @@ export function StorageCenterPage() {
           setSearchValue("");
           setKeyword("");
           setPageNum(1);
+          setPageSize(defaultStoragePageSize);
         }}
       >
         <Input.Search
@@ -109,7 +113,17 @@ export function StorageCenterPage() {
                   />
                 ))}
               </div>
-              <Pagination align="end" current={pageNum} pageSize={8} total={total} onChange={setPageNum} />
+              <Pagination
+                align="end"
+                current={pageNum}
+                pageSize={pageSize}
+                total={total}
+                onChange={(nextPageNum, nextPageSize) => {
+                  setPageNum(nextPageNum);
+                  setPageSize(nextPageSize);
+                }}
+                {...getPaginationConfig()}
+              />
             </Space>
           )}
         </NePanel>

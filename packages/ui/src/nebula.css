@@ -169,6 +169,16 @@
   margin-left: auto;
 }
 
+.ant-pagination {
+  align-items: center;
+}
+
+.ant-pagination .ant-pagination-options {
+  order: -1;
+  margin-inline-start: 0;
+  margin-inline-end: 12px;
+}
+
 .ne-empty-state {
   padding: 24px 0;
 }
