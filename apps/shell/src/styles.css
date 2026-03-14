@@ -229,12 +229,6 @@ body,
   padding-inline: 14px !important;
 }
 
-.app-sidebar .ant-menu-inline .ant-menu-sub.ant-menu-inline .ant-menu-item,
-.app-sidebar .ant-menu-inline .ant-menu-sub.ant-menu-inline .ant-menu-submenu-title {
-  margin-inline-start: 10px;
-  width: calc(100% - 10px);
-}
-
 .app-sidebar .ant-menu-item-selected,
 .app-sidebar .ant-menu-submenu-selected > .ant-menu-submenu-title {
   color: var(--shell-sidebar-text) !important;
@@ -263,6 +257,7 @@ body,
 
 .app-sidebar .ant-menu-sub.ant-menu-inline {
   background: transparent !important;
+  padding-inline-start: 10px;
 }
 
 .app-sidebar--collapsed {
