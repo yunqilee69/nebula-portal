@@ -22,8 +22,8 @@ import { useDictStore } from "./modules/dict/dict-store";
 import { useMenuStore } from "./modules/menu/menu-store";
 import { useNotifyStore } from "./modules/notify/notify-store";
 import { useResourceStore } from "./modules/runtime/resource-store";
-registerShellComponents();
 
+registerShellComponents();
 
 function AppRouter() {
   const navigate = useNavigate();
@@ -214,8 +214,6 @@ function AppRouter() {
     { path: "*", element: <Navigate to={session?.token ? "/" : "/login"} replace /> },
   ];
 
-  if (!hydrated || !authReady || waitingForProtectedRoutes) {
-    return (
   const waitingForProtectedRoutes = Boolean(
     authReady
       && session?.token
@@ -224,6 +222,8 @@ function AppRouter() {
       && !menuResource.error,
   );
 
+  if (!hydrated || !authReady || waitingForProtectedRoutes) {
+    return (
       <div style={{ minHeight: "100vh", display: "grid", placeItems: "center" }}>
         <Spin size="large" />
       </div>
