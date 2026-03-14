@@ -15,26 +15,14 @@ import { NotFoundPage } from "./pages/404";
 import { DashboardPage } from "./pages/dashboard";
 import { IframePage } from "./pages/iframe";
 import { UnavailablePage } from "./pages/unavailable";
-import { ButtonPermissionPage } from "./pages/button-permission/list";
-import { DictManagementPage } from "./pages/dict/list";
-import { MenuManagementPage } from "./pages/menu/list";
-import { MenuPermissionPage } from "./pages/menu-permission/list";
-import { NotificationsPage } from "./pages/notification/list";
-import { NotifyRecordPage } from "./pages/notify-record/list";
-import { NotifyTemplateManagementPage } from "./pages/notify-template/list";
-import { OAuth2AccountManagementPage } from "./pages/oauth2-account/list";
-import { OAuth2ClientManagementPage } from "./pages/oauth2-client/list";
-import { OrganizationManagementPage } from "./pages/organization/list";
-import { OrgPermissionPage } from "./pages/org-permission/list";
-import { RoleAccessPage } from "./pages/role-access/list";
-import { StorageCenterPage } from "./pages/storage/list";
-import { SystemParamsPage } from "./pages/system-param/list";
-import { UserManagementPage } from "./pages/user/list";
 import { loadRemoteModules } from "./modules/runtime/remote-modules";
 import { buildAppContext, preloadShellData } from "./modules/runtime/bootstrap";
+import { registerShellComponents } from "./modules/runtime/shell-component-registry";
 import { useDictStore } from "./modules/dict/dict-store";
 import { useMenuStore } from "./modules/menu/menu-store";
 import { useNotifyStore } from "./modules/notify/notify-store";
+registerShellComponents();
+
 
 function AppRouter() {
   const navigate = useNavigate();
@@ -197,10 +185,7 @@ function AppRouter() {
     return unsubscribe;
   }, []);
 
-  const dynamicRoutes = useMemo(
-    () => buildRoutesFromMenus(menus, UnavailablePage),
-    [menus],
-  );
+  const dynamicRoutes = useMemo(() => buildRoutesFromMenus(menus, UnavailablePage), [menus]);
   const moduleRoutes = useMemo(() => buildModuleRoutes(), [remotesLoaded]);
 
   const routes = [
@@ -216,23 +201,10 @@ function AppRouter() {
       ),
       children: [
         { index: true, element: <DashboardPage /> },
-        { path: "menu/list", element: <MenuManagementPage /> },
-        { path: "organization/list", element: <OrganizationManagementPage /> },
-        { path: "user/list", element: <UserManagementPage /> },
-        { path: "dict/list", element: <DictManagementPage /> },
-        { path: "oauth2-client/list", element: <OAuth2ClientManagementPage /> },
-        { path: "oauth2-account/list", element: <OAuth2AccountManagementPage /> },
-        { path: "org-permission/list", element: <OrgPermissionPage /> },
-        { path: "menu-permission/list", element: <MenuPermissionPage /> },
-        { path: "button-permission/list", element: <ButtonPermissionPage /> },
-        { path: "system-param/list", element: <SystemParamsPage /> },
-        { path: "notify-template/list", element: <NotifyTemplateManagementPage /> },
-        { path: "notify-record/list", element: <NotifyRecordPage /> },
-        { path: "notification/list", element: <NotificationsPage /> },
-        { path: "role-access/list", element: <RoleAccessPage /> },
-        { path: "storage/list", element: <StorageCenterPage /> },
         { path: "iframe", element: <IframePage /> },
-        ...dynamicRoutes.map((route) => ({ path: route.path.replace(/^\//, ""), element: route.element })),
+        ...dynamicRoutes
+          .filter((route) => route.path !== "/")
+          .map((route) => ({ path: route.path.replace(/^\//, ""), element: route.element })),
         ...moduleRoutes.map((route) => ({ path: route.path.replace(/^\//, ""), element: route.element })),
         { path: "*", element: <Navigate to="/404" replace /> },
       ],
