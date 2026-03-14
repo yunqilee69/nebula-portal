@@ -22,7 +22,7 @@ export function registerShellComponents() {
     "shell/NotifyTemplateManagementPage": async () => ({ default: (await import("../../pages/notify-template/list")).NotifyTemplateManagementPage }),
     "shell/NotifyRecordPage": async () => ({ default: (await import("../../pages/notify-record/list")).NotifyRecordPage }),
     "shell/NotificationsPage": async () => ({ default: (await import("../../pages/notification/list")).NotificationsPage }),
-    "shell/RoleAccessPage": async () => ({ default: (await import("../../pages/role-access/list")).RoleAccessPage }),
+    "shell/RoleManagementPage": async () => ({ default: (await import("../../pages/role/list")).RoleManagementPage }),
     "shell/StorageCenterPage": async () => ({ default: (await import("../../pages/storage/list")).StorageCenterPage }),
   });
 

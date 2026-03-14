@@ -23,7 +23,7 @@ Current platform pages:
 - `Button Permissions` -> `/button-permission/list`
 - `System Parameters` -> `/system-param/list`
 - `Notifications` -> `/notification/list`
-- `Access Mapping` -> `/role-access/list`
+- `Role Management` -> `/role/list`
 - `Storage Center` -> `/storage/list`
 
 ## 2. Workspace Structure
@@ -189,7 +189,7 @@ Reference files:
 
 - `packages/core/src/ne-permission.tsx`
 - `packages/core/src/use-permission.ts`
-- `apps/shell/src/pages/role-access-page.tsx`
+- `apps/shell/src/pages/role/list/index.tsx`
 
 ## 8. Shared UI Components from `@platform/ui`
 
