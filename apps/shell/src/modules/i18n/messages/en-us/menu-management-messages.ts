@@ -5,6 +5,8 @@ const messages = {
   "menuManagement.editMenu": "Edit Menu",
   "menuManagement.loadFailed": "Failed to load menus",
   "menuManagement.rootMenu": "Root menu",
+  "menuManagement.iconHint": "Use Ant Design icon names like AppstoreOutlined, local asset codes like common-test, or a full image URL.",
+  "menuManagement.iconPlaceholder": "AppstoreOutlined / common-test / https://...",
   "menuManagement.nonDirectoryHint": "Menus and buttons cannot contain child items. Only directories can hold submenus.",
   "menuManagement.directoryRequiredForChildren": "This item already has children and must remain a directory"
 };

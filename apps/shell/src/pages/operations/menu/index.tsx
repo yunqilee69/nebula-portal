@@ -17,6 +17,7 @@ const initialForm: MenuMutationPayload = {
   name: "",
   code: "",
   path: "",
+  icon: "",
   component: "",
   type: "MENU",
   sort: 1,
@@ -42,6 +43,7 @@ function toMutationPayload(values: MenuMutationPayload) {
     parentId: values.parentId || undefined,
     code: values.code || undefined,
     path: values.path || undefined,
+    icon: values.icon || undefined,
     component: values.component || undefined,
     sort: values.sort ?? 1,
     status: values.status ?? 1,
@@ -163,6 +165,7 @@ export function OperationsMenuPage() {
                     parentId: row.parentId ? String(row.parentId) : undefined,
                     code: row.permission,
                     path: row.path,
+                    icon: row.icon,
                     component: row.component,
                     type: row.type === 1 ? "DIRECTORY" : row.type === 3 ? "BUTTON" : "MENU",
                     sort: row.sort,
@@ -295,6 +298,13 @@ export function OperationsMenuPage() {
           </Form.Item>
           <Form.Item name="code" label={t("common.code")}><Input /></Form.Item>
           <Form.Item name="path" label={t("common.path")}><Input /></Form.Item>
+          <Form.Item
+            name="icon"
+            label={t("common.icon")}
+            extra={t("menuManagement.iconHint")}
+          >
+            <Input placeholder={t("menuManagement.iconPlaceholder")} />
+          </Form.Item>
           <Form.Item name="component" label={t("common.component")}><Input /></Form.Item>
           <Form.Item
             name="type"
