@@ -1,6 +1,6 @@
 const messages = {
-  "platform.frontendSettings.title": "Frontend Settings",
-  "platform.frontendSettings.subtitle": "Manage shell startup config, default theme, and default language.",
+  "platform.frontendSettings.title": "System Configuration",
+  "platform.frontendSettings.subtitle": "Manage runtime configuration, default theme, and default language.",
   "frontend.projectName": "Project Name",
   "frontend.layoutMode": "Layout Mode",
   "frontend.defaultTheme": "Default Theme",

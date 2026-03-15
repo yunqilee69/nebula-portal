@@ -1,6 +1,6 @@
 const messages = {
-  "platform.systemParams.title": "System Parameters",
-  "platform.systemParams.subtitle": "Manage reusable platform configuration items.",
+  "platform.systemParams.title": "Parameter Management",
+  "platform.systemParams.subtitle": "Manage reusable platform parameters and configuration items.",
   "systemParams.createParam": "Create Parameter",
   "systemParams.editParam": "Edit Parameter",
   "systemParams.detailTitle": "Parameter Detail",

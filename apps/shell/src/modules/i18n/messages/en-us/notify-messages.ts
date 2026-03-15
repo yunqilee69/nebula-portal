@@ -1,9 +1,9 @@
 const messages = {
-  "platform.notifications.title": "Notifications",
-  "platform.notifications.subtitle": "View site messages and manage unread state.",
+  "platform.notifications.title": "Announcement Management",
+  "platform.notifications.subtitle": "Review announcements and site messages, and manage read state.",
   "platform.notifyTemplateManagement.title": "Notification Templates",
   "platform.notifyTemplateManagement.subtitle": "Manage notification templates and send test notifications.",
-  "platform.notifyRecordManagement.title": "Notification Records",
+  "platform.notifyRecordManagement.title": "Notification Management",
   "platform.notifyRecordManagement.subtitle": "Inspect notification delivery records, states, and failure reasons.",
   "notifyTemplate.create": "Create Template",
   "notifyTemplate.edit": "Edit Template",

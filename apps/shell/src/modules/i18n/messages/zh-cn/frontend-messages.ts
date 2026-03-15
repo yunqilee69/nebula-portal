@@ -1,6 +1,6 @@
 const messages = {
-  "platform.frontendSettings.title": "前端设置",
-  "platform.frontendSettings.subtitle": "管理中台项目前端初始化配置、默认主题和默认语言。",
+  "platform.frontendSettings.title": "系统配置",
+  "platform.frontendSettings.subtitle": "管理系统运行配置、默认主题和默认语言。",
   "frontend.projectName": "项目名称",
   "frontend.layoutMode": "布局模式",
   "frontend.defaultTheme": "默认主题",

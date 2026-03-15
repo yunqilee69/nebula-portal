@@ -1,9 +1,9 @@
 const messages = {
-  "platform.notifications.title": "站内通知",
-  "platform.notifications.subtitle": "查看站内消息并处理未读状态。",
+  "platform.notifications.title": "公告管理",
+  "platform.notifications.subtitle": "查看平台公告与站内消息，并处理阅读状态。",
   "platform.notifyTemplateManagement.title": "通知模板",
   "platform.notifyTemplateManagement.subtitle": "维护通知模板并支持直接发送测试通知。",
-  "platform.notifyRecordManagement.title": "通知记录",
+  "platform.notifyRecordManagement.title": "通知管理",
   "platform.notifyRecordManagement.subtitle": "查看通知发送记录、状态与失败原因。",
   "notifyTemplate.create": "新建模板",
   "notifyTemplate.edit": "编辑模板",
