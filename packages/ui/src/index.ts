@@ -13,6 +13,7 @@ export * from "./ne-page/ne-page";
 export * from "./ne-panel/ne-panel";
 export * from "./ne-search-panel/ne-search-panel";
 export * from "./ne-status-tag/ne-status-tag";
+export * from "./ne-tree/ne-tree";
 export * from "./pagination";
 export * from "./ne-table-panel/ne-table-panel";
 export * from "./ne-workspace-tabs/ne-workspace-tabs";
