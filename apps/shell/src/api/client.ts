@@ -30,6 +30,10 @@ export interface ApiRequestOptions {
   unwrap?: boolean;
 }
 
+interface ApiClientRequestConfig extends AxiosRequestConfig {
+  feedbackOptions?: Pick<ApiRequestOptions, "errorMessage" | "silent">;
+}
+
 interface RetryableAxiosRequestConfig extends AxiosRequestConfig {
   _retry?: boolean;
 }
@@ -109,6 +113,23 @@ function getEnvelopeMessage(payload: unknown) {
   return getString(record.message) ?? getString(record.msg);
 }
 
+function resolveErrorMessage(error: unknown, fallbackMessage = "Request failed") {
+  return normalizeApiError(error, fallbackMessage).message;
+}
+
+function shouldShowErrorMessage(config?: ApiClientRequestConfig) {
+  return !config?.feedbackOptions?.silent && !isAuthLifecycleRequest(config);
+}
+
+function notifyApiError(error: unknown, config?: ApiClientRequestConfig) {
+  if (!shouldShowErrorMessage(config)) {
+    return;
+  }
+
+  const fallbackMessage = config?.feedbackOptions?.errorMessage ?? "Request failed";
+  message.error(resolveErrorMessage(error, fallbackMessage));
+}
+
 function isAuthLifecycleRequest(config?: AxiosRequestConfig) {
   const url = config?.url ?? "";
   return [shellEnv.loginPath, shellEnv.refreshPath, shellEnv.logoutPath, shellEnv.currentUserPath].some((path) => url.includes(path));
@@ -142,12 +163,14 @@ apiClient.interceptors.response.use(
     const envelopeCode = getEnvelopeCode(response.data);
     if (!isSuccessfulEnvelopeCode(envelopeCode)) {
       const resolvedMessage = getEnvelopeMessage(response.data) ?? "Request failed";
-      return Promise.reject(new ApiClientError(resolvedMessage, response.status, response.data));
+      const apiError = new ApiClientError(resolvedMessage, response.status, response.data);
+      notifyApiError(apiError, response.config as ApiClientRequestConfig | undefined);
+      return Promise.reject(apiError);
     }
     return response;
   },
   async (error) => {
-    const originalRequest = error.config as RetryableAxiosRequestConfig | undefined;
+    const originalRequest = error.config as (RetryableAxiosRequestConfig & ApiClientRequestConfig) | undefined;
 
     if (error.response?.status === 401 && originalRequest && !originalRequest._retry && !isAuthLifecycleRequest(originalRequest)) {
       originalRequest._retry = true;
@@ -165,6 +188,8 @@ apiClient.interceptors.response.use(
     } else if (error.response?.status === 401) {
       useAuthStore.getState().clearSession();
     }
+
+    notifyApiError(error, originalRequest);
 
     return Promise.reject(error);
   },
@@ -187,18 +212,20 @@ export function normalizeApiError(error: unknown, fallbackMessage = "Request fai
 
 async function requestWithFeedback<T>(config: AxiosRequestConfig, options: ApiRequestOptions = {}) {
   try {
-    const response = await apiClient.request(config);
+    const response = await apiClient.request({
+      ...config,
+      feedbackOptions: {
+        silent: options.silent,
+        errorMessage: options.errorMessage,
+      },
+    } as ApiClientRequestConfig);
     const payload = options.unwrap === false ? (response.data as T) : unwrapEnvelope<T>(response.data);
     if (options.successMessage) {
       message.success(options.successMessage);
     }
     return payload;
   } catch (error) {
-    const normalized = normalizeApiError(error, options.errorMessage ?? "Request failed");
-    if (!options.silent) {
-      message.error(options.errorMessage ?? normalized.message);
-    }
-    throw normalized;
+    throw normalizeApiError(error, options.errorMessage ?? "Request failed");
   }
 }
 
