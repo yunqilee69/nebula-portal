@@ -4,7 +4,18 @@ import type { OrganizationItem, OrganizationMutationPayload, OrganizationPageQue
 import { NePermission, useI18n } from "@platform/core";
 import { useEffect, useMemo, useState } from "react";
 import { createOrganization, deleteOrganization, fetchOrganizationDetail, fetchOrganizationPage, fetchOrganizationTree, updateOrganization } from "@/api/organization-api";
-import { NeDetailDrawer, NeModal, NePage, NePanel, NeSearchPanel, NeTablePanel, NeTree } from "@platform/ui";
+import { OrganizationTree } from "@/modules/organization/organization-tree";
+import { NeModal, NePage, NePanel, NeSearchPanel, NeTablePanel } from "@platform/ui";
+
+type OrganizationType = NonNullable<OrganizationItem["type"]>;
+
+const organizationChildTypeMap: Record<OrganizationType, OrganizationType[]> = {
+  COMPANY: ["COMPANY", "DEPARTMENT", "TEAM"],
+  DEPARTMENT: ["DEPARTMENT", "TEAM"],
+  TEAM: [],
+};
+
+const organizationTypeOrder: OrganizationType[] = ["COMPANY", "DEPARTMENT", "TEAM"];
 
 const initialQuery: OrganizationPageQuery = {
   pageNum: 1,
@@ -14,17 +25,51 @@ const initialQuery: OrganizationPageQuery = {
 const initialForm: OrganizationMutationPayload = {
   name: "",
   code: "",
+  type: "COMPANY",
   leader: "",
   phone: "",
   address: "",
   status: 1,
 };
 
-function flattenTree(nodes: OrganizationTreeItem[], level = 0): Array<{ label: string; value: string }> {
-  return nodes.flatMap((node) => [
-    { label: `${"- ".repeat(level)}${node.name}`, value: node.id },
-    ...flattenTree(node.children ?? [], level + 1),
-  ]);
+function getOrganizationTypeLabel(type: OrganizationType | undefined, t: (key: string, fallback?: string, variables?: Record<string, string | number>) => string) {
+  if (type === "DEPARTMENT") {
+    return t("organization.typeDepartment");
+  }
+  if (type === "TEAM") {
+    return t("organization.typeTeam");
+  }
+  return t("organization.typeCompany");
+}
+
+function getOrganizationTypeColor(type: OrganizationType | undefined) {
+  if (type === "DEPARTMENT") {
+    return "gold";
+  }
+  if (type === "TEAM") {
+    return "cyan";
+  }
+  return "processing";
+}
+
+function canContainChild(parentType: OrganizationType | undefined, childType: OrganizationType) {
+  const allowedChildTypes = parentType ? organizationChildTypeMap[parentType] ?? [] : organizationTypeOrder;
+  return allowedChildTypes.includes(childType);
+}
+
+function flattenTree(
+  nodes: OrganizationTreeItem[],
+  getLabel: (node: OrganizationTreeItem, level: number) => string,
+  includeNode: (node: OrganizationTreeItem) => boolean,
+  level = 0,
+): Array<{ label: string; value: string }> {
+  return nodes.flatMap((node) => {
+    const children = flattenTree(node.children ?? [], getLabel, includeNode, level + 1);
+    if (!includeNode(node)) {
+      return children;
+    }
+    return [{ label: getLabel(node, level), value: node.id }, ...children];
+  });
 }
 
 function findOrganization(nodes: OrganizationTreeItem[], id: string): OrganizationItem | null {
@@ -40,6 +85,60 @@ function findOrganization(nodes: OrganizationTreeItem[], id: string): Organizati
   return null;
 }
 
+function findOrganizationTreeNode(nodes: OrganizationTreeItem[], id: string | null): OrganizationTreeItem | null {
+  if (!id) {
+    return null;
+  }
+
+  for (const node of nodes) {
+    if (node.id === id) {
+      return node;
+    }
+    const match = findOrganizationTreeNode(node.children ?? [], id);
+    if (match) {
+      return match;
+    }
+  }
+
+  return null;
+}
+
+function collectDescendantIds(node: OrganizationTreeItem | null): Set<string> {
+  const result = new Set<string>();
+
+  const visit = (current: OrganizationTreeItem | null) => {
+    if (!current) {
+      return;
+    }
+    result.add(current.id);
+    for (const child of current.children ?? []) {
+      visit(child);
+    }
+  };
+
+  visit(node);
+  return result;
+}
+
+function collectDescendantTypes(node: OrganizationTreeItem | null): Set<OrganizationType> {
+  const result = new Set<OrganizationType>();
+
+  const visit = (current: OrganizationTreeItem | null) => {
+    if (!current) {
+      return;
+    }
+    for (const child of current.children ?? []) {
+      if (child.type) {
+        result.add(child.type);
+      }
+      visit(child);
+    }
+  };
+
+  visit(node);
+  return result;
+}
+
 export function OperationsOrgPage() {
   const { t } = useI18n();
   const [filterForm] = Form.useForm<OrganizationPageQuery>();
@@ -53,9 +152,36 @@ export function OperationsOrgPage() {
   const [error, setError] = useState<string | null>(null);
   const [selected, setSelected] = useState<OrganizationItem | null>(null);
   const [detail, setDetail] = useState<OrganizationItem | null>(null);
+  const [detailOpen, setDetailOpen] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [editing, setEditing] = useState<OrganizationItem | null>(null);
-  const parentOptions = useMemo(() => flattenTree(tree), [tree]);
+  const currentType = Form.useWatch("type", drawerForm) ?? initialForm.type;
+  const editingTreeNode = useMemo(() => findOrganizationTreeNode(tree, editing?.id ?? null), [editing?.id, tree]);
+  const editingDescendantIds = useMemo(() => collectDescendantIds(editingTreeNode), [editingTreeNode]);
+  const editingDescendantTypes = useMemo(() => collectDescendantTypes(editingTreeNode), [editingTreeNode]);
+
+  const typeOptions = useMemo(
+    () =>
+      organizationTypeOrder
+        .filter((type) => Array.from(editingDescendantTypes).every((descendantType) => canContainChild(type, descendantType)))
+        .map((type) => ({ label: getOrganizationTypeLabel(type, t), value: type })),
+    [editingDescendantTypes, t],
+  );
+
+  const allParentOptions = useMemo(
+    () => flattenTree(tree, (node, level) => `${"- ".repeat(level)}${node.name} (${getOrganizationTypeLabel(node.type, t)})`, () => true),
+    [t, tree],
+  );
+
+  const parentOptions = useMemo(
+    () =>
+      flattenTree(
+        tree,
+        (node, level) => `${"- ".repeat(level)}${node.name} (${getOrganizationTypeLabel(node.type, t)})`,
+        (node) => !editingDescendantIds.has(node.id) && canContainChild(node.type, currentType),
+      ),
+    [currentType, editingDescendantIds, t, tree],
+  );
 
   async function loadData(nextQuery: OrganizationPageQuery) {
     setLoading(true);
@@ -65,14 +191,30 @@ export function OperationsOrgPage() {
       setRows(pageResult.data);
       setTotal(pageResult.total);
       setTree(treeResult);
-      setSelected((current) => current ?? pageResult.data[0] ?? null);
+      setSelected((current) => {
+        if (!current) {
+          return null;
+        }
+        return pageResult.data.find((item) => item.id === current.id) ?? findOrganization(treeResult, current.id);
+      });
     } catch (caughtError) {
       setError(caughtError instanceof Error ? caughtError.message : t("organization.loadFailed"));
       setRows([]);
       setTotal(0);
       setTree([]);
+      setDetail(null);
+      setDetailOpen(false);
     } finally {
       setLoading(false);
+    }
+  }
+
+  async function openDetail(target: OrganizationItem) {
+    setDetailOpen(true);
+    try {
+      setDetail(await fetchOrganizationDetail(target.id));
+    } catch {
+      setDetail(target);
     }
   }
 
@@ -81,19 +223,30 @@ export function OperationsOrgPage() {
   }, [query]);
 
   useEffect(() => {
-    if (!selected?.id) {
-      setDetail(null);
+    if (!drawerOpen) {
       return;
     }
-    fetchOrganizationDetail(selected.id)
-      .then((result) => setDetail(result))
-      .catch(() => setDetail(selected));
-  }, [selected]);
+
+    const nextType = typeOptions.some((option) => option.value === currentType) ? currentType : typeOptions[0]?.value;
+    if (nextType && nextType !== currentType) {
+      drawerForm.setFieldValue("type", nextType);
+      return;
+    }
+
+    const currentParentId = drawerForm.getFieldValue("parentId") as string | undefined;
+    if (currentParentId && !parentOptions.some((option) => option.value === currentParentId)) {
+      drawerForm.setFieldValue("parentId", undefined);
+    }
+  }, [currentType, drawerForm, drawerOpen, parentOptions, typeOptions]);
 
   const columns = useMemo(
     () => [
       { title: t("common.name"), dataIndex: "name" },
       { title: t("common.code"), dataIndex: "code" },
+      {
+        title: t("common.type"),
+        render: (_: unknown, row: OrganizationItem) => <Tag color={getOrganizationTypeColor(row.type)}>{getOrganizationTypeLabel(row.type, t)}</Tag>,
+      },
       { title: t("common.leader"), dataIndex: "leader", render: (value: string | undefined) => value ?? "-" },
       { title: t("common.phone"), dataIndex: "phone", render: (value: string | undefined) => value ?? "-" },
       {
@@ -115,6 +268,7 @@ export function OperationsOrgPage() {
                   drawerForm.setFieldsValue({
                     name: row.name,
                     code: row.code,
+                    type: row.type ?? "COMPANY",
                     leader: row.leader,
                     phone: row.phone,
                     address: row.address,
@@ -136,31 +290,39 @@ export function OperationsOrgPage() {
                   if (selected?.id === row.id) {
                     setSelected(null);
                     setDetail(null);
+                    setDetailOpen(false);
                   }
                   await loadData(query);
                 }}
               >
-                <Button size="small" danger icon={<DeleteOutlined />}>{t("common.delete")}</Button>
+                <Button size="small" danger icon={<DeleteOutlined />}>
+                  {t("common.delete")}
+                </Button>
               </Popconfirm>
             </NePermission>
           </Space>
         ),
       },
     ],
-    [drawerForm, query, selected?.id],
+    [drawerForm, query, selected?.id, t],
   );
 
   return (
-    <NePage>
+    <NePage className="organization-page">
       <NeSearchPanel
         title={t("common.filters")}
         labels={{ expand: t("common.expand"), collapse: t("common.collapse"), reset: t("common.reset") }}
         onReset={() => {
           filterForm.resetFields();
-          setQuery(initialQuery);
+          setQuery((current) => ({ ...initialQuery, parentId: current.parentId }));
         }}
       >
-        <Form form={filterForm} layout="inline" initialValues={initialQuery} onFinish={(values) => setQuery((current) => ({ ...current, ...values, pageNum: 1 }))}>
+        <Form
+          form={filterForm}
+          layout="inline"
+          initialValues={initialQuery}
+          onFinish={(values) => setQuery((current) => ({ ...current, ...values, parentId: current.parentId, pageNum: 1 }))}
+        >
           <Form.Item name="name" label={t("common.name")}>
             <Input allowClear placeholder={t("common.organizationPlaceholder")} />
           </Form.Item>
@@ -171,29 +333,42 @@ export function OperationsOrgPage() {
             <Select style={{ width: 140 }} allowClear options={[{ label: t("common.enabled"), value: 1 }, { label: t("common.disabled"), value: 0 }]} />
           </Form.Item>
           <Form.Item>
-            <Button type="primary" htmlType="submit" icon={<SearchOutlined />}>{t("common.search")}</Button>
+            <Button type="primary" htmlType="submit" icon={<SearchOutlined />}>
+              {t("common.search")}
+            </Button>
           </Form.Item>
         </Form>
         {error ? <Typography.Paragraph type="danger" style={{ marginTop: 16, marginBottom: 0 }}>{error}</Typography.Paragraph> : null}
       </NeSearchPanel>
-      <div className="shell-split-grid">
-        <NePanel title={t("organization.tree")}>
-          <NeTree<OrganizationTreeItem>
-            treeData={tree}
-            searchable
+      <div className="shell-split-grid organization-page__content">
+        <NePanel title={t("organization.tree")} className="shell-panel organization-page__tree-panel">
+          <OrganizationTree
+            className="organization-page__tree-surface"
+            treeClassName="organization-page__tree"
+            data={tree}
+            selectedIds={selected ? [selected.id] : []}
             searchPlaceholder={t("permissionAssignment.searchOrganizations")}
-            filterNode={(node, keyword) => [node.name, node.code, node.leader].some((value) => value?.toLowerCase().includes(keyword))}
-            selectedKeys={selected ? [selected.id] : []}
-            onSelect={(keys) => {
-              const key = String(keys[0] ?? "");
-              if (key) {
-                const next = rows.find((row) => row.id === key) ?? findOrganization(tree, key);
-                setSelected(next ?? null);
+            onSelectIdsChange={(ids) => {
+              const key = ids[0];
+              if (!key) {
+                setSelected(null);
+                setDetail(null);
+                setDetailOpen(false);
+                setQuery((current) => ({ ...current, parentId: undefined, pageNum: 1 }));
+                return;
+              }
+              const next = findOrganization(tree, key);
+              if (next) {
+                setSelected(next);
+                setDetail(null);
+                setDetailOpen(false);
+                setQuery((current) => ({ ...current, parentId: next.id, pageNum: 1 }));
               }
             }}
           />
         </NePanel>
         <NeTablePanel
+          className="organization-page__table-panel"
           toolbar={
             <NePermission code="platform:org:create">
               <Button
@@ -201,7 +376,10 @@ export function OperationsOrgPage() {
                 icon={<PlusOutlined />}
                 onClick={() => {
                   setEditing(null);
-                  drawerForm.setFieldsValue(initialForm);
+                  const defaultParentId = selected && selected.type !== "TEAM" ? selected.id : undefined;
+                  const defaultType = defaultParentId ? organizationChildTypeMap[selected?.type ?? "COMPANY"][0] ?? initialForm.type : initialForm.type;
+                  drawerForm.resetFields();
+                  drawerForm.setFieldsValue({ ...initialForm, parentId: defaultParentId, type: defaultType });
                   setDrawerOpen(true);
                 }}
               >
@@ -217,24 +395,29 @@ export function OperationsOrgPage() {
             loading={loading}
             dataSource={rows}
             columns={columns}
-            onRow={(record) => ({ onClick: () => setSelected(record) })}
+            onRow={(record) => ({
+              onClick: () => {
+                openDetail(record).catch(() => undefined);
+              },
+            })}
             pagination={false}
           />
         </NeTablePanel>
       </div>
-      <NeDetailDrawer title={t("organization.detail")} open={Boolean(detail)} onClose={() => setDetail(null)}>
+      <NeModal title={t("organization.detail")} open={detailOpen && Boolean(detail)} onClose={() => setDetailOpen(false)} width={640}>
         {detail ? (
           <Descriptions column={1} bordered>
             <Descriptions.Item label={t("common.name")}>{detail.name}</Descriptions.Item>
             <Descriptions.Item label={t("common.code")}>{detail.code}</Descriptions.Item>
+            <Descriptions.Item label={t("common.type")}>{getOrganizationTypeLabel(detail.type, t)}</Descriptions.Item>
             <Descriptions.Item label={t("common.leader")}>{detail.leader ?? "-"}</Descriptions.Item>
             <Descriptions.Item label={t("common.phone")}>{detail.phone ?? "-"}</Descriptions.Item>
             <Descriptions.Item label={t("common.address")}>{detail.address ?? "-"}</Descriptions.Item>
-            <Descriptions.Item label={t("common.parent")}>{parentOptions.find((option) => option.value === detail.parentId)?.label ?? "-"}</Descriptions.Item>
+            <Descriptions.Item label={t("common.parent")}>{allParentOptions.find((option) => option.value === detail.parentId)?.label ?? "-"}</Descriptions.Item>
             <Descriptions.Item label={t("common.status")}>{detail.status === 1 ? t("common.enabled") : t("common.disabled")}</Descriptions.Item>
           </Descriptions>
         ) : null}
-      </NeDetailDrawer>
+      </NeModal>
       <NeModal
         title={editing ? t("organization.edit") : t("organization.new")}
         open={drawerOpen}
@@ -247,7 +430,8 @@ export function OperationsOrgPage() {
       >
         <Form
           form={drawerForm}
-          layout="vertical" className="ne-modal-form-grid"
+          layout="vertical"
+          className="ne-modal-form-grid"
           initialValues={initialForm}
           onFinish={async (values) => {
             setSubmitting(true);
@@ -264,15 +448,33 @@ export function OperationsOrgPage() {
             }
           }}
         >
-          <Form.Item name="name" label={t("common.name")} rules={[{ required: true, message: t("validation.enterField", undefined, { field: t("common.name") }) }]}><Input /></Form.Item>
-          <Form.Item name="code" label={t("common.code")} rules={[{ required: true, message: t("validation.enterField", undefined, { field: t("common.code") }) }]}><Input /></Form.Item>
-          <Form.Item name="leader" label={t("common.leader")}><Input /></Form.Item>
-          <Form.Item name="phone" label={t("common.phone")}><Input /></Form.Item>
-           <Form.Item name="address" label={t("common.address")} className="ne-modal-form-grid__full"><Input.TextArea rows={3} /></Form.Item>
-          <Form.Item name="parentId" label={t("organization.parentOrg")}>
-            <Select allowClear options={parentOptions.filter((option) => option.value !== editing?.id)} />
+          <Form.Item name="name" label={t("common.name")} rules={[{ required: true, message: t("validation.enterField", undefined, { field: t("common.name") }) }]}>
+            <Input />
           </Form.Item>
-          <Form.Item name="status" label={t("common.status")}><Select options={[{ label: t("common.enabled"), value: 1 }, { label: t("common.disabled"), value: 0 }]} /></Form.Item>
+          <Form.Item name="code" label={t("common.code")} rules={[{ required: true, message: t("validation.enterField", undefined, { field: t("common.code") }) }]}>
+            <Input />
+          </Form.Item>
+          <Form.Item name="type" label={t("common.type")} rules={[{ required: true, message: t("validation.selectField", undefined, { field: t("common.type") }) }]}>
+            <Select options={typeOptions} />
+          </Form.Item>
+          <Form.Item name="leader" label={t("common.leader")}>
+            <Input />
+          </Form.Item>
+          <Form.Item name="phone" label={t("common.phone")}>
+            <Input />
+          </Form.Item>
+          <Form.Item name="address" label={t("common.address")} className="ne-modal-form-grid__full">
+            <Input.TextArea rows={3} />
+          </Form.Item>
+          <Form.Item name="parentId" label={t("organization.parentOrg")}>
+            <Select allowClear options={parentOptions} placeholder={parentOptions.length === 0 ? t("organization.noParentOptions") : undefined} />
+          </Form.Item>
+          <div className="ne-modal-form-grid__full">
+            <Typography.Text type="secondary">{t("organization.typeHint")}</Typography.Text>
+          </div>
+          <Form.Item name="status" label={t("common.status")}>
+            <Select options={[{ label: t("common.enabled"), value: 1 }, { label: t("common.disabled"), value: 0 }]} />
+          </Form.Item>
         </Form>
       </NeModal>
     </NePage>

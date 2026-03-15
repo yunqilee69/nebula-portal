@@ -230,6 +230,7 @@ export interface OrganizationPageQuery {
   name?: string;
   code?: string;
   status?: number;
+  parentId?: string;
 }
 
 export interface OrganizationPageResult {
@@ -241,6 +242,7 @@ export interface OrganizationMutationPayload {
   id?: string;
   name: string;
   code: string;
+  type: "COMPANY" | "DEPARTMENT" | "TEAM";
   leader?: string;
   phone?: string;
   address?: string;

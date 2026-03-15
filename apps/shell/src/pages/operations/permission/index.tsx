@@ -1,4 +1,4 @@
-import { ApartmentOutlined, BankOutlined, DeleteOutlined, TeamOutlined, SearchOutlined } from "@ant-design/icons";
+import { DeleteOutlined, SearchOutlined } from "@ant-design/icons";
 import { Button, Form, Input, Select, Space, Table, Tabs, Tag, Typography, message } from "antd";
 import type {
   ButtonItem,
@@ -11,7 +11,8 @@ import type {
   UserItem,
 } from "@platform/core";
 import { NePermission, useI18n } from "@platform/core";
-import { NePage, NePanel, NeSearchPanel, NeTablePanel, NeTree } from "@platform/ui";
+import { OrganizationTree } from "@/modules/organization/organization-tree";
+import { NePage, NePanel, NeSearchPanel, NeTablePanel } from "@platform/ui";
 import { useEffect, useMemo, useState } from "react";
 import type { Key } from "react";
 import { fetchButtonPage } from "@/api/button-api";
@@ -82,16 +83,6 @@ function filterMenuTree(nodes: MenuItem[], keyword: string): MenuItem[] {
     }
     return [{ ...node, children }];
   });
-}
-
-function getOrganizationIcon(type: OrganizationTreeItem["type"]) {
-  if (type === "COMPANY") {
-    return <BankOutlined />;
-  }
-  if (type === "DEPARTMENT") {
-    return <ApartmentOutlined />;
-  }
-  return <TeamOutlined />;
 }
 
 function buildPermissionKey(subjectType: PermissionSubjectType, subjectId: string, resourceType: ResourceKey, resourceId: string) {
@@ -215,7 +206,6 @@ export function OperationsPermissionPage({ embedded = false }: PermissionAssignm
   const { t } = useI18n();
   const [activeSubjectTab, setActiveSubjectTab] = useState<SubjectKey>("ORG");
   const [activeResourceTab, setActiveResourceTab] = useState<ResourceKey>("MENU");
-  const [organizationKeyword, setOrganizationKeyword] = useState("");
   const [roleKeyword, setRoleKeyword] = useState("");
   const [userKeyword, setUserKeyword] = useState("");
   const [menuKeyword, setMenuKeyword] = useState("");
@@ -593,31 +583,15 @@ export function OperationsPermissionPage({ embedded = false }: PermissionAssignm
                   key: "ORG",
                   label: t("common.organization"),
                   children: (
-                    <Space direction="vertical" size={12} style={{ width: "100%" }}>
-                       <NeTree<OrganizationTreeItem>
-                         className="permission-assignment-layout__tree"
-                         treeData={organizations}
-                         checkable
-                         searchable
-                         searchValue={organizationKeyword}
-                         searchPlaceholder={t("permissionAssignment.searchOrganizations")}
-                         onSearchChange={setOrganizationKeyword}
-                         filterNode={(node, keyword) => [node.name, node.code, node.leader].some((value) => value?.toLowerCase().includes(keyword))}
-                         renderTitle={(node) => (
-                           <div className="permission-assignment-layout__org-node">
-                             <Space size={8} className="permission-assignment-layout__org-node-main">
-                               <span className="permission-assignment-layout__org-node-icon">{getOrganizationIcon(node.type)}</span>
-                               <Typography.Text strong>{node.name}</Typography.Text>
-                             </Space>
-                             <Typography.Text type="secondary" className="permission-assignment-layout__org-node-code">{node.code}</Typography.Text>
-                           </div>
-                         )}
-                         checkedKeys={selectedOrgIds}
-                         onCheck={(checkedKeys) => {
-                           setSelectedOrgIds((Array.isArray(checkedKeys) ? checkedKeys : checkedKeys.checked).map(String));
-                         }}
-                       />
-                    </Space>
+                    <OrganizationTree
+                      className="permission-assignment-layout__tree-surface"
+                      treeClassName="permission-assignment-layout__tree"
+                      data={organizations}
+                      mode="multiple"
+                      checkedIds={selectedOrgIds}
+                      searchPlaceholder={t("permissionAssignment.searchOrganizations")}
+                      onCheckIdsChange={setSelectedOrgIds}
+                    />
                   ),
                 },
                 {
