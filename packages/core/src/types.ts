@@ -36,15 +36,20 @@ export interface MenuPageResult {
   total: number;
 }
 
+export type SystemParamDataType = "STRING" | "INT" | "DOUBLE" | "BOOLEAN" | "SINGLE" | "MULTIPLE";
+
 export interface SystemParamItem {
   id: string;
-  groupCode?: string;
   paramKey: string;
   paramName?: string;
-  dataType?: string;
-  status?: number;
-  isSensitive?: number;
-  isDynamic?: number;
+  description?: string;
+  paramValue?: string;
+  dataType?: SystemParamDataType;
+  options?: string[];
+  minValue?: number;
+  maxValue?: number;
+  createTime?: string;
+  updateTime?: string;
 }
 
 export interface SystemParamPageQuery {
@@ -52,10 +57,9 @@ export interface SystemParamPageQuery {
   pageSize: number;
   orderName?: string;
   orderType?: string;
-  groupCode?: string;
   paramKey?: string;
   paramName?: string;
-  status?: number;
+  dataType?: SystemParamDataType;
 }
 
 export interface SystemParamPageResult {
@@ -181,14 +185,14 @@ export interface MenuMutationPayload {
 
 export interface SystemParamMutationPayload {
   id?: string;
-  groupCode: string;
   paramKey: string;
   paramName: string;
-  paramValue: string;
-  dataType: string;
-  status?: number;
-  isSensitive?: number;
-  isDynamic?: number;
+  description?: string;
+  paramValue?: string;
+  dataType?: SystemParamDataType;
+  options?: string[];
+  minValue?: number;
+  maxValue?: number;
 }
 
 export interface RoleMutationPayload {
