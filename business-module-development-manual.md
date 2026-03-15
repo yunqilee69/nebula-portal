@@ -16,15 +16,23 @@ The shell already provides these platform responsibilities and pages:
 
 Current platform pages:
 
-- `Menu Management` -> `/menu/list`
-- `Organization Management` -> `/organization/list`
-- `Organization Permissions` -> `/org-permission/list`
-- `Menu Permissions` -> `/menu-permission/list`
-- `Button Permissions` -> `/button-permission/list`
-- `System Parameters` -> `/system-param/list`
-- `Notifications` -> `/notification/list`
-- `Role Management` -> `/role/list`
-- `Storage Center` -> `/storage/list`
+- `Home` -> `/`
+- `Operations` -> `/operations`
+  - `Menu Management` -> `/operations/menu`
+  - `Organization Management` -> `/operations/org`
+  - `Role Management` -> `/operations/role`
+  - `User Management` -> `/operations/user`
+  - `Permission Configuration` -> `/operations/permission`
+- `Notifications` -> `/notifications`
+  - `Notification Management` -> `/notifications/record`
+  - `Notification Templates` -> `/notifications/template`
+  - `Announcement Management` -> `/notifications/announcement`
+- `Advanced` -> `/advanced`
+  - `Dictionary Management` -> `/advanced/dict`
+  - `Parameter Management` -> `/advanced/param`
+  - `System Configuration` -> `/advanced/config`
+  - `OAuth2 Clients` -> `/advanced/oauth2/client`
+  - `OAuth2 Accounts` -> `/advanced/oauth2/account`
 
 ## 2. Workspace Structure
 
@@ -33,6 +41,12 @@ Current platform pages:
 - `packages/core`: shell contracts, registries, routing, permission helpers, event bus
 - `packages/ui`: Nebula shared UI components
 - `templates/business-starter`: scaffold template for a new business module
+
+Within `apps/shell/src/pages`, active platform pages are grouped by platform domain instead of raw URL shape:
+
+- `operations`: grouped as `menu`, `org`, `role`, `user`, and `permission`
+- `advanced`: grouped as `dict`, `param`, `config`, and `oauth2` (`oauth2/client`, `oauth2/account`)
+- `notifications`: grouped as `record`, `template`, and `announcement`
 
 ## 3. Naming Rules
 
@@ -189,7 +203,7 @@ Reference files:
 
 - `packages/core/src/ne-permission.tsx`
 - `packages/core/src/use-permission.ts`
-- `apps/shell/src/pages/role/list/index.tsx`
+- `apps/shell/src/pages/operations/role/index.tsx`
 
 ## 8. Shared UI Components from `@platform/ui`
 
