@@ -1,6 +1,12 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"],
+      "@platform/core": ["../../packages/core/src/index.ts"],
+      "@platform/ui": ["../../packages/ui/src/index.ts"]
+    },
     "types": ["vite/client"],
     "noEmit": true
   },

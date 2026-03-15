@@ -14,11 +14,14 @@ export default defineConfig(({ mode }) => {
 
   return {
     resolve: {
-      alias: moduleMode === "embedded"
-        ? {
-            "demoBusiness/register": path.resolve(projectDir, "../demo-business/src/register.ts"),
-          }
-        : undefined,
+      alias: {
+        "@": path.resolve(projectDir, "src"),
+        ...(moduleMode === "embedded"
+          ? {
+              "demoBusiness/register": path.resolve(projectDir, "../demo-business/src/register.ts"),
+            }
+          : {}),
+      },
     },
     plugins: [
       react(),
