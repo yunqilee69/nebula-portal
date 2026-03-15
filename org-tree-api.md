@@ -1,0 +1,1685 @@
+- generic [ref=e4]:
+  - complementary [ref=e5]:
+    - generic [ref=e6]:
+      - combobox [ref=e25] [cursor=pointer]:
+        - generic "default" [ref=e27]
+        - 'generic "icon: down" [ref=e29]':
+          - img [ref=e30]
+      - menu [ref=e8]:
+        - menuitem "主页" [ref=e32] [cursor=pointer]:
+          - link "主页" [ref=e33]:
+            - /url: "#/home"
+            - img [ref=e35]
+            - text: 主页
+        - menuitem "Swagger Models" [ref=e37] [cursor=pointer]:
+          - link "Swagger Models" [ref=e38]:
+            - /url: "#/SwaggerModels/default"
+            - img [ref=e40]
+            - text: Swagger Models
+        - menuitem "文档管理" [ref=e42]:
+          - generic [ref=e44] [cursor=pointer]:
+            - img [ref=e46]
+            - text: 文档管理
+        - menuitem "5 按钮管理" [ref=e48]:
+          - generic [ref=e50] [cursor=pointer]:
+            - img [ref=e52]
+            - generic [ref=e54]: "5"
+            - text: 按钮管理
+        - menuitem "5 OAuth2客户端管理" [ref=e55]:
+          - generic [ref=e57] [cursor=pointer]:
+            - img [ref=e59]
+            - generic [ref=e61]: "5"
+            - text: OAuth2客户端管理
+        - menuitem "5 用户管理" [ref=e62]:
+          - generic [ref=e64] [cursor=pointer]:
+            - img [ref=e66]
+            - generic [ref=e68]: "5"
+            - text: 用户管理
+        - menuitem "18 通知模块" [ref=e69]:
+          - generic [ref=e71] [cursor=pointer]:
+            - img [ref=e73]
+            - generic [ref=e75]: "18"
+            - text: 通知模块
+        - menuitem "10 系统参数" [ref=e76]:
+          - generic [ref=e78] [cursor=pointer]:
+            - img [ref=e80]
+            - generic [ref=e82]: "10"
+            - text: 系统参数
+        - menuitem "5 OAuth2账户管理" [ref=e83]:
+          - generic [ref=e85] [cursor=pointer]:
+            - img [ref=e87]
+            - generic [ref=e89]: "5"
+            - text: OAuth2账户管理
+        - menuitem "6 角色管理" [ref=e90]:
+          - generic [ref=e92] [cursor=pointer]:
+            - img [ref=e94]
+            - generic [ref=e96]: "6"
+            - text: 角色管理
+        - menuitem "6 菜单管理" [ref=e97]:
+          - generic [ref=e99] [cursor=pointer]:
+            - img [ref=e101]
+            - generic [ref=e103]: "6"
+            - text: 菜单管理
+        - menuitem "11 数据字典" [ref=e104]:
+          - generic [ref=e106] [cursor=pointer]:
+            - img [ref=e108]
+            - generic [ref=e110]: "11"
+            - text: 数据字典
+        - menuitem "7 组织管理" [ref=e111]:
+          - generic [ref=e113] [cursor=pointer]:
+            - img [ref=e115]
+            - generic [ref=e117]: "7"
+            - text: 组织管理
+          - menu [ref=e238]:
+            - menuitem "GET 获取组织详情" [ref=e239] [cursor=pointer]:
+              - link "GET 获取组织详情" [ref=e240]:
+                - /url: "#/default/组织管理/getOrgById"
+                - generic [ref=e241]: GET
+                - text: 获取组织详情
+            - menuitem "PUT 更新组织" [ref=e242] [cursor=pointer]:
+              - link "PUT 更新组织" [ref=e243]:
+                - /url: "#/default/组织管理/updateOrg"
+                - generic [ref=e244]: PUT
+                - text: 更新组织
+            - menuitem "DELETE 删除组织" [ref=e245] [cursor=pointer]:
+              - link "DELETE 删除组织" [ref=e246]:
+                - /url: "#/default/组织管理/removeOrg"
+                - generic [ref=e247]: DELETE
+                - text: 删除组织
+            - menuitem "POST 创建组织" [ref=e248] [cursor=pointer]:
+              - link "POST 创建组织" [ref=e249]:
+                - /url: "#/default/组织管理/createOrg"
+                - generic [ref=e250]: POST
+                - text: 创建组织
+            - menuitem "POST 分页查询组织" [ref=e251] [cursor=pointer]:
+              - link "POST 分页查询组织" [ref=e252]:
+                - /url: "#/default/组织管理/pageOrgs"
+                - generic [ref=e253]: POST
+                - text: 分页查询组织
+            - menuitem "GET 查询组织树" [ref=e254] [cursor=pointer]:
+              - link "GET 查询组织树" [active] [ref=e255]:
+                - /url: "#/default/组织管理/getOrgTree"
+                - generic [ref=e256]: GET
+                - text: 查询组织树
+            - menuitem "GET 查询所有组织" [ref=e257] [cursor=pointer]:
+              - link "GET 查询所有组织" [ref=e258]:
+                - /url: "#/default/组织管理/listAllOrgs"
+                - generic [ref=e259]: GET
+                - text: 查询所有组织
+        - menuitem "5 权限管理" [ref=e118]:
+          - generic [ref=e120] [cursor=pointer]:
+            - img [ref=e122]
+            - generic [ref=e124]: "5"
+            - text: 权限管理
+        - menuitem "9 前端支撑" [ref=e125]:
+          - generic [ref=e127] [cursor=pointer]:
+            - img [ref=e129]
+            - generic [ref=e131]: "9"
+            - text: 前端支撑
+        - menuitem "6 登录管理" [ref=e132]:
+          - generic [ref=e134] [cursor=pointer]:
+            - img [ref=e136]
+            - generic [ref=e138]: "6"
+            - text: 登录管理
+  - generic [ref=e9]:
+    - generic [ref=e139]:
+      - 'generic "icon: menu-fold" [ref=e11] [cursor=pointer]':
+        - img [ref=e12]
+      - text: OpenAPI definition
+      - generic [ref=e14]:
+        - generic [ref=e140] [cursor=pointer]:
+          - combobox [ref=e142]:
+            - generic [ref=e143]:
+              - list:
+                - listitem [ref=e144]:
+                  - textbox "输入文档关键字搜索" [ref=e146]
+          - 'generic "icon: search" [ref=e147]':
+            - img [ref=e148]
+        - generic [ref=e15] [cursor=pointer]: 中
+    - generic [ref=e16]:
+      - tablist [ref=e17]:
+        - generic [ref=e18]:
+          - generic:
+            - generic:
+              - 'generic "icon: left"':
+                - img
+          - generic:
+            - generic:
+              - 'generic "icon: right"':
+                - img
+          - generic [ref=e151]:
+            - tab "主页" [ref=e152] [cursor=pointer]:
+              - generic [ref=e153]: 主页
+            - 'tab "创建组织 icon: close" [ref=e260] [cursor=pointer]':
+              - generic [ref=e261]:
+                - text: 创建组织
+                - 'generic "icon: close" [ref=e262]':
+                  - img [ref=e263]
+            - 'tab "更新组织 icon: close" [ref=e559] [cursor=pointer]':
+              - generic [ref=e560]:
+                - text: 更新组织
+                - 'generic "icon: close" [ref=e561]':
+                  - img [ref=e562]
+            - 'tab "获取组织详情 icon: close" [ref=e874] [cursor=pointer]':
+              - generic [ref=e875]:
+                - text: 获取组织详情
+                - 'generic "icon: close" [ref=e876]':
+                  - img [ref=e877]
+            - 'tab "删除组织 icon: close" [ref=e1134] [cursor=pointer]':
+              - generic [ref=e1135]:
+                - text: 删除组织
+                - 'generic "icon: close" [ref=e1136]':
+                  - img [ref=e1137]
+            - 'tab "查询组织树 icon: close" [selected] [ref=e1328] [cursor=pointer]':
+              - generic [ref=e1329]:
+                - text: 查询组织树
+                - 'generic "icon: close" [ref=e1330]':
+                  - img [ref=e1331]
+      - generic [ref=e154]:
+        - main:
+          - generic:
+            - generic:
+              - generic:
+                - heading [level=2]: OpenAPI definition
+              - generic:
+                - generic:
+                  - generic:
+                    - heading [level=3]: 简介
+                - separator
+                - generic:
+                  - generic:
+                    - heading [level=3]: 作者
+                - separator
+                - generic:
+                  - generic:
+                    - heading [level=3]: 版本
+                  - generic: v0
+                - separator
+                - generic:
+                  - generic:
+                    - heading [level=3]: host
+                  - generic: http://127.0.0.1:8080
+                - separator
+                - generic:
+                  - generic:
+                    - heading [level=3]: basePath
+                  - generic: /
+                - separator
+                - generic:
+                  - generic:
+                    - heading [level=3]: API服务条款
+                - separator
+                - generic:
+                  - generic:
+                    - heading [level=3]: 分组名称
+                  - generic: default
+                - separator
+                - generic:
+                  - generic:
+                    - heading [level=3]: 分组Url
+                  - generic: /v3/api-docs
+                - separator
+                - generic:
+                  - generic:
+                    - heading [level=3]: 分组location
+                  - generic: /v3/api-docs
+                - separator
+                - generic:
+                  - generic:
+                    - heading [level=3]: 接口统计信息
+                  - generic:
+                    - generic:
+                      - generic: GET
+                      - generic:
+                        - generic: "30"
+                      - separator
+                    - generic:
+                      - generic: PUT
+                      - generic:
+                        - generic: "20"
+                      - separator
+                    - generic:
+                      - generic: DELETE
+                      - generic:
+                        - generic: "14"
+                      - separator
+                    - generic:
+                      - generic: POST
+                      - generic:
+                        - generic: "34"
+                      - separator
+        - main:
+          - generic:
+            - generic:
+              - tablist:
+                - generic:
+                  - generic:
+                    - generic:
+                      - generic:
+                        - img
+                  - generic:
+                    - generic:
+                      - generic:
+                        - img
+                  - generic:
+                    - generic:
+                      - generic:
+                        - generic:
+                          - tab [selected]:
+                            - generic:
+                              - generic:
+                                - img
+                              - text: 文档
+                          - tab:
+                            - generic:
+                              - generic:
+                                - img
+                              - text: 调试
+                          - tab:
+                            - generic:
+                              - generic:
+                                - img
+                              - text: Open
+                          - tab:
+                            - generic:
+                              - generic:
+                                - img
+                              - text: Script
+              - generic:
+                - tabpanel:
+                  - generic:
+                    - generic:
+                      - generic:
+                        - generic: 创建组织
+                        - generic: 复制接口
+                        - generic: 复制文档
+                        - generic: 复制地址
+                      - generic:
+                        - generic:
+                          - generic: POST
+                          - generic: /api/auth/orgs
+                      - generic:
+                        - generic:
+                          - generic:
+                            - generic: 请求数据类型
+                            - text: application/json
+                        - generic:
+                          - generic:
+                            - generic: 响应数据类型
+                            - text: "[ \"*/*\" ]"
+                    - generic:
+                      - generic: 接口描述
+                      - generic:
+                        - paragraph: 创建新组织
+                    - generic:
+                      - generic: 请求示例
+                      - generic:
+                        - generic:
+                          - textbox
+                          - generic [ref=e326]:
+                            - generic [ref=e327]: "1"
+                            - generic [ref=e329]: "2"
+                            - generic [ref=e330]: "3"
+                            - generic [ref=e331]: "4"
+                            - generic [ref=e332]: "5"
+                            - generic [ref=e333]: "6"
+                            - generic [ref=e334]: "7"
+                            - generic [ref=e335]: "8"
+                            - generic [ref=e336]: "9"
+                            - generic [ref=e337]: "10"
+                          - generic:
+                            - generic:
+                              - generic:
+                                - generic: "{"
+                                - generic:
+                                  - text: "\"name\":"
+                                  - generic:
+                                    - text: "\""
+                                    - generic: 技
+                                    - generic: 术
+                                    - generic: 部
+                                    - text: "\""
+                                  - text: ","
+                                - generic: "\"code\": \"TECH\","
+                                - generic:
+                                  - text: "\"leader\":"
+                                  - generic:
+                                    - text: "\""
+                                    - generic: 张
+                                    - generic: 三
+                                    - text: "\""
+                                  - text: ","
+                                - generic: "\"phone\": 13800138000,"
+                                - generic:
+                                  - text: "\"address\":"
+                                  - generic:
+                                    - text: "\""
+                                    - generic: 北
+                                    - generic: 京
+                                    - generic: 市
+                                    - generic: 朝
+                                    - generic: 阳
+                                    - generic: 区
+                                    - text: "\""
+                                  - text: ","
+                                - generic: "\"parentId\": 1,"
+                                - generic: "\"type\": \"DEPARTMENT\","
+                                - generic: "\"status\": 1"
+                                - generic: "}"
+                    - generic: 请求参数
+                    - generic:
+                      - generic:
+                        - generic:
+                          - generic:
+                            - generic:
+                              - generic:
+                                - table:
+                                  - rowgroup:
+                                    - row:
+                                      - columnheader:
+                                        - generic:
+                                          - generic: 参数名称
+                                      - columnheader:
+                                        - generic:
+                                          - generic: 参数说明
+                                      - columnheader:
+                                        - generic:
+                                          - generic: 请求类型
+                                      - columnheader:
+                                        - generic:
+                                          - generic: 是否必须
+                                      - columnheader:
+                                        - generic:
+                                          - generic: 数据类型
+                                      - columnheader:
+                                        - generic:
+                                          - generic: schema
+                                  - rowgroup:
+                                    - row:
+                                      - cell:
+                                        - button: "-"
+                                        - text: createOrgReq
+                                      - cell: 创建组织请求
+                                      - cell: body
+                                      - cell: "true"
+                                      - cell:
+                                        - generic: CreateOrgReq
+                                      - cell: CreateOrgReq
+                                    - row:
+                                      - cell: name
+                                      - cell:
+                                        - text: 组织名称
+                                        - generic: ",示例值(技术部)"
+                                      - cell
+                                      - cell: "true"
+                                      - cell:
+                                        - generic:
+                                          - generic: string
+                                      - cell
+                                    - row:
+                                      - cell: code
+                                      - cell:
+                                        - text: 组织编码
+                                        - generic: ",示例值(TECH)"
+                                      - cell
+                                      - cell: "true"
+                                      - cell:
+                                        - generic:
+                                          - generic: string
+                                      - cell
+                                    - row:
+                                      - cell: leader
+                                      - cell:
+                                        - text: 负责人
+                                        - generic: ",示例值(张三)"
+                                      - cell
+                                      - cell: "false"
+                                      - cell:
+                                        - generic: string
+                                      - cell
+                                    - row:
+                                      - cell: phone
+                                      - cell:
+                                        - text: 联系电话
+                                        - generic: ",示例值(13800138000)"
+                                      - cell
+                                      - cell: "false"
+                                      - cell:
+                                        - generic: string
+                                      - cell
+                                    - row:
+                                      - cell: address
+                                      - cell:
+                                        - text: 地址
+                                        - generic: ",示例值(北京市朝阳区)"
+                                      - cell
+                                      - cell: "false"
+                                      - cell:
+                                        - generic: string
+                                      - cell
+                                    - row:
+                                      - cell: parentId
+                                      - cell:
+                                        - text: 父级组织ID
+                                        - generic: ",示例值(1)"
+                                      - cell
+                                      - cell: "false"
+                                      - cell:
+                                        - generic: string
+                                      - cell
+                                    - row:
+                                      - cell: type
+                                      - cell:
+                                        - text: "类型: COMPANY-公司, DEPARTMENT-部门, TEAM-小组"
+                                        - generic: ",示例值(DEPARTMENT)"
+                                      - cell
+                                      - cell: "true"
+                                      - cell:
+                                        - generic:
+                                          - generic: string
+                                      - cell
+                                    - row:
+                                      - cell: status
+                                      - cell:
+                                        - text: "状态: 0-禁用, 1-启用，默认1"
+                                        - generic: ",示例值(1)"
+                                      - cell
+                                      - cell: "false"
+                                      - cell:
+                                        - generic: integer(int32)
+                                      - cell
+                    - generic:
+                      - generic: 响应状态
+                      - generic:
+                        - generic:
+                          - generic:
+                            - generic:
+                              - generic:
+                                - generic:
+                                  - table:
+                                    - rowgroup:
+                                      - row:
+                                        - columnheader:
+                                          - generic:
+                                            - generic: 状态码
+                                        - columnheader:
+                                          - generic:
+                                            - generic: 说明
+                                        - columnheader:
+                                          - generic:
+                                            - generic: schema
+                                    - rowgroup:
+                                      - row:
+                                        - cell: "200"
+                                        - cell:
+                                          - generic: OK
+                                        - cell: ApiResultString
+                    - generic:
+                      - generic: 响应参数
+                      - generic:
+                        - generic:
+                          - generic:
+                            - generic:
+                              - generic:
+                                - generic:
+                                  - table:
+                                    - rowgroup:
+                                      - row:
+                                        - columnheader:
+                                          - generic:
+                                            - generic: 参数名称
+                                        - columnheader:
+                                          - generic:
+                                            - generic: 参数说明
+                                        - columnheader:
+                                          - generic:
+                                            - generic: 类型
+                                        - columnheader:
+                                          - generic:
+                                            - generic: schema
+                                    - rowgroup:
+                                      - row:
+                                        - cell: code
+                                        - cell: 状态码
+                                        - cell: string
+                                        - cell
+                                      - row:
+                                        - cell: message
+                                        - cell: 返回信息
+                                        - cell: string
+                                        - cell
+                                      - row:
+                                        - cell: data
+                                        - cell: 返回数据
+                                        - cell: string
+                                        - cell
+                      - generic: 响应示例
+                      - generic:
+                        - generic:
+                          - generic:
+                            - textbox
+                            - generic [ref=e549]:
+                              - generic [ref=e550]: "1"
+                              - generic [ref=e552]: "2"
+                              - generic [ref=e553]: "3"
+                              - generic [ref=e554]: "4"
+                              - generic [ref=e555]: "5"
+                            - generic:
+                              - generic:
+                                - generic:
+                                  - generic: "{"
+                                  - generic:
+                                    - text: "\"code\": \"\","
+                                    - generic: 状态码
+                                  - generic:
+                                    - text: "\"message\": \"\","
+                                    - generic: 返回信息
+                                  - generic:
+                                    - text: "\"data\": \"\""
+                                    - generic: 返回数据
+                                  - generic: "}"
+        - main:
+          - generic:
+            - generic:
+              - tablist:
+                - generic:
+                  - generic:
+                    - generic:
+                      - generic:
+                        - img
+                  - generic:
+                    - generic:
+                      - generic:
+                        - img
+                  - generic:
+                    - generic:
+                      - generic:
+                        - generic:
+                          - tab [selected]:
+                            - generic:
+                              - generic:
+                                - img
+                              - text: 文档
+                          - tab:
+                            - generic:
+                              - generic:
+                                - img
+                              - text: 调试
+                          - tab:
+                            - generic:
+                              - generic:
+                                - img
+                              - text: Open
+                          - tab:
+                            - generic:
+                              - generic:
+                                - img
+                              - text: Script
+              - generic:
+                - tabpanel:
+                  - generic:
+                    - generic:
+                      - generic:
+                        - generic: 更新组织
+                        - generic: 复制接口
+                        - generic: 复制文档
+                        - generic: 复制地址
+                      - generic:
+                        - generic:
+                          - generic: PUT
+                          - generic: "/api/auth/orgs/{id}"
+                      - generic:
+                        - generic:
+                          - generic:
+                            - generic: 请求数据类型
+                            - text: application/json
+                        - generic:
+                          - generic:
+                            - generic: 响应数据类型
+                            - text: "[ \"*/*\" ]"
+                    - generic:
+                      - generic: 接口描述
+                      - generic:
+                        - paragraph: 更新组织信息
+                    - generic:
+                      - generic: 请求示例
+                      - generic:
+                        - generic:
+                          - textbox
+                          - generic [ref=e625]:
+                            - generic [ref=e626]: "1"
+                            - generic [ref=e628]: "2"
+                            - generic [ref=e629]: "3"
+                            - generic [ref=e630]: "4"
+                            - generic [ref=e631]: "5"
+                            - generic [ref=e632]: "6"
+                            - generic [ref=e633]: "7"
+                            - generic [ref=e634]: "8"
+                            - generic [ref=e635]: "9"
+                            - generic [ref=e636]: "10"
+                            - generic [ref=e637]: "11"
+                          - generic:
+                            - generic:
+                              - generic:
+                                - generic: "{"
+                                - generic: "\"id\": 1,"
+                                - generic:
+                                  - text: "\"name\":"
+                                  - generic:
+                                    - text: "\""
+                                    - generic: 技
+                                    - generic: 术
+                                    - generic: 部
+                                    - text: "\""
+                                  - text: ","
+                                - generic: "\"code\": \"TECH\","
+                                - generic:
+                                  - text: "\"leader\":"
+                                  - generic:
+                                    - text: "\""
+                                    - generic: 张
+                                    - generic: 三
+                                    - text: "\""
+                                  - text: ","
+                                - generic: "\"phone\": 13800138000,"
+                                - generic:
+                                  - text: "\"address\":"
+                                  - generic:
+                                    - text: "\""
+                                    - generic: 北
+                                    - generic: 京
+                                    - generic: 市
+                                    - generic: 朝
+                                    - generic: 阳
+                                    - generic: 区
+                                    - text: "\""
+                                  - text: ","
+                                - generic: "\"parentId\": 1,"
+                                - generic: "\"type\": \"TEAM\","
+                                - generic: "\"status\": 1"
+                                - generic: "}"
+                    - generic: 请求参数
+                    - generic:
+                      - generic:
+                        - generic:
+                          - generic:
+                            - generic:
+                              - generic:
+                                - table:
+                                  - rowgroup:
+                                    - row:
+                                      - columnheader:
+                                        - generic:
+                                          - generic: 参数名称
+                                      - columnheader:
+                                        - generic:
+                                          - generic: 参数说明
+                                      - columnheader:
+                                        - generic:
+                                          - generic: 请求类型
+                                      - columnheader:
+                                        - generic:
+                                          - generic: 是否必须
+                                      - columnheader:
+                                        - generic:
+                                          - generic: 数据类型
+                                      - columnheader:
+                                        - generic:
+                                          - generic: schema
+                                  - rowgroup:
+                                    - row:
+                                      - cell: id
+                                      - cell
+                                      - cell: path
+                                      - cell: "true"
+                                      - cell:
+                                        - generic: string
+                                      - cell
+                                    - row:
+                                      - cell:
+                                        - button: "-"
+                                        - text: updateOrgReq
+                                      - cell: 更新组织请求
+                                      - cell: body
+                                      - cell: "true"
+                                      - cell:
+                                        - generic: UpdateOrgReq
+                                      - cell: UpdateOrgReq
+                                    - row:
+                                      - cell: id
+                                      - cell:
+                                        - text: 组织ID
+                                        - generic: ",示例值(1)"
+                                      - cell
+                                      - cell: "true"
+                                      - cell:
+                                        - generic: string
+                                      - cell
+                                    - row:
+                                      - cell: name
+                                      - cell:
+                                        - text: 组织名称
+                                        - generic: ",示例值(技术部)"
+                                      - cell
+                                      - cell: "false"
+                                      - cell:
+                                        - generic: string
+                                      - cell
+                                    - row:
+                                      - cell: code
+                                      - cell:
+                                        - text: 组织编码
+                                        - generic: ",示例值(TECH)"
+                                      - cell
+                                      - cell: "false"
+                                      - cell:
+                                        - generic: string
+                                      - cell
+                                    - row:
+                                      - cell: leader
+                                      - cell:
+                                        - text: 负责人
+                                        - generic: ",示例值(张三)"
+                                      - cell
+                                      - cell: "false"
+                                      - cell:
+                                        - generic: string
+                                      - cell
+                                    - row:
+                                      - cell: phone
+                                      - cell:
+                                        - text: 联系电话
+                                        - generic: ",示例值(13800138000)"
+                                      - cell
+                                      - cell: "false"
+                                      - cell:
+                                        - generic: string
+                                      - cell
+                                    - row:
+                                      - cell: address
+                                      - cell:
+                                        - text: 地址
+                                        - generic: ",示例值(北京市朝阳区)"
+                                      - cell
+                                      - cell: "false"
+                                      - cell:
+                                        - generic: string
+                                      - cell
+                                    - row:
+                                      - cell: parentId
+                                      - cell:
+                                        - text: 父级组织ID
+                                        - generic: ",示例值(1)"
+                                      - cell
+                                      - cell: "false"
+                                      - cell:
+                                        - generic: string
+                                      - cell
+                                    - row:
+                                      - cell: type
+                                      - cell:
+                                        - text: "类型: COMPANY-公司, DEPARTMENT-部门, TEAM-小组"
+                                        - generic: ",示例值(TEAM)"
+                                      - cell
+                                      - cell: "false"
+                                      - cell:
+                                        - generic: string
+                                      - cell
+                                    - row:
+                                      - cell: status
+                                      - cell:
+                                        - text: "状态: 0-禁用, 1-启用"
+                                        - generic: ",示例值(1)"
+                                      - cell
+                                      - cell: "false"
+                                      - cell:
+                                        - generic: integer(int32)
+                                      - cell
+                    - generic:
+                      - generic: 响应状态
+                      - generic:
+                        - generic:
+                          - generic:
+                            - generic:
+                              - generic:
+                                - generic:
+                                  - table:
+                                    - rowgroup:
+                                      - row:
+                                        - columnheader:
+                                          - generic:
+                                            - generic: 状态码
+                                        - columnheader:
+                                          - generic:
+                                            - generic: 说明
+                                        - columnheader:
+                                          - generic:
+                                            - generic: schema
+                                    - rowgroup:
+                                      - row:
+                                        - cell: "200"
+                                        - cell:
+                                          - generic: OK
+                                        - cell: ApiResultString
+                    - generic:
+                      - generic: 响应参数
+                      - generic:
+                        - generic:
+                          - generic:
+                            - generic:
+                              - generic:
+                                - generic:
+                                  - table:
+                                    - rowgroup:
+                                      - row:
+                                        - columnheader:
+                                          - generic:
+                                            - generic: 参数名称
+                                        - columnheader:
+                                          - generic:
+                                            - generic: 参数说明
+                                        - columnheader:
+                                          - generic:
+                                            - generic: 类型
+                                        - columnheader:
+                                          - generic:
+                                            - generic: schema
+                                    - rowgroup:
+                                      - row:
+                                        - cell: code
+                                        - cell: 状态码
+                                        - cell: string
+                                        - cell
+                                      - row:
+                                        - cell: message
+                                        - cell: 返回信息
+                                        - cell: string
+                                        - cell
+                                      - row:
+                                        - cell: data
+                                        - cell: 返回数据
+                                        - cell: string
+                                        - cell
+                      - generic: 响应示例
+                      - generic:
+                        - generic:
+                          - generic:
+                            - textbox
+                            - generic [ref=e864]:
+                              - generic [ref=e865]: "1"
+                              - generic [ref=e867]: "2"
+                              - generic [ref=e868]: "3"
+                              - generic [ref=e869]: "4"
+                              - generic [ref=e870]: "5"
+                            - generic:
+                              - generic:
+                                - generic:
+                                  - generic: "{"
+                                  - generic:
+                                    - text: "\"code\": \"\","
+                                    - generic: 状态码
+                                  - generic:
+                                    - text: "\"message\": \"\","
+                                    - generic: 返回信息
+                                  - generic:
+                                    - text: "\"data\": \"\""
+                                    - generic: 返回数据
+                                  - generic: "}"
+        - main:
+          - generic:
+            - generic:
+              - tablist:
+                - generic:
+                  - generic:
+                    - generic:
+                      - generic:
+                        - img
+                  - generic:
+                    - generic:
+                      - generic:
+                        - img
+                  - generic:
+                    - generic:
+                      - generic:
+                        - generic:
+                          - tab [selected]:
+                            - generic:
+                              - generic:
+                                - img
+                              - text: 文档
+                          - tab:
+                            - generic:
+                              - generic:
+                                - img
+                              - text: 调试
+                          - tab:
+                            - generic:
+                              - generic:
+                                - img
+                              - text: Open
+                          - tab:
+                            - generic:
+                              - generic:
+                                - img
+                              - text: Script
+              - generic:
+                - tabpanel:
+                  - generic:
+                    - generic:
+                      - generic:
+                        - generic: 获取组织详情
+                        - generic: 复制接口
+                        - generic: 复制文档
+                        - generic: 复制地址
+                      - generic:
+                        - generic:
+                          - generic: GET
+                          - generic: "/api/auth/orgs/{id}"
+                      - generic:
+                        - generic:
+                          - generic:
+                            - generic: 请求数据类型
+                            - text: application/x-www-form-urlencoded
+                        - generic:
+                          - generic:
+                            - generic: 响应数据类型
+                            - text: "[ \"*/*\" ]"
+                    - generic:
+                      - generic: 接口描述
+                      - generic:
+                        - paragraph: 根据 ID 获取组织详情
+                    - generic: 请求参数
+                    - generic:
+                      - generic:
+                        - generic:
+                          - generic:
+                            - generic:
+                              - generic:
+                                - table:
+                                  - rowgroup:
+                                    - row:
+                                      - columnheader:
+                                        - generic:
+                                          - generic: 参数名称
+                                      - columnheader:
+                                        - generic:
+                                          - generic: 参数说明
+                                      - columnheader:
+                                        - generic:
+                                          - generic: 请求类型
+                                      - columnheader:
+                                        - generic:
+                                          - generic: 是否必须
+                                      - columnheader:
+                                        - generic:
+                                          - generic: 数据类型
+                                      - columnheader:
+                                        - generic:
+                                          - generic: schema
+                                  - rowgroup:
+                                    - row:
+                                      - cell: id
+                                      - cell
+                                      - cell: path
+                                      - cell: "true"
+                                      - cell:
+                                        - generic: string
+                                      - cell
+                    - generic:
+                      - generic: 响应状态
+                      - generic:
+                        - generic:
+                          - generic:
+                            - generic:
+                              - generic:
+                                - generic:
+                                  - table:
+                                    - rowgroup:
+                                      - row:
+                                        - columnheader:
+                                          - generic:
+                                            - generic: 状态码
+                                        - columnheader:
+                                          - generic:
+                                            - generic: 说明
+                                        - columnheader:
+                                          - generic:
+                                            - generic: schema
+                                    - rowgroup:
+                                      - row:
+                                        - cell: "200"
+                                        - cell:
+                                          - generic: OK
+                                        - cell: ApiResultOrgDetailResp
+                    - generic:
+                      - generic: 响应参数
+                      - generic:
+                        - generic:
+                          - generic:
+                            - generic:
+                              - generic:
+                                - generic:
+                                  - table:
+                                    - rowgroup:
+                                      - row:
+                                        - columnheader:
+                                          - generic:
+                                            - generic: 参数名称
+                                        - columnheader:
+                                          - generic:
+                                            - generic: 参数说明
+                                        - columnheader:
+                                          - generic:
+                                            - generic: 类型
+                                        - columnheader:
+                                          - generic:
+                                            - generic: schema
+                                    - rowgroup:
+                                      - row:
+                                        - cell: code
+                                        - cell: 状态码
+                                        - cell: string
+                                        - cell
+                                      - row:
+                                        - cell: message
+                                        - cell: 返回信息
+                                        - cell: string
+                                        - cell
+                                      - row:
+                                        - cell:
+                                          - button: "-"
+                                          - text: data
+                                        - cell: 返回数据
+                                        - cell: OrgDetailResp
+                                        - cell: OrgDetailResp
+                                      - row:
+                                        - cell: id
+                                        - cell: 组织ID
+                                        - cell: string
+                                        - cell
+                                      - row:
+                                        - cell: name
+                                        - cell: 组织名称
+                                        - cell: string
+                                        - cell
+                                      - row:
+                                        - cell: code
+                                        - cell: 组织编码
+                                        - cell: string
+                                        - cell
+                                      - row:
+                                        - cell: leader
+                                        - cell: 负责人
+                                        - cell: string
+                                        - cell
+                                      - row:
+                                        - cell: phone
+                                        - cell: 联系电话
+                                        - cell: string
+                                        - cell
+                                      - row:
+                                        - cell: address
+                                        - cell: 地址
+                                        - cell: string
+                                        - cell
+                                      - row:
+                                        - cell: type
+                                        - cell: "类型: COMPANY-公司, DEPARTMENT-部门, TEAM-小组"
+                                        - cell: string
+                                        - cell
+                                      - row:
+                                        - cell: status
+                                        - cell: "状态: 0-禁用, 1-启用"
+                                        - cell: integer(int32)
+                                        - cell
+                                      - row:
+                                        - cell: parentId
+                                        - cell: 父级组织ID
+                                        - cell: string
+                                        - cell
+                      - generic: 响应示例
+                      - generic:
+                        - generic:
+                          - generic:
+                            - textbox
+                            - generic [ref=e1113]:
+                              - generic [ref=e1114]: "1"
+                              - generic [ref=e1116]: "2"
+                              - generic [ref=e1117]: "3"
+                              - generic [ref=e1118]: "4"
+                              - generic [ref=e1120]: "5"
+                              - generic [ref=e1121]: "6"
+                              - generic [ref=e1122]: "7"
+                              - generic [ref=e1123]: "8"
+                              - generic [ref=e1124]: "9"
+                              - generic [ref=e1125]: "10"
+                              - generic [ref=e1126]: "11"
+                              - generic [ref=e1127]: "12"
+                              - generic [ref=e1128]: "13"
+                              - generic [ref=e1129]: "14"
+                              - generic [ref=e1130]: "15"
+                            - generic:
+                              - generic:
+                                - generic:
+                                  - generic: "{"
+                                  - generic:
+                                    - text: "\"code\": \"\","
+                                    - generic: 状态码
+                                  - generic:
+                                    - text: "\"message\": \"\","
+                                    - generic: 返回信息
+                                  - generic:
+                                    - text: "\"data\": {"
+                                    - generic: 返回数据
+                                  - generic:
+                                    - text: "\"id\": 1,"
+                                    - generic: 组织ID
+                                  - generic:
+                                    - text: "\"name\":"
+                                    - generic:
+                                      - text: "\""
+                                      - generic: 技
+                                      - generic: 术
+                                      - generic: 部
+                                      - text: "\""
+                                    - text: ","
+                                    - generic: 组织名称
+                                  - generic:
+                                    - text: "\"code\": \"TECH\","
+                                    - generic: 组织编码
+                                  - generic:
+                                    - text: "\"leader\":"
+                                    - generic:
+                                      - text: "\""
+                                      - generic: 张
+                                      - generic: 三
+                                      - text: "\""
+                                    - text: ","
+                                    - generic: 负责人
+                                  - generic:
+                                    - text: "\"phone\": 13800138000,"
+                                    - generic: 联系电话
+                                  - generic:
+                                    - text: "\"address\":"
+                                    - generic:
+                                      - text: "\""
+                                      - generic: 北
+                                      - generic: 京
+                                      - generic: 市
+                                      - generic: 朝
+                                      - generic: 阳
+                                      - generic: 区
+                                      - text: "\""
+                                    - text: ","
+                                    - generic: 地址
+                                  - generic:
+                                    - text: "\"type\": \"DEPARTMENT\","
+                                    - generic: "类型: COMPANY-公司, DEPARTMENT-部门, TEAM-小组"
+                                  - generic:
+                                    - text: "\"status\": 1,"
+                                    - generic: "状态: 0-禁用, 1-启用"
+                                  - generic:
+                                    - text: "\"parentId\": 1"
+                                    - generic: 父级组织ID
+                                  - generic: "}"
+                                  - generic: "}"
+        - main:
+          - generic:
+            - generic:
+              - tablist:
+                - generic:
+                  - generic:
+                    - generic:
+                      - generic:
+                        - img
+                  - generic:
+                    - generic:
+                      - generic:
+                        - img
+                  - generic:
+                    - generic:
+                      - generic:
+                        - generic:
+                          - tab [selected]:
+                            - generic:
+                              - generic:
+                                - img
+                              - text: 文档
+                          - tab:
+                            - generic:
+                              - generic:
+                                - img
+                              - text: 调试
+                          - tab:
+                            - generic:
+                              - generic:
+                                - img
+                              - text: Open
+                          - tab:
+                            - generic:
+                              - generic:
+                                - img
+                              - text: Script
+              - generic:
+                - tabpanel:
+                  - generic:
+                    - generic:
+                      - generic:
+                        - generic: 删除组织
+                        - generic: 复制接口
+                        - generic: 复制文档
+                        - generic: 复制地址
+                      - generic:
+                        - generic:
+                          - generic: DELETE
+                          - generic: "/api/auth/orgs/{id}"
+                      - generic:
+                        - generic:
+                          - generic:
+                            - generic: 请求数据类型
+                            - text: application/x-www-form-urlencoded
+                        - generic:
+                          - generic:
+                            - generic: 响应数据类型
+                            - text: "[ \"*/*\" ]"
+                    - generic:
+                      - generic: 接口描述
+                      - generic:
+                        - paragraph: 根据 ID 删除组织
+                    - generic: 请求参数
+                    - generic:
+                      - generic:
+                        - generic:
+                          - generic:
+                            - generic:
+                              - generic:
+                                - table:
+                                  - rowgroup:
+                                    - row:
+                                      - columnheader:
+                                        - generic:
+                                          - generic: 参数名称
+                                      - columnheader:
+                                        - generic:
+                                          - generic: 参数说明
+                                      - columnheader:
+                                        - generic:
+                                          - generic: 请求类型
+                                      - columnheader:
+                                        - generic:
+                                          - generic: 是否必须
+                                      - columnheader:
+                                        - generic:
+                                          - generic: 数据类型
+                                      - columnheader:
+                                        - generic:
+                                          - generic: schema
+                                  - rowgroup:
+                                    - row:
+                                      - cell: id
+                                      - cell
+                                      - cell: path
+                                      - cell: "true"
+                                      - cell:
+                                        - generic: string
+                                      - cell
+                    - generic:
+                      - generic: 响应状态
+                      - generic:
+                        - generic:
+                          - generic:
+                            - generic:
+                              - generic:
+                                - generic:
+                                  - table:
+                                    - rowgroup:
+                                      - row:
+                                        - columnheader:
+                                          - generic:
+                                            - generic: 状态码
+                                        - columnheader:
+                                          - generic:
+                                            - generic: 说明
+                                        - columnheader:
+                                          - generic:
+                                            - generic: schema
+                                    - rowgroup:
+                                      - row:
+                                        - cell: "200"
+                                        - cell:
+                                          - generic: OK
+                                        - cell: ApiResultVoid
+                    - generic:
+                      - generic: 响应参数
+                      - generic:
+                        - generic:
+                          - generic:
+                            - generic:
+                              - generic:
+                                - generic:
+                                  - table:
+                                    - rowgroup:
+                                      - row:
+                                        - columnheader:
+                                          - generic:
+                                            - generic: 参数名称
+                                        - columnheader:
+                                          - generic:
+                                            - generic: 参数说明
+                                        - columnheader:
+                                          - generic:
+                                            - generic: 类型
+                                        - columnheader:
+                                          - generic:
+                                            - generic: schema
+                                    - rowgroup:
+                                      - row:
+                                        - cell: code
+                                        - cell: 状态码
+                                        - cell: string
+                                        - cell
+                                      - row:
+                                        - cell: message
+                                        - cell: 返回信息
+                                        - cell: string
+                                        - cell
+                                      - row:
+                                        - cell: data
+                                        - cell: 返回数据
+                                        - cell: string
+                                        - cell
+                      - generic: 响应示例
+                      - generic:
+                        - generic:
+                          - generic:
+                            - textbox
+                            - generic [ref=e1318]:
+                              - generic [ref=e1319]: "1"
+                              - generic [ref=e1321]: "2"
+                              - generic [ref=e1322]: "3"
+                              - generic [ref=e1323]: "4"
+                              - generic [ref=e1324]: "5"
+                            - generic:
+                              - generic:
+                                - generic:
+                                  - generic: "{"
+                                  - generic:
+                                    - text: "\"code\": \"\","
+                                    - generic: 状态码
+                                  - generic:
+                                    - text: "\"message\": \"\","
+                                    - generic: 返回信息
+                                  - generic:
+                                    - text: "\"data\": {}"
+                                    - generic: 返回数据
+                                  - generic: "}"
+        - tabpanel [ref=e1333]:
+          - main [ref=e1334]:
+            - generic [ref=e1336]:
+              - tablist [ref=e1337]:
+                - generic [ref=e1338]:
+                  - generic:
+                    - generic:
+                      - 'generic "icon: up"':
+                        - img
+                  - generic:
+                    - generic:
+                      - 'generic "icon: down"':
+                        - img
+                  - generic [ref=e1342]:
+                    - tab "文档" [selected] [ref=e1343] [cursor=pointer]:
+                      - generic [ref=e1344]:
+                        - img [ref=e1346]
+                        - text: 文档
+                    - tab "调试" [ref=e1348] [cursor=pointer]:
+                      - generic [ref=e1349]:
+                        - img [ref=e1351]
+                        - text: 调试
+                    - 'tab "icon: file-text Open" [ref=e1353] [cursor=pointer]':
+                      - generic [ref=e1354]:
+                        - 'generic "icon: file-text" [ref=e1355]':
+                          - img [ref=e1356]
+                        - text: Open
+                    - 'tab "icon: codepen Script" [ref=e1358] [cursor=pointer]':
+                      - generic [ref=e1359]:
+                        - 'generic "icon: codepen" [ref=e1360]':
+                          - img [ref=e1361]
+                        - text: Script
+              - tabpanel [ref=e1365]:
+                - generic [ref=e1366]:
+                  - generic [ref=e1367]:
+                    - generic [ref=e1368]:
+                      - generic [ref=e1369]: 查询组织树
+                      - generic [ref=e1370] [cursor=pointer]: 复制接口
+                      - generic [ref=e1371] [cursor=pointer]: 复制文档
+                      - generic [ref=e1372] [cursor=pointer]: 复制地址
+                    - generic [ref=e1374] [cursor=pointer]:
+                      - generic [ref=e1375]: GET
+                      - generic [ref=e1376]: /api/auth/orgs/tree
+                    - generic [ref=e1377]:
+                      - generic [ref=e1379]:
+                        - generic [ref=e1380]: 请求数据类型
+                        - text: application/x-www-form-urlencoded
+                      - generic [ref=e1382]:
+                        - generic [ref=e1383]: 响应数据类型
+                        - text: "[ \"*/*\" ]"
+                  - generic [ref=e1384]:
+                    - generic [ref=e1385]: 接口描述
+                    - paragraph [ref=e1387]: 查询组织树形结构
+                  - generic [ref=e1388]: 请求参数
+                  - generic [ref=e1393]:
+                    - table [ref=e1395]:
+                      - rowgroup [ref=e1403]:
+                        - row "参数名称 参数说明 请求类型 是否必须 数据类型 schema" [ref=e1404]:
+                          - columnheader "参数名称" [ref=e1405]:
+                            - generic [ref=e1407]: 参数名称
+                          - columnheader "参数说明" [ref=e1408]:
+                            - generic [ref=e1410]: 参数说明
+                          - columnheader "请求类型" [ref=e1411]:
+                            - generic [ref=e1413]: 请求类型
+                          - columnheader "是否必须" [ref=e1414]:
+                            - generic [ref=e1416]: 是否必须
+                          - columnheader "数据类型" [ref=e1417]:
+                            - generic [ref=e1419]: 数据类型
+                          - columnheader "schema" [ref=e1420]:
+                            - generic [ref=e1422]: schema
+                      - rowgroup
+                    - generic [ref=e1424]:
+                      - img [ref=e1426]
+                      - paragraph [ref=e1432]: No Data
+                  - generic [ref=e1433]:
+                    - generic [ref=e1434]: 响应状态
+                    - table [ref=e1441]:
+                      - rowgroup [ref=e1446]:
+                        - row "状态码 说明 schema" [ref=e1447]:
+                          - columnheader "状态码" [ref=e1448]:
+                            - generic [ref=e1450]: 状态码
+                          - columnheader "说明" [ref=e1451]:
+                            - generic [ref=e1453]: 说明
+                          - columnheader "schema" [ref=e1454]:
+                            - generic [ref=e1456]: schema
+                      - rowgroup [ref=e1457]:
+                        - row "200 OK ApiResultListOrgTreeResp" [ref=e1458]:
+                          - cell "200" [ref=e1459]
+                          - cell "OK" [ref=e1460]:
+                            - generic [ref=e1461]: OK
+                          - cell "ApiResultListOrgTreeResp" [ref=e1462]
+                  - generic [ref=e1463]:
+                    - generic [ref=e1464]: 响应参数
+                    - table [ref=e1471]:
+                      - rowgroup [ref=e1477]:
+                        - row "参数名称 参数说明 类型 schema" [ref=e1478]:
+                          - columnheader "参数名称" [ref=e1479]:
+                            - generic [ref=e1481]: 参数名称
+                          - columnheader "参数说明" [ref=e1482]:
+                            - generic [ref=e1484]: 参数说明
+                          - columnheader "类型" [ref=e1485]:
+                            - generic [ref=e1487]: 类型
+                          - columnheader "schema" [ref=e1488]:
+                            - generic [ref=e1490]: schema
+                      - rowgroup [ref=e1491]:
+                        - row "code 状态码 string" [ref=e1492]:
+                          - cell "code" [ref=e1493]: code
+                          - cell "状态码" [ref=e1494]
+                          - cell "string" [ref=e1495]
+                          - cell [ref=e1496]
+                        - row "message 返回信息 string" [ref=e1497]:
+                          - cell "message" [ref=e1498]: message
+                          - cell "返回信息" [ref=e1499]
+                          - cell "string" [ref=e1500]
+                          - cell [ref=e1501]
+                        - row "Collapse row data 返回数据 array OrgTreeResp" [ref=e1502]:
+                          - cell "Collapse row data" [ref=e1503]:
+                            - button "Collapse row" [ref=e1504] [cursor=pointer]: "-"
+                            - text: data
+                          - cell "返回数据" [ref=e1505]
+                          - cell "array" [ref=e1506]
+                          - cell "OrgTreeResp" [ref=e1507]
+                        - row "id 组织ID string" [ref=e1508]:
+                          - cell "id" [ref=e1509]: id
+                          - cell "组织ID" [ref=e1511]
+                          - cell "string" [ref=e1512]
+                          - cell [ref=e1513]
+                        - row "name 组织名称 string" [ref=e1514]:
+                          - cell "name" [ref=e1515]: name
+                          - cell "组织名称" [ref=e1517]
+                          - cell "string" [ref=e1518]
+                          - cell [ref=e1519]
+                        - row "code 组织编码 string" [ref=e1520]:
+                          - cell "code" [ref=e1521]: code
+                          - cell "组织编码" [ref=e1523]
+                          - cell "string" [ref=e1524]
+                          - cell [ref=e1525]
+                        - row "leader 负责人 string" [ref=e1526]:
+                          - cell "leader" [ref=e1527]: leader
+                          - cell "负责人" [ref=e1529]
+                          - cell "string" [ref=e1530]
+                          - cell [ref=e1531]
+                        - row "phone 联系电话 string" [ref=e1532]:
+                          - cell "phone" [ref=e1533]: phone
+                          - cell "联系电话" [ref=e1535]
+                          - cell "string" [ref=e1536]
+                          - cell [ref=e1537]
+                        - row "address 地址 string" [ref=e1538]:
+                          - cell "address" [ref=e1539]: address
+                          - cell "地址" [ref=e1541]
+                          - cell "string" [ref=e1542]
+                          - cell [ref=e1543]
+                        - 'row "type 类型: COMPANY-公司, DEPARTMENT-部门, TEAM-小组 string" [ref=e1544]':
+                          - cell "type" [ref=e1545]: type
+                          - 'cell "类型: COMPANY-公司, DEPARTMENT-部门, TEAM-小组" [ref=e1547]'
+                          - cell "string" [ref=e1548]
+                          - cell [ref=e1549]
+                        - 'row "status 状态: 0-禁用, 1-启用 integer(int32)" [ref=e1550]':
+                          - cell "status" [ref=e1551]: status
+                          - 'cell "状态: 0-禁用, 1-启用" [ref=e1553]'
+                          - cell "integer(int32)" [ref=e1554]
+                          - cell [ref=e1555]
+                        - row "parentId 父级组织ID string" [ref=e1556]:
+                          - cell "parentId" [ref=e1557]: parentId
+                          - cell "父级组织ID" [ref=e1559]
+                          - cell "string" [ref=e1560]
+                          - cell [ref=e1561]
+                        - row "children 子组织列表" [ref=e1562]:
+                          - cell "children" [ref=e1563]: children
+                          - cell "子组织列表" [ref=e1565]
+                          - cell [ref=e1566]
+                          - cell [ref=e1567]
+                    - generic [ref=e1568]: 响应示例
+                    - generic [ref=e1571]:
+                      - textbox [ref=e1572]
+                      - generic [ref=e1574]:
+                        - generic [ref=e1575]: "1"
+                        - generic [ref=e1577]: "2"
+                        - generic [ref=e1578]: "3"
+                        - generic [ref=e1579]: "4"
+                        - generic [ref=e1581]: "5"
+                        - generic [ref=e1583]: "6"
+                        - generic [ref=e1584]: "7"
+                        - generic [ref=e1585]: "8"
+                        - generic [ref=e1586]: "9"
+                        - generic [ref=e1587]: "10"
+                        - generic [ref=e1588]: "11"
+                        - generic [ref=e1589]: "12"
+                        - generic [ref=e1590]: "13"
+                        - generic [ref=e1591]: "14"
+                        - generic [ref=e1592]: "15"
+                        - generic [ref=e1593]: "16"
+                        - generic [ref=e1594]: "17"
+                        - generic [ref=e1595]: "18"
+                      - generic [ref=e1598]:
+                        - generic:
+                          - generic: "{"
+                          - generic:
+                            - text: "\"code\": \"\","
+                            - generic: 状态码
+                          - generic:
+                            - text: "\"message\": \"\","
+                            - generic: 返回信息
+                          - generic:
+                            - text: "\"data\": ["
+                            - generic: 返回数据
+                          - generic: "{"
+                          - generic:
+                            - text: "\"id\": 1,"
+                            - generic: 组织ID
+                          - generic:
+                            - text: "\"name\":"
+                            - generic:
+                              - text: "\""
+                              - generic: 技
+                              - generic: 术
+                              - generic: 部
+                              - text: "\""
+                            - text: ","
+                            - generic: 组织名称
+                          - generic:
+                            - text: "\"code\": \"TECH\","
+                            - generic: 组织编码
+                          - generic:
+                            - text: "\"leader\":"
+                            - generic:
+                              - text: "\""
+                              - generic: 张
+                              - generic: 三
+                              - text: "\""
+                            - text: ","
+                            - generic: 负责人
+                          - generic:
+                            - text: "\"phone\": 13800138000,"
+                            - generic: 联系电话
+                          - generic:
+                            - text: "\"address\":"
+                            - generic:
+                              - text: "\""
+                              - generic: 北
+                              - generic: 京
+                              - generic: 市
+                              - generic: 朝
+                              - generic: 阳
+                              - generic: 区
+                              - text: "\""
+                            - text: ","
+                            - generic: 地址
+                          - generic:
+                            - text: "\"type\": \"COMPANY\","
+                            - generic: "类型: COMPANY-公司, DEPARTMENT-部门, TEAM-小组"
+                          - generic:
+                            - text: "\"status\": 1,"
+                            - generic: "状态: 0-禁用, 1-启用"
+                          - generic:
+                            - text: "\"parentId\": 1,"
+                            - generic: 父级组织ID
+                          - generic:
+                            - text: "\"children\": {}"
+                            - generic: 子组织列表
+                          - generic: "}"
+                          - generic: "]"
+                          - generic: "}"
+    - generic [ref=e233]:
+      - text: Apache License 2.0 | Copyright
+      - 'generic "icon: copyright" [ref=e234]':
+        - img [ref=e235]
+      - text: 2019-
+      - link "Knife4j-v4.5.0" [ref=e237] [cursor=pointer]:
+        - /url: https://gitee.com/xiaoym/knife4j

@@ -1,0 +1,176 @@
+- generic [ref=e4]:
+  - complementary [ref=e5]:
+    - generic [ref=e6]:
+      - combobox [ref=e25] [cursor=pointer]:
+        - generic "default" [ref=e27]
+        - 'generic "icon: down" [ref=e29]':
+          - img [ref=e30]
+      - menu [ref=e8]:
+        - menuitem "主页" [ref=e32] [cursor=pointer]:
+          - link "主页" [ref=e33]:
+            - /url: "#/home"
+            - img [ref=e35]
+            - text: 主页
+        - menuitem "Swagger Models" [ref=e37] [cursor=pointer]:
+          - link "Swagger Models" [ref=e38]:
+            - /url: "#/SwaggerModels/default"
+            - img [ref=e40]
+            - text: Swagger Models
+        - menuitem "文档管理" [ref=e42]:
+          - generic [ref=e44] [cursor=pointer]:
+            - img [ref=e46]
+            - text: 文档管理
+        - menuitem "5 按钮管理" [ref=e48]:
+          - generic [ref=e50] [cursor=pointer]:
+            - img [ref=e52]
+            - generic [ref=e54]: "5"
+            - text: 按钮管理
+        - menuitem "5 OAuth2客户端管理" [ref=e55]:
+          - generic [ref=e57] [cursor=pointer]:
+            - img [ref=e59]
+            - generic [ref=e61]: "5"
+            - text: OAuth2客户端管理
+        - menuitem "5 用户管理" [ref=e62]:
+          - generic [ref=e64] [cursor=pointer]:
+            - img [ref=e66]
+            - generic [ref=e68]: "5"
+            - text: 用户管理
+        - menuitem "18 通知模块" [ref=e69]:
+          - generic [ref=e71] [cursor=pointer]:
+            - img [ref=e73]
+            - generic [ref=e75]: "18"
+            - text: 通知模块
+        - menuitem "10 系统参数" [ref=e76]:
+          - generic [ref=e78] [cursor=pointer]:
+            - img [ref=e80]
+            - generic [ref=e82]: "10"
+            - text: 系统参数
+        - menuitem "5 OAuth2账户管理" [ref=e83]:
+          - generic [ref=e85] [cursor=pointer]:
+            - img [ref=e87]
+            - generic [ref=e89]: "5"
+            - text: OAuth2账户管理
+        - menuitem "6 角色管理" [ref=e90]:
+          - generic [ref=e92] [cursor=pointer]:
+            - img [ref=e94]
+            - generic [ref=e96]: "6"
+            - text: 角色管理
+        - menuitem "6 菜单管理" [ref=e97]:
+          - generic [ref=e99] [cursor=pointer]:
+            - img [ref=e101]
+            - generic [ref=e103]: "6"
+            - text: 菜单管理
+        - menuitem "11 数据字典" [ref=e104]:
+          - generic [ref=e106] [cursor=pointer]:
+            - img [ref=e108]
+            - generic [ref=e110]: "11"
+            - text: 数据字典
+        - menuitem "7 组织管理" [ref=e111]:
+          - generic [ref=e113] [cursor=pointer]:
+            - img [ref=e115]
+            - generic [ref=e117]: "7"
+            - text: 组织管理
+        - menuitem "5 权限管理" [ref=e118]:
+          - generic [ref=e120] [cursor=pointer]:
+            - img [ref=e122]
+            - generic [ref=e124]: "5"
+            - text: 权限管理
+        - menuitem "9 前端支撑" [ref=e125]:
+          - generic [ref=e127] [cursor=pointer]:
+            - img [ref=e129]
+            - generic [ref=e131]: "9"
+            - text: 前端支撑
+        - menuitem "6 登录管理" [ref=e132]:
+          - generic [ref=e134] [cursor=pointer]:
+            - img [ref=e136]
+            - generic [ref=e138]: "6"
+            - text: 登录管理
+  - generic [ref=e9]:
+    - generic [ref=e139]:
+      - 'generic "icon: menu-fold" [ref=e11] [cursor=pointer]':
+        - img [ref=e12]
+      - text: OpenAPI definition
+      - generic [ref=e14]:
+        - generic [ref=e140] [cursor=pointer]:
+          - combobox [ref=e142]:
+            - generic [ref=e143]:
+              - list:
+                - listitem [ref=e144]:
+                  - textbox "输入文档关键字搜索" [ref=e146]
+          - 'generic "icon: search" [ref=e147]':
+            - img [ref=e148]
+        - generic [ref=e15] [cursor=pointer]: 中
+    - generic [ref=e16]:
+      - tablist [ref=e17]:
+        - generic [ref=e18]:
+          - generic:
+            - generic:
+              - 'generic "icon: left"':
+                - img
+          - generic:
+            - generic:
+              - 'generic "icon: right"':
+                - img
+          - tab "主页" [selected] [ref=e152] [cursor=pointer]:
+            - generic [ref=e153]: 主页
+      - tabpanel [ref=e155]:
+        - main [ref=e156]:
+          - generic [ref=e158]:
+            - heading "OpenAPI definition" [level=2] [ref=e160]
+            - generic [ref=e161]:
+              - heading "简介" [level=3] [ref=e164]
+              - separator [ref=e166]
+              - heading "作者" [level=3] [ref=e169]
+              - separator [ref=e171]
+              - generic [ref=e172]:
+                - heading "版本" [level=3] [ref=e174]
+                - generic [ref=e175]: v0
+              - separator [ref=e176]
+              - generic [ref=e177]:
+                - heading "host" [level=3] [ref=e179]
+                - generic [ref=e180]: http://127.0.0.1:8080
+              - separator [ref=e181]
+              - generic [ref=e182]:
+                - heading "basePath" [level=3] [ref=e184]
+                - generic [ref=e185]: /
+              - separator [ref=e186]
+              - heading "API服务条款" [level=3] [ref=e189]
+              - separator [ref=e191]
+              - generic [ref=e192]:
+                - heading "分组名称" [level=3] [ref=e194]
+                - generic [ref=e195]: default
+              - separator [ref=e196]
+              - generic [ref=e197]:
+                - heading "分组Url" [level=3] [ref=e199]
+                - generic [ref=e200]: /v3/api-docs
+              - separator [ref=e201]
+              - generic [ref=e202]:
+                - heading "分组location" [level=3] [ref=e204]
+                - generic [ref=e205]: /v3/api-docs
+              - separator [ref=e206]
+              - generic [ref=e207]:
+                - heading "接口统计信息" [level=3] [ref=e209]
+                - generic [ref=e210]:
+                  - generic [ref=e211]:
+                    - generic [ref=e212]: GET
+                    - generic [ref=e214]: "30"
+                    - separator [ref=e215]
+                  - generic [ref=e216]:
+                    - generic [ref=e217]: PUT
+                    - generic [ref=e219]: "20"
+                    - separator [ref=e220]
+                  - generic [ref=e221]:
+                    - generic [ref=e222]: DELETE
+                    - generic [ref=e224]: "14"
+                    - separator [ref=e225]
+                  - generic [ref=e226]:
+                    - generic [ref=e227]: POST
+                    - generic [ref=e229]: "34"
+                    - separator [ref=e230]
+    - generic [ref=e233]:
+      - text: Apache License 2.0 | Copyright
+      - 'generic "icon: copyright" [ref=e234]':
+        - img [ref=e235]
+      - text: 2019-
+      - link "Knife4j-v4.5.0" [ref=e237] [cursor=pointer]:
+        - /url: https://gitee.com/xiaoym/knife4j
