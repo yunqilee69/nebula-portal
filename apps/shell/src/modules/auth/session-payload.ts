@@ -50,3 +50,15 @@ export function buildSessionFromPayload(
     menuList: currentUser.menuList,
   });
 }
+
+export function mergeSessionWithCurrentUser(
+  session: Pick<AuthSession, "token" | "refreshToken" | "accessTokenExpiresIn" | "refreshTokenExpiresIn">,
+  currentUser: ReturnType<typeof normalizeCurrentUser>,
+): AuthSession {
+  return normalizeSessionExpiry({
+    ...session,
+    user: currentUser.user,
+    permissions: currentUser.permissions,
+    menuList: currentUser.menuList,
+  });
+}

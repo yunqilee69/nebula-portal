@@ -1,11 +1,19 @@
 import { create } from "zustand";
 import type { AuthSession } from "@platform/core";
 import { hasPermissionCode } from "@platform/core";
-import { normalizeSessionExpiry } from "./session-utils";
+import { normalizeSessionExpiry, normalizeSessionExpiryFields } from "./session-utils";
 
 const STORAGE_KEY = "nebula-shell-session";
 const ACCESS_TOKEN_COOKIE_KEY = "nebula_access_token";
 const REFRESH_TOKEN_COOKIE_KEY = "nebula_refresh_token";
+
+type PersistedSession = Pick<AuthSession, "token" | "refreshToken" | "accessTokenExpiresIn" | "refreshTokenExpiresIn">;
+
+const EMPTY_USER = {
+  userId: "",
+  username: "",
+  roles: [],
+};
 
 function buildCookie(name: string, value: string, expiresAt?: number) {
   const encoded = encodeURIComponent(value);
@@ -42,6 +50,25 @@ function normalizeSession(session: AuthSession | null) {
   return session ? normalizeSessionExpiry(session) : null;
 }
 
+function toPersistedSession(session: AuthSession): PersistedSession {
+  return normalizeSessionExpiryFields({
+    token: session.token,
+    refreshToken: session.refreshToken,
+    accessTokenExpiresIn: session.accessTokenExpiresIn,
+    refreshTokenExpiresIn: session.refreshTokenExpiresIn,
+  });
+}
+
+function fromPersistedSession(session: PersistedSession): AuthSession {
+  const normalized = normalizeSessionExpiryFields(session);
+  return {
+    ...normalized,
+    user: EMPTY_USER,
+    permissions: [],
+    menuList: undefined,
+  };
+}
+
 interface AuthState {
   session: AuthSession | null;
   hydrated: boolean;
@@ -51,13 +78,27 @@ interface AuthState {
   hydrate: () => void;
 }
 
+function isPersistedSession(value: unknown): value is PersistedSession {
+  if (typeof value !== "object" || value === null) {
+    return false;
+  }
+
+  const candidate = value as Record<string, unknown>;
+  return typeof candidate.token === "string" && candidate.token.length > 0;
+}
+
 function readStoredSession() {
   const raw = localStorage.getItem(STORAGE_KEY);
   if (!raw) {
     return null;
   }
   try {
-    return JSON.parse(raw) as AuthSession;
+    const parsed: unknown = JSON.parse(raw);
+    if (!isPersistedSession(parsed)) {
+      localStorage.removeItem(STORAGE_KEY);
+      return null;
+    }
+    return normalizeSessionExpiryFields(parsed);
   } catch {
     localStorage.removeItem(STORAGE_KEY);
     return null;
@@ -69,7 +110,7 @@ export const useAuthStore = create<AuthState>((set) => ({
   hydrated: false,
   setSession: (session) => {
     const normalizedSession = normalizeSessionExpiry(session);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(normalizedSession));
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(toPersistedSession(normalizedSession)));
     syncSessionCookies(normalizedSession);
     set({ session: normalizedSession, hydrated: true });
   },
@@ -79,7 +120,7 @@ export const useAuthStore = create<AuthState>((set) => ({
       return;
     }
     const next = normalizeSessionExpiry({ ...current, ...patch });
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(toPersistedSession(next)));
     syncSessionCookies(next);
     set({ session: next, hydrated: true });
   },
@@ -89,9 +130,10 @@ export const useAuthStore = create<AuthState>((set) => ({
     set({ session: null, hydrated: true });
   },
   hydrate: () => {
-    const session = normalizeSession(readStoredSession());
+    const storedSession = readStoredSession();
+    const session = storedSession ? fromPersistedSession(storedSession) : null;
     if (session) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(session));
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(toPersistedSession(session)));
     }
     syncSessionCookies(session);
     set({ session, hydrated: true });

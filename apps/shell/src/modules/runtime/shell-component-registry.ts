@@ -18,6 +18,7 @@ export function registerShellComponents() {
     "shell/OperationsPermissionPage": async () => ({ default: (await import("@/pages/operations/permission/index")).OperationsPermissionPage }),
     "shell/AdvancedParamPage": async () => ({ default: (await import("@/pages/advanced/param/index")).AdvancedParamPage }),
     "shell/AdvancedConfigPage": async () => ({ default: (await import("@/pages/advanced/config/index")).AdvancedConfigPage }),
+    "shell/AdvancedCachePage": async () => ({ default: (await import("@/pages/advanced/cache/index")).AdvancedCachePage }),
     "shell/NotificationsTemplatePage": async () => ({ default: (await import("@/pages/notifications/template/index")).NotificationsTemplatePage }),
     "shell/NotificationsRecordPage": async () => ({ default: (await import("@/pages/notifications/record/index")).NotificationsRecordPage }),
     "shell/NotificationsAnnouncementPage": async () => ({ default: (await import("@/pages/notifications/announcement/index")).NotificationsAnnouncementPage }),

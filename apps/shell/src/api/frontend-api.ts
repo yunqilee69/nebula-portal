@@ -1,5 +1,5 @@
 import type { LocaleCode } from "@platform/core";
-import { requestGet, requestPost, requestPut } from "./client";
+import { requestDelete, requestGet, requestPost, requestPut } from "./client";
 
 export interface FrontendConfigDto {
   projectName: string;
@@ -59,6 +59,21 @@ export interface FrontendInitDto {
   defaultTheme?: FrontendThemeDto;
 }
 
+export interface FrontendCacheEntry {
+  cacheKey: string;
+  cacheValueJson: string | null;
+  cacheValueType: string | null;
+  ttlSeconds: number | null;
+  remainingTtlSeconds: number | null;
+}
+
+export interface FrontendCacheGroup {
+  cacheName: string;
+  defaultTtlSeconds: number | null;
+  entryCount: number;
+  entries: FrontendCacheEntry[];
+}
+
 export interface SaveFrontendConfigPayload {
   projectName: string;
   layoutMode: "side" | "top" | "mix";
@@ -99,4 +114,13 @@ export async function fetchFrontendConfig() {
 
 export async function saveFrontendConfig(payload: SaveFrontendConfigPayload) {
   return requestPut<FrontendConfigDto>("/api/frontend/config", payload, { silent: true });
+}
+
+export async function fetchFrontendCaches() {
+  return requestGet<FrontendCacheGroup[]>("/api/frontend/caches", undefined, { silent: true });
+}
+
+export async function deleteFrontendCacheEntry(cacheName: string, cacheKey: string) {
+  const searchParams = new URLSearchParams({ cacheName, cacheKey });
+  return requestDelete<null>(`/api/frontend/caches/entries?${searchParams.toString()}`, { silent: true });
 }

@@ -1,5 +1,10 @@
 import type { AuthSession } from "@platform/core";
 
+interface SessionExpiryFields {
+  accessTokenExpiresIn?: number;
+  refreshTokenExpiresIn?: number;
+}
+
 function normalizeExpiryTimestamp(expiresAt?: number) {
   if (typeof expiresAt !== "number" || !Number.isFinite(expiresAt) || expiresAt <= 0) {
     return undefined;
@@ -16,12 +21,16 @@ function normalizeExpiryTimestamp(expiresAt?: number) {
   return Date.now() + expiresAt * 1000;
 }
 
-export function normalizeSessionExpiry(session: AuthSession): AuthSession {
+export function normalizeSessionExpiryFields<T extends SessionExpiryFields>(session: T): T {
   return {
     ...session,
     accessTokenExpiresIn: normalizeExpiryTimestamp(session.accessTokenExpiresIn),
     refreshTokenExpiresIn: normalizeExpiryTimestamp(session.refreshTokenExpiresIn),
   };
+}
+
+export function normalizeSessionExpiry(session: AuthSession): AuthSession {
+  return normalizeSessionExpiryFields(session);
 }
 
 export function shouldRefreshSession(session: AuthSession, skewMs = 60_000) {

@@ -1,13 +1,14 @@
 import { AppContextProvider, bootstrapRegisteredModules, buildModuleRoutes, buildRoutesFromMenus, eventBus } from "@platform/core";
 import type { AppContextValue, ModuleLoadResult } from "@platform/core";
 import { Spin } from "antd";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { BrowserRouter, Navigate, useNavigate, useRoutes } from "react-router-dom";
 import { AppErrorBoundary } from "./components/app-error-boundary";
-import { refreshSession } from "./api/auth-api";
+import { fetchCurrentUser, refreshSession } from "./api/auth-api";
 import { AuthGuard } from "./modules/auth/auth-guard";
 import { LoginPage } from "./modules/auth/login-page";
 import { useAuthStore } from "./modules/auth/auth-store";
+import { mergeSessionWithCurrentUser } from "./modules/auth/session-payload";
 import { resolveRefreshDelay, shouldRefreshSession } from "./modules/auth/session-utils";
 import { BasicLayout } from "./layout/basic-layout";
 import { UnauthorizedPage } from "./pages/401";
@@ -26,6 +27,14 @@ import { useNotifyStore } from "./modules/notify/notify-store";
 import { useResourceStore } from "./modules/runtime/resource-store";
 
 registerShellComponents();
+
+function AppLoadingFallback() {
+  return (
+    <div style={{ minHeight: "100vh", display: "grid", placeItems: "center" }}>
+      <Spin size="large" />
+    </div>
+  );
+}
 
 function AppRouter() {
   const navigate = useNavigate();
@@ -73,15 +82,37 @@ function AppRouter() {
       }
 
       if (!shouldRefreshSession(storedSession)) {
-        if (active) {
-          setAuthReady(true);
+        try {
+          const currentUser = await fetchCurrentUser(storedSession.token);
+          if (active) {
+            setSession(mergeSessionWithCurrentUser(storedSession, currentUser));
+          }
+        } catch {
+          if (active) {
+            clearSession();
+          }
+        } finally {
+          if (active) {
+            setAuthReady(true);
+          }
         }
         return;
       }
 
       if (!storedSession.refreshToken) {
-        if (active) {
-          setAuthReady(true);
+        try {
+          const currentUser = await fetchCurrentUser(storedSession.token);
+          if (active) {
+            setSession(mergeSessionWithCurrentUser(storedSession, currentUser));
+          }
+        } catch {
+          if (active) {
+            clearSession();
+          }
+        } finally {
+          if (active) {
+            setAuthReady(true);
+          }
         }
         return;
       }
@@ -223,6 +254,7 @@ function AppRouter() {
     },
     { path: "*", element: <Navigate to={session?.token ? "/" : "/login"} replace /> },
   ];
+  const routedElement = useRoutes(routes);
 
   const waitingForProtectedRoutes = Boolean(
     authReady
@@ -233,14 +265,16 @@ function AppRouter() {
   );
 
   if (!hydrated || !authReady || !frontendHydrated || waitingForProtectedRoutes) {
-    return (
-      <div style={{ minHeight: "100vh", display: "grid", placeItems: "center" }}>
-        <Spin size="large" />
-      </div>
-    );
+    return <AppLoadingFallback />;
   }
 
-  return <AppContextProvider value={appContext}>{useRoutes(routes)}</AppContextProvider>;
+  return (
+    <AppContextProvider value={appContext}>
+      <Suspense fallback={<AppLoadingFallback />}>
+        {routedElement}
+      </Suspense>
+    </AppContextProvider>
+  );
 }
 
 export default function App() {

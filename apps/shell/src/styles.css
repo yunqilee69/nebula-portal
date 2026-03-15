@@ -390,6 +390,170 @@ body,
   gap: var(--shell-content-gap);
 }
 
+.cache-management-layout {
+  display: grid;
+  grid-template-columns: minmax(220px, 280px) minmax(340px, 440px) minmax(0, 1fr);
+  gap: var(--shell-content-gap);
+  height: 100%;
+  min-height: 0;
+  align-items: stretch;
+}
+
+.cache-management-layout__panel.ant-card {
+  min-height: 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.cache-management-layout__panel .ant-card-body {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.cache-management-layout__group-list,
+.cache-management-layout__keys-pane,
+.cache-management-layout__detail-pane {
+  flex: 1;
+  min-height: 0;
+}
+
+.cache-management-layout__group-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  overflow: auto;
+}
+
+.cache-management-layout__group-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 16px;
+  border: 1px solid var(--shell-border);
+  border-radius: 12px;
+  background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.cache-management-layout__group-item:hover {
+  border-color: rgba(47, 128, 255, 0.4);
+  box-shadow: 0 12px 30px rgba(47, 128, 255, 0.08);
+  transform: translateY(-1px);
+}
+
+.cache-management-layout__group-item--active {
+  border-color: rgba(47, 128, 255, 0.48);
+  box-shadow: 0 14px 32px rgba(47, 128, 255, 0.12);
+  background: linear-gradient(180deg, rgba(47, 128, 255, 0.1) 0%, rgba(255, 255, 255, 0.98) 100%);
+}
+
+.cache-management-layout__group-main {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.cache-management-layout__group-main .ant-typography {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cache-management-layout__keys-pane,
+.cache-management-layout__detail-pane {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.cache-management-layout__table-wrap {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.cache-management-layout__table-wrap .ant-table-wrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+.cache-management-layout__key-table,
+.cache-management-layout__table-wrap .ant-table-wrapper,
+.cache-management-layout__table-wrap .ant-spin-nested-loading,
+.cache-management-layout__table-wrap .ant-spin-container,
+.cache-management-layout__table-wrap .ant-table,
+.cache-management-layout__table-wrap .ant-table-container {
+  flex: 1;
+  height: 100%;
+  min-height: 0;
+}
+
+.cache-management-layout__table-wrap .ant-spin-nested-loading,
+.cache-management-layout__table-wrap .ant-spin-container,
+.cache-management-layout__table-wrap .ant-table,
+.cache-management-layout__table-wrap .ant-table-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.cache-management-layout__table-wrap .ant-table-content {
+  flex: 1;
+  min-height: 0;
+}
+
+.cache-management-layout__table-wrap .ant-table-body {
+  overflow-y: auto !important;
+}
+
+.cache-management-layout__table-row--active > td {
+  background: rgba(47, 128, 255, 0.08) !important;
+}
+
+.cache-management-layout__key-cell {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.cache-management-layout__key-cell .ant-typography {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cache-management-layout__json-panel {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.cache-management-layout__json-content {
+  flex: 1;
+  min-height: 280px;
+  margin-bottom: 0 !important;
+  padding: 16px;
+  border: 1px solid var(--shell-border);
+  border-radius: 12px;
+  background: var(--shell-bg-subtle, #f8fafc);
+  white-space: pre-wrap;
+  word-break: break-all;
+  overflow: auto;
+  font-family: SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
+}
+
 .shell-full-width {
   grid-column: 1 / -1;
 }
@@ -518,6 +682,11 @@ body,
   .shell-metric-grid,
   .shell-split-grid {
     grid-template-columns: 1fr;
+  }
+
+  .cache-management-layout {
+    grid-template-columns: 1fr;
+    min-height: auto;
   }
 
   .permission-assignment-page {
