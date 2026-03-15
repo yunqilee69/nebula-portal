@@ -1,10 +1,10 @@
 import { DeleteOutlined, EditOutlined, PlusOutlined, SearchOutlined } from "@ant-design/icons";
-import { Button, Descriptions, Form, Input, Pagination, Popconfirm, Select, Space, Table, Tag, Tree, Typography } from "antd";
+import { Button, Descriptions, Form, Input, Pagination, Popconfirm, Select, Space, Table, Tag, Typography } from "antd";
 import type { OrganizationItem, OrganizationMutationPayload, OrganizationPageQuery, OrganizationTreeItem } from "@platform/core";
 import { NePermission, useI18n } from "@platform/core";
 import { useEffect, useMemo, useState } from "react";
 import { createOrganization, deleteOrganization, fetchOrganizationDetail, fetchOrganizationPage, fetchOrganizationTree, updateOrganization } from "@/api/organization-api";
-import { NeDetailDrawer, NeModal, NePage, NePanel, NeSearchPanel, NeTablePanel } from "@platform/ui";
+import { NeDetailDrawer, NeModal, NePage, NePanel, NeSearchPanel, NeTablePanel, NeTree } from "@platform/ui";
 
 const initialQuery: OrganizationPageQuery = {
   pageNum: 1,
@@ -38,20 +38,6 @@ function findOrganization(nodes: OrganizationTreeItem[], id: string): Organizati
     }
   }
   return null;
-}
-
-type TreeNode = {
-  key: string;
-  title: string;
-  children?: TreeNode[];
-};
-
-function toTreeData(nodes: OrganizationTreeItem[]): TreeNode[] {
-  return nodes.map((node) => ({
-    key: node.id,
-    title: node.name,
-    children: toTreeData(node.children ?? []),
-  }));
 }
 
 export function OperationsOrgPage() {
@@ -192,9 +178,11 @@ export function OperationsOrgPage() {
       </NeSearchPanel>
       <div className="shell-split-grid">
         <NePanel title={t("organization.tree")}>
-          <Tree
-            blockNode
-            treeData={toTreeData(tree)}
+          <NeTree<OrganizationTreeItem>
+            treeData={tree}
+            searchable
+            searchPlaceholder={t("permissionAssignment.searchOrganizations")}
+            filterNode={(node, keyword) => [node.name, node.code, node.leader].some((value) => value?.toLowerCase().includes(keyword))}
             selectedKeys={selected ? [selected.id] : []}
             onSelect={(keys) => {
               const key = String(keys[0] ?? "");

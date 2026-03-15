@@ -1,6 +1,5 @@
 import { ApartmentOutlined, BankOutlined, DeleteOutlined, TeamOutlined, SearchOutlined } from "@ant-design/icons";
-import { Button, Form, Input, Select, Space, Table, Tabs, Tag, Tree, Typography, message } from "antd";
-import type { DataNode } from "antd/es/tree";
+import { Button, Form, Input, Select, Space, Table, Tabs, Tag, Typography, message } from "antd";
 import type {
   ButtonItem,
   MenuItem,
@@ -12,7 +11,7 @@ import type {
   UserItem,
 } from "@platform/core";
 import { NePermission, useI18n } from "@platform/core";
-import { NePage, NePanel, NeSearchPanel, NeTablePanel } from "@platform/ui";
+import { NePage, NePanel, NeSearchPanel, NeTablePanel, NeTree } from "@platform/ui";
 import { useEffect, useMemo, useState } from "react";
 import type { Key } from "react";
 import { fetchButtonPage } from "@/api/button-api";
@@ -70,21 +69,6 @@ function flattenOrganizations(items: OrganizationTreeItem[]): OrganizationTreeIt
   return items.flatMap((item) => [item, ...flattenOrganizations(item.children ?? [])]);
 }
 
-function filterOrganizationTree(nodes: OrganizationTreeItem[], keyword: string): OrganizationTreeItem[] {
-  if (!keyword.trim()) {
-    return nodes;
-  }
-  const normalized = keyword.trim().toLowerCase();
-  return nodes.flatMap((node) => {
-    const children = filterOrganizationTree(node.children ?? [], keyword);
-    const matched = [node.name, node.code, node.leader].some((value) => value?.toLowerCase().includes(normalized));
-    if (!matched && children.length === 0) {
-      return [];
-    }
-    return [{ ...node, children }];
-  });
-}
-
 function filterMenuTree(nodes: MenuItem[], keyword: string): MenuItem[] {
   if (!keyword.trim()) {
     return nodes;
@@ -108,22 +92,6 @@ function getOrganizationIcon(type: OrganizationTreeItem["type"]) {
     return <ApartmentOutlined />;
   }
   return <TeamOutlined />;
-}
-
-function toOrganizationTreeData(nodes: OrganizationTreeItem[]): DataNode[] {
-  return nodes.map((node) => ({
-    key: node.id,
-    title: (
-      <div className="permission-assignment-layout__org-node">
-        <Space size={8} className="permission-assignment-layout__org-node-main">
-          <span className="permission-assignment-layout__org-node-icon">{getOrganizationIcon(node.type)}</span>
-          <Typography.Text strong>{node.name}</Typography.Text>
-        </Space>
-        <Typography.Text type="secondary" className="permission-assignment-layout__org-node-code">{node.code}</Typography.Text>
-      </div>
-    ),
-    children: toOrganizationTreeData(node.children ?? []),
-  }));
 }
 
 function buildPermissionKey(subjectType: PermissionSubjectType, subjectId: string, resourceType: ResourceKey, resourceId: string) {
@@ -278,7 +246,6 @@ export function OperationsPermissionPage({ embedded = false }: PermissionAssignm
     message.error(text);
   }
 
-  const filteredOrganizations = useMemo(() => filterOrganizationTree(organizations, organizationKeyword), [organizations, organizationKeyword]);
   const filteredRoles = useMemo(() => roles.filter((item) => roleMatches(item, roleKeyword)), [roleKeyword, roles]);
   const filteredMenus = useMemo(() => filterMenuTree(menus.filter((item) => item.type !== 3), menuKeyword), [menuKeyword, menus]);
   const buttonMenuOptions = useMemo(
@@ -627,17 +594,29 @@ export function OperationsPermissionPage({ embedded = false }: PermissionAssignm
                   label: t("common.organization"),
                   children: (
                     <Space direction="vertical" size={12} style={{ width: "100%" }}>
-                      <Input allowClear prefix={<SearchOutlined />} value={organizationKeyword} onChange={(event) => setOrganizationKeyword(event.target.value)} placeholder={t("permissionAssignment.searchOrganizations")} />
-                      <Tree
-                        className="permission-assignment-layout__tree"
-                        checkable
-                        blockNode
-                        checkedKeys={selectedOrgIds}
-                        treeData={toOrganizationTreeData(filteredOrganizations)}
-                        onCheck={(checkedKeys) => {
-                          setSelectedOrgIds((Array.isArray(checkedKeys) ? checkedKeys : checkedKeys.checked).map(String));
-                        }}
-                      />
+                       <NeTree<OrganizationTreeItem>
+                         className="permission-assignment-layout__tree"
+                         treeData={organizations}
+                         checkable
+                         searchable
+                         searchValue={organizationKeyword}
+                         searchPlaceholder={t("permissionAssignment.searchOrganizations")}
+                         onSearchChange={setOrganizationKeyword}
+                         filterNode={(node, keyword) => [node.name, node.code, node.leader].some((value) => value?.toLowerCase().includes(keyword))}
+                         renderTitle={(node) => (
+                           <div className="permission-assignment-layout__org-node">
+                             <Space size={8} className="permission-assignment-layout__org-node-main">
+                               <span className="permission-assignment-layout__org-node-icon">{getOrganizationIcon(node.type)}</span>
+                               <Typography.Text strong>{node.name}</Typography.Text>
+                             </Space>
+                             <Typography.Text type="secondary" className="permission-assignment-layout__org-node-code">{node.code}</Typography.Text>
+                           </div>
+                         )}
+                         checkedKeys={selectedOrgIds}
+                         onCheck={(checkedKeys) => {
+                           setSelectedOrgIds((Array.isArray(checkedKeys) ? checkedKeys : checkedKeys.checked).map(String));
+                         }}
+                       />
                     </Space>
                   ),
                 },
