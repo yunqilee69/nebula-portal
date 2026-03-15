@@ -5,6 +5,7 @@ import type { NeBreadcrumbItem } from "@platform/ui";
 import { NeBreadcrumbs } from "@platform/ui";
 import { useMemo } from "react";
 import { useAuthStore } from "../modules/auth/auth-store";
+import { useFrontendStore } from "../modules/frontend/frontend-store";
 import { NotificationPanel } from "../modules/notify/notification-panel";
 import { ThemeConfigDrawer } from "../modules/theme/theme-config-drawer";
 
@@ -16,6 +17,7 @@ interface AppHeaderProps {
 export function AppHeader({ breadcrumbItems, onLogout }: AppHeaderProps) {
   const session = useAuthStore((state) => state.session);
   const { locale, setLocale, t } = useI18n();
+  const localeOptions = useFrontendStore((state) => state.frontendConfig.localeOptions);
 
   const menuItems = useMemo(
     () => [
@@ -40,10 +42,7 @@ export function AppHeader({ breadcrumbItems, onLogout }: AppHeaderProps) {
           size="small"
           style={{ width: 120 }}
           value={locale}
-          options={[
-            { label: t("app.language.zh-CN"), value: "zh-CN" },
-            { label: t("app.language.en-US"), value: "en-US" },
-          ]}
+          options={localeOptions.map((item) => ({ label: t(`app.language.${item}`), value: item }))}
           onChange={(value) => setLocale(value)}
         />
         <ThemeConfigDrawer />

@@ -2,6 +2,7 @@ import type { LocaleCode, MenuItem } from "@platform/core";
 import { translateShellMessage } from "../i18n/translate";
 
 const SHELL_HOME_MENU_ID = "shell-home";
+const SHELL_FRONTEND_MENU_ID = "shell-frontend-settings";
 
 function normalizeMenuPath(path: string | undefined) {
   if (!path || path === "/") {
@@ -24,21 +25,35 @@ export function buildDefaultShellMenus(locale: LocaleCode = "zh-CN"): MenuItem[]
       sort: -1,
       status: 1,
     },
+    {
+      id: SHELL_FRONTEND_MENU_ID,
+      name: translateShellMessage(locale, "platform.frontendSettings.title", "前端设置"),
+      type: 2,
+      path: "/frontend/settings",
+      component: "shell/FrontendSettingsPage",
+      linkType: 1,
+      icon: "SettingOutlined",
+      visible: 1,
+      sort: 999,
+      status: 1,
+    },
   ];
 }
 
 export function withDefaultShellMenus(menus: MenuItem[], locale: LocaleCode = "zh-CN"): MenuItem[] {
-  if (menus.some((item) => normalizeMenuPath(item.path) === "/" || item.id === SHELL_HOME_MENU_ID)) {
-    return menus;
-  }
-  return [...buildDefaultShellMenus(locale), ...menus];
+  const defaults = buildDefaultShellMenus(locale);
+  const defaultMenusToInject = defaults.filter(
+    (defaultMenu) => !menus.some((item) => normalizeMenuPath(item.path) === normalizeMenuPath(defaultMenu.path) || item.id === defaultMenu.id),
+  );
+  return defaultMenusToInject.length ? [...defaultMenusToInject, ...menus] : menus;
 }
 
 export function patchDefaultShellMenus(menus: MenuItem[], locale: LocaleCode = "zh-CN"): MenuItem[] {
   return menus.map((item) => {
-    if (item.id !== SHELL_HOME_MENU_ID) {
+    const patchedDefault = buildDefaultShellMenus(locale).find((defaultItem) => defaultItem.id === item.id);
+    if (!patchedDefault) {
       return item;
     }
-    return buildDefaultShellMenus(locale)[0];
+    return patchedDefault;
   });
 }

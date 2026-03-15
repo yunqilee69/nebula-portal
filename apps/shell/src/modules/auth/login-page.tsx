@@ -4,6 +4,7 @@ import { eventBus, useI18n } from "@platform/core";
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { loginWithPassword } from "../../api/auth-api";
+import { useFrontendStore } from "../frontend/frontend-store";
 import { preloadShellData } from "../runtime/bootstrap";
 import { useAuthStore } from "./auth-store";
 
@@ -17,6 +18,8 @@ export function LoginPage() {
   const [error, setError] = useState<string | null>(null);
   const { t } = useI18n();
   const setSession = useAuthStore((state) => state.setSession);
+  const frontendConfig = useFrontendStore((state) => state.frontendConfig);
+  const loginConfig = useFrontendStore((state) => state.loginConfig);
   const navigate = useNavigate();
   const location = useLocation();
   const from = (location.state as { from?: string } | null)?.from ?? "/";
@@ -25,6 +28,9 @@ export function LoginPage() {
     setSubmitting(true);
     setError(null);
     try {
+      if (loginConfig.usernameEnabled === false) {
+        throw new Error(t("login.username.disabled"));
+      }
       const session = await loginWithPassword(values);
       setSession(session);
       eventBus.emit("auth:login", session);
@@ -40,10 +46,11 @@ export function LoginPage() {
   return (
     <div className="login-screen">
       <Card className="login-card" variant="borderless">
-        <Typography.Title level={2}>{t("login.title")}</Typography.Title>
+        <Typography.Title level={2}>{frontendConfig.projectName || t("login.title")}</Typography.Title>
         <Typography.Paragraph type="secondary">
           {t("login.subtitle")}
         </Typography.Paragraph>
+        {loginConfig.usernameEnabled === false ? <Alert style={{ marginBottom: 16 }} type="warning" showIcon message={t("login.username.disabled")} /> : null}
         {error ? <Alert style={{ marginBottom: 16 }} type="error" showIcon message={error} /> : null}
         <Form layout="vertical" onFinish={onFinish} initialValues={{ username: "admin", password: "123456" }}>
           <Form.Item label={t("login.username")} name="username" rules={[{ required: true, message: t("login.username.required") }]}>

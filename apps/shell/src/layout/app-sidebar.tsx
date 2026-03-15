@@ -5,6 +5,7 @@ import type { MenuItem } from "@platform/core";
 import { useI18n } from "@platform/core";
 import { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useFrontendStore } from "../modules/frontend/frontend-store";
 import { getMenuIcon } from "./icon-map";
 
 interface AppSidebarProps {
@@ -42,6 +43,7 @@ function findMenuById(menus: MenuItem[], key: string): MenuItem | null {
 
 export function AppSidebar({ menus, collapsed, onToggleCollapse }: AppSidebarProps) {
   const { t } = useI18n();
+  const projectName = useFrontendStore((state) => state.frontendConfig.projectName);
   const location = useLocation();
   const navigate = useNavigate();
   const [openKeys, setOpenKeys] = useState<string[]>([]);
@@ -86,7 +88,7 @@ export function AppSidebar({ menus, collapsed, onToggleCollapse }: AppSidebarPro
           N
         </button>
         <div className="app-sidebar__brand-text">
-          <div className="app-sidebar__brand-title">{t("app.title")}</div>
+          <div className="app-sidebar__brand-title">{projectName || t("app.title")}</div>
         </div>
         {collapsed ? null : (
           <Button

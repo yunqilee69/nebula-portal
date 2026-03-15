@@ -1,66 +1,90 @@
 import { create } from "zustand";
 
-export type ThemeMode = "mist" | "sand" | "graphite";
-
-export interface ThemeStateSnapshot {
-  mode: ThemeMode;
-  primaryColor: string;
-  radius: number;
-  compact: boolean;
+export interface ThemeSnapshot {
+  themeCode: string;
+  themeName: string;
+  builtinFlag: boolean;
+  themeConfig: Record<string, string>;
 }
 
-interface ThemeState extends ThemeStateSnapshot {
+interface ThemeState {
   hydrated: boolean;
-  hydrate: () => void;
-  updateTheme: (patch: Partial<ThemeStateSnapshot>) => void;
+  currentTheme: ThemeSnapshot;
+  availableThemes: ThemeSnapshot[];
+  hydrate: (themeCode: string, themes?: ThemeSnapshot[]) => void;
+  setAvailableThemes: (themes: ThemeSnapshot[]) => void;
+  applyTheme: (themeCode: string) => ThemeSnapshot;
+  upsertTheme: (theme: ThemeSnapshot) => void;
 }
 
-const STORAGE_KEY = "nebula-shell-theme";
+const STORAGE_KEY = "nebula-shell-theme-code";
 
-const presets: Record<ThemeMode, ThemeStateSnapshot> = {
-  mist: { mode: "mist", primaryColor: "#0b7285", radius: 18, compact: false },
-  sand: { mode: "sand", primaryColor: "#b05a2b", radius: 20, compact: false },
-  graphite: { mode: "graphite", primaryColor: "#355070", radius: 16, compact: true },
+export const builtinThemeCatalog = {
+  themes: [
+    {
+      themeCode: "nebula-light",
+      themeName: "Nebula Light",
+      builtinFlag: true,
+      themeConfig: {
+        primaryColor: "#1f6feb",
+        sidebarColor: "#0f172a",
+        headerColor: "#ffffff",
+        backgroundColor: "#f8fafc",
+        textColor: "#0f172a",
+      },
+    },
+    {
+      themeCode: "nebula-graphite",
+      themeName: "Nebula Graphite",
+      builtinFlag: true,
+      themeConfig: {
+        primaryColor: "#0f766e",
+        sidebarColor: "#1c1917",
+        headerColor: "#292524",
+        backgroundColor: "#f5f5f4",
+        textColor: "#1c1917",
+      },
+    },
+  ] satisfies ThemeSnapshot[],
 };
 
-function readStoredTheme(): Partial<ThemeStateSnapshot> {
-  const raw = localStorage.getItem(STORAGE_KEY);
-  if (!raw) {
-    return {};
-  }
-  try {
-    return JSON.parse(raw) as Partial<ThemeStateSnapshot>;
-  } catch {
-    localStorage.removeItem(STORAGE_KEY);
-    return {};
-  }
+function resolveTheme(themeCode: string, themes: ThemeSnapshot[]) {
+  return themes.find((item) => item.themeCode === themeCode) ?? themes[0];
 }
 
-function nextTheme(current: ThemeStateSnapshot, patch: Partial<ThemeStateSnapshot>) {
-  const targetMode = patch.mode ?? current.mode;
-  const preset = presets[targetMode];
-  return {
-    ...preset,
-    ...current,
-    ...patch,
-    mode: targetMode,
-  } satisfies ThemeStateSnapshot;
+function readStoredThemeCode() {
+  return typeof window === "undefined" ? null : window.localStorage.getItem(STORAGE_KEY);
 }
 
-export const themePresets = presets;
-
-export const useThemeStore = create<ThemeState>((set) => ({
-  ...presets.mist,
+export const useThemeStore = create<ThemeState>((set, get) => ({
   hydrated: false,
-  hydrate: () => {
-    const stored = readStoredTheme();
-    const merged = nextTheme(presets[(stored.mode as ThemeMode | undefined) ?? "mist"], stored);
-    set({ ...merged, hydrated: true });
+  currentTheme: builtinThemeCatalog.themes[0],
+  availableThemes: builtinThemeCatalog.themes,
+  hydrate: (themeCode, themes) => {
+    const availableThemes = themes?.length ? themes : get().availableThemes;
+    const storedThemeCode = readStoredThemeCode();
+    const resolved = resolveTheme(storedThemeCode ?? themeCode, availableThemes);
+    if (typeof window !== "undefined") {
+      window.localStorage.setItem(STORAGE_KEY, resolved.themeCode);
+    }
+    set({ hydrated: true, availableThemes, currentTheme: resolved });
   },
-  updateTheme: (patch) => {
-    const current = useThemeStore.getState();
-    const merged = nextTheme(current, patch);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
-    set({ ...merged, hydrated: true });
+  setAvailableThemes: (themes) => {
+    const merged = [...builtinThemeCatalog.themes.filter((builtin) => !themes.some((item) => item.themeCode === builtin.themeCode)), ...themes];
+    const resolved = resolveTheme(get().currentTheme.themeCode, merged);
+    set({ availableThemes: merged, currentTheme: resolved });
+  },
+  applyTheme: (themeCode) => {
+    const resolved = resolveTheme(themeCode, get().availableThemes);
+    if (typeof window !== "undefined") {
+      window.localStorage.setItem(STORAGE_KEY, resolved.themeCode);
+    }
+    set({ currentTheme: resolved, hydrated: true });
+    return resolved;
+  },
+  upsertTheme: (theme) => {
+    const current = get().availableThemes.filter((item) => item.themeCode !== theme.themeCode);
+    const merged = [...current, theme];
+    set({ availableThemes: merged });
   },
 }));

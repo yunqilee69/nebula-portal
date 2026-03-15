@@ -19,6 +19,8 @@ import { loadRemoteModules } from "./modules/runtime/remote-modules";
 import { buildAppContext, preloadShellData } from "./modules/runtime/bootstrap";
 import { registerShellComponents } from "./modules/runtime/shell-component-registry";
 import { useDictStore } from "./modules/dict/dict-store";
+import { hydrateFrontendPublicData } from "./modules/frontend/frontend-bootstrap";
+import { useFrontendStore } from "./modules/frontend/frontend-store";
 import { useMenuStore } from "./modules/menu/menu-store";
 import { useNotifyStore } from "./modules/notify/notify-store";
 import { useResourceStore } from "./modules/runtime/resource-store";
@@ -39,11 +41,19 @@ function AppRouter() {
   const [remoteStatuses, setRemoteStatuses] = useState<ModuleLoadResult[]>([]);
   const [remotesLoaded, setRemotesLoaded] = useState(false);
   const [authReady, setAuthReady] = useState(false);
+  const frontendHydrated = useFrontendStore((state) => state.hydrated);
   const refreshTimerRef = useRef<number | null>(null);
 
   useEffect(() => {
     hydrate();
   }, [hydrate]);
+
+  useEffect(() => {
+    if (frontendHydrated) {
+      return;
+    }
+    hydrateFrontendPublicData().catch(() => undefined);
+  }, [frontendHydrated]);
 
   useEffect(() => {
     if (!hydrated || authReady) {
@@ -222,7 +232,7 @@ function AppRouter() {
       && !menuResource.error,
   );
 
-  if (!hydrated || !authReady || waitingForProtectedRoutes) {
+  if (!hydrated || !authReady || !frontendHydrated || waitingForProtectedRoutes) {
     return (
       <div style={{ minHeight: "100vh", display: "grid", placeItems: "center" }}>
         <Spin size="large" />

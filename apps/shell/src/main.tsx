@@ -7,13 +7,11 @@ import { createRoot } from "react-dom/client";
 import App from "./app";
 import "antd/dist/reset.css";
 import "./styles.css";
-import { useConfigStore } from "./modules/config/config-store";
 import { ShellI18nProvider } from "./modules/i18n/shell-i18n-provider";
 import { buildAntdTheme, useThemeBootstrap } from "./modules/theme/theme-config";
 
 function RootApp() {
-  const configValues = useConfigStore((state) => state.values);
-  const theme = useThemeBootstrap(configValues);
+  const theme = useThemeBootstrap();
   const antdTheme = useMemo(() => buildAntdTheme(theme), [theme]);
   const { locale } = useI18n();
   const antdLocale = locale === "en-US" ? enUS : zhCN;

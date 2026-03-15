@@ -3,6 +3,7 @@ import {
   BarChartOutlined,
   ExportOutlined,
   FolderOutlined,
+  SettingOutlined,
   TeamOutlined,
   UnorderedListOutlined,
 } from "@ant-design/icons";
@@ -13,6 +14,7 @@ const iconMap: Record<string, ReactNode> = {
   BarChartOutlined: <BarChartOutlined />,
   ExportOutlined: <ExportOutlined />,
   FolderOutlined: <FolderOutlined />,
+  SettingOutlined: <SettingOutlined />,
   TeamOutlined: <TeamOutlined />,
   UnorderedListOutlined: <UnorderedListOutlined />,
 };

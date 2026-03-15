@@ -5,12 +5,12 @@ interface I18nState {
   locale: LocaleCode;
   hydrated: boolean;
   setLocale: (locale: LocaleCode) => void;
-  markHydrated: () => void;
+  hydrate: (locale: LocaleCode) => void;
 }
 
 export const useI18nStore = create<I18nState>((set) => ({
   locale: "zh-CN",
   hydrated: false,
   setLocale: (locale) => set({ locale }),
-  markHydrated: () => set({ hydrated: true }),
+  hydrate: (locale) => set({ locale, hydrated: true }),
 }));

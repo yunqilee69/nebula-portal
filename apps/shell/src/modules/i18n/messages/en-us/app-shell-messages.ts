@@ -16,12 +16,20 @@ const messages = {
   "layout.tab.renameCancel": "Cancel",
   "layout.unknownReason": "Unknown reason",
   "theme.title": "Theme Settings",
-  "theme.preset": "Preset",
+  "theme.current": "Current Theme",
+  "theme.switching": "Switching theme...",
+  "theme.createCustom": "Save New Theme",
+  "theme.code": "Theme Code",
+  "theme.name": "Theme Name",
+  "theme.codeRequired": "Enter a theme code",
+  "theme.nameRequired": "Enter a theme name",
   "theme.primaryColor": "Primary Color",
-  "theme.radius": "Corner Radius",
-  "theme.compact": "Compact Density",
-  "theme.compactHelp": "Reduce paddings and gaps for dense back-office screens.",
-  "theme.resetPreset": "Reset Current Preset"
+  "theme.sidebarColor": "Sidebar Color",
+  "theme.headerColor": "Header Color",
+  "theme.backgroundColor": "Background Color",
+  "theme.textColor": "Text Color",
+  "theme.saveTheme": "Save And Apply Theme",
+  "login.username.disabled": "Username login is disabled in the current environment"
 };
 
 export default messages;

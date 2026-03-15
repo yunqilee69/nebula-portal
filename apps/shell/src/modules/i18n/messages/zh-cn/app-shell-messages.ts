@@ -16,12 +16,20 @@ const messages = {
   "layout.tab.renameCancel": "取消",
   "layout.unknownReason": "未知原因",
   "theme.title": "主题设置",
-  "theme.preset": "主题预设",
+  "theme.current": "当前主题",
+  "theme.switching": "正在切换主题...",
+  "theme.createCustom": "保存新主题",
+  "theme.code": "主题编码",
+  "theme.name": "主题名称",
+  "theme.codeRequired": "请输入主题编码",
+  "theme.nameRequired": "请输入主题名称",
   "theme.primaryColor": "主题主色",
-  "theme.radius": "圆角大小",
-  "theme.compact": "紧凑布局",
-  "theme.compactHelp": "减少内边距和间距，适用于更密集的后台界面。",
-  "theme.resetPreset": "重置当前预设"
+  "theme.sidebarColor": "侧边栏颜色",
+  "theme.headerColor": "顶部栏颜色",
+  "theme.backgroundColor": "背景颜色",
+  "theme.textColor": "文本颜色",
+  "theme.saveTheme": "保存并应用主题",
+  "login.username.disabled": "当前环境未开启用户名登录"
 };
 
 export default messages;

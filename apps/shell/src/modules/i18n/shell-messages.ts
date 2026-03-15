@@ -16,6 +16,7 @@ import m13 from "./messages/zh-cn/role-management-messages";
 import m14 from "./messages/zh-cn/storage-messages";
 import m15 from "./messages/zh-cn/system-params-messages";
 import m16 from "./messages/zh-cn/user-management-messages";
+import m17 from "./messages/zh-cn/frontend-messages";
 import e0 from "./messages/en-us/app-shell-messages";
 import e1 from "./messages/en-us/auth-messages";
 import e2 from "./messages/en-us/common-messages";
@@ -33,6 +34,7 @@ import e13 from "./messages/en-us/role-management-messages";
 import e14 from "./messages/en-us/storage-messages";
 import e15 from "./messages/en-us/system-params-messages";
 import e16 from "./messages/en-us/user-management-messages";
+import e17 from "./messages/en-us/frontend-messages";
 
 export const shellMessages: LocaleBundle = {
   "zh-CN": {
@@ -53,6 +55,7 @@ export const shellMessages: LocaleBundle = {
     ...m14,
     ...m15,
     ...m16,
+    ...m17,
   },
   "en-US": {
     ...e0,
@@ -72,5 +75,6 @@ export const shellMessages: LocaleBundle = {
     ...e14,
     ...e15,
     ...e16,
+    ...e17,
   },
 };

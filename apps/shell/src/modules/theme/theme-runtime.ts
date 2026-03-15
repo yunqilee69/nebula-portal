@@ -1,62 +1,51 @@
-import type { ThemeStateSnapshot } from "./theme-store";
+import type { ThemeSnapshot } from "./theme-store";
 
-interface ThemePalette {
-  background: string;
-  surface: string;
-  surfaceStrong: string;
-  sidebar: string;
-  text: string;
-  textMuted: string;
-  border: string;
-  shadow: string;
+function normalizeHex(input: string, fallback: string) {
+  const value = input.trim();
+  if (/^#([0-9a-fA-F]{6})$/.test(value)) {
+    return value;
+  }
+  return fallback;
 }
 
-const palettes: Record<ThemeStateSnapshot["mode"], ThemePalette> = {
-  mist: {
-    background: "linear-gradient(180deg, #f7fbfc 0%, #edf4f7 100%)",
-    surface: "rgba(255,255,255,0.88)",
-    surfaceStrong: "#ffffff",
-    sidebar: "linear-gradient(180deg, #ffffff 0%, #eef4f5 100%)",
-    text: "#102a43",
-    textMuted: "#627d98",
-    border: "rgba(15, 23, 42, 0.08)",
-    shadow: "0 20px 60px rgba(16, 42, 67, 0.08)",
-  },
-  sand: {
-    background: "linear-gradient(180deg, #fff8ef 0%, #f8efe2 100%)",
-    surface: "rgba(255,251,245,0.9)",
-    surfaceStrong: "#fffdf8",
-    sidebar: "linear-gradient(180deg, #fffdf8 0%, #f5eadb 100%)",
-    text: "#4a2c1d",
-    textMuted: "#8b6b59",
-    border: "rgba(93, 52, 30, 0.1)",
-    shadow: "0 22px 60px rgba(110, 72, 46, 0.08)",
-  },
-  graphite: {
-    background: "linear-gradient(180deg, #eef2f6 0%, #dde4eb 100%)",
-    surface: "rgba(255,255,255,0.86)",
-    surfaceStrong: "#ffffff",
-    sidebar: "linear-gradient(180deg, #fdfefe 0%, #e9eef3 100%)",
-    text: "#223042",
-    textMuted: "#5f6f82",
-    border: "rgba(34, 48, 66, 0.1)",
-    shadow: "0 22px 60px rgba(34, 48, 66, 0.08)",
-  },
-};
+function withAlpha(hex: string, alpha: number) {
+  const value = normalizeHex(hex, "#000000").slice(1);
+  const red = Number.parseInt(value.slice(0, 2), 16);
+  const green = Number.parseInt(value.slice(2, 4), 16);
+  const blue = Number.parseInt(value.slice(4, 6), 16);
+  return `rgba(${red}, ${green}, ${blue}, ${alpha})`;
+}
 
-export function applyThemeToDocument(theme: ThemeStateSnapshot) {
+function contrastColor(hex: string) {
+  const value = normalizeHex(hex, "#ffffff").slice(1);
+  const red = Number.parseInt(value.slice(0, 2), 16);
+  const green = Number.parseInt(value.slice(2, 4), 16);
+  const blue = Number.parseInt(value.slice(4, 6), 16);
+  const luminance = (0.299 * red + 0.587 * green + 0.114 * blue) / 255;
+  return luminance > 0.62 ? "#172b4d" : "#f8fafc";
+}
+
+export function applyThemeToDocument(theme: ThemeSnapshot) {
   const root = document.documentElement;
-  const palette = palettes[theme.mode];
+  const primaryColor = normalizeHex(theme.themeConfig.primaryColor ?? "", "#1f6feb");
+  const sidebarColor = normalizeHex(theme.themeConfig.sidebarColor ?? "", "#0f172a");
+  const headerColor = normalizeHex(theme.themeConfig.headerColor ?? "", "#ffffff");
+  const backgroundColor = normalizeHex(theme.themeConfig.backgroundColor ?? "", "#f8fafc");
+  const textColor = normalizeHex(theme.themeConfig.textColor ?? "", "#0f172a");
+  const sidebarText = contrastColor(sidebarColor);
 
-  root.style.setProperty("--shell-bg", palette.background);
-  root.style.setProperty("--shell-surface", palette.surface);
-  root.style.setProperty("--shell-surface-strong", palette.surfaceStrong);
-  root.style.setProperty("--shell-sidebar-bg", palette.sidebar);
-  root.style.setProperty("--shell-text", palette.text);
-  root.style.setProperty("--shell-text-muted", palette.textMuted);
-  root.style.setProperty("--shell-border", palette.border);
-  root.style.setProperty("--shell-shadow", palette.shadow);
-  root.style.setProperty("--shell-primary", theme.primaryColor);
-  root.style.setProperty("--shell-radius", `${theme.radius}px`);
-  root.style.setProperty("--shell-content-gap", theme.compact ? "12px" : "18px");
+  root.style.setProperty("--shell-bg", `linear-gradient(180deg, ${backgroundColor} 0%, ${withAlpha(backgroundColor, 0.92)} 100%)`);
+  root.style.setProperty("--shell-surface", withAlpha(headerColor, 0.92));
+  root.style.setProperty("--shell-surface-strong", headerColor);
+  root.style.setProperty("--shell-sidebar-bg", sidebarColor);
+  root.style.setProperty("--shell-text", textColor);
+  root.style.setProperty("--shell-text-muted", withAlpha(textColor, 0.68));
+  root.style.setProperty("--shell-sidebar-text", sidebarText);
+  root.style.setProperty("--shell-sidebar-text-muted", withAlpha(sidebarText, 0.78));
+  root.style.setProperty("--shell-border", withAlpha(textColor, 0.08));
+  root.style.setProperty("--shell-border-strong", withAlpha(textColor, 0.14));
+  root.style.setProperty("--shell-shadow", `0 18px 40px ${withAlpha(textColor, 0.08)}`);
+  root.style.setProperty("--shell-shadow-strong", `0 20px 48px ${withAlpha(textColor, 0.12)}`);
+  root.style.setProperty("--shell-primary", primaryColor);
+  root.style.setProperty("--shell-primary-strong", withAlpha(primaryColor, 0.92));
 }

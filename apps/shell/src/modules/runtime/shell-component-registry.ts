@@ -20,6 +20,7 @@ export function registerShellComponents() {
     "shell/MenuPermissionPage": async () => ({ default: (await import("../../pages/permission-assignment/list")).PermissionAssignmentPage }),
     "shell/ButtonPermissionPage": async () => ({ default: (await import("../../pages/permission-assignment/list")).PermissionAssignmentPage }),
     "shell/SystemParamsPage": async () => ({ default: (await import("../../pages/system-param/list")).SystemParamsPage }),
+    "shell/FrontendSettingsPage": async () => ({ default: (await import("../../pages/frontend/settings")).FrontendSettingsPage }),
     "shell/NotifyTemplateManagementPage": async () => ({ default: (await import("../../pages/notify-template/list")).NotifyTemplateManagementPage }),
     "shell/NotifyRecordPage": async () => ({ default: (await import("../../pages/notify-record/list")).NotifyRecordPage }),
     "shell/NotificationsPage": async () => ({ default: (await import("../../pages/notification/list")).NotificationsPage }),
