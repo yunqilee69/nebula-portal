@@ -4,6 +4,15 @@ import { useFrontendStore } from "./frontend-store";
 import { useI18nStore } from "../i18n/i18n-store";
 import { builtinThemeCatalog, useThemeStore } from "../theme/theme-store";
 
+function resolveBuiltinThemes(themeCodes?: string[]) {
+  if (!themeCodes?.length) {
+    return builtinThemeCatalog.themes;
+  }
+
+  const builtins = builtinThemeCatalog.themes.filter((item) => themeCodes.includes(item.themeCode));
+  return builtins.length ? builtins : builtinThemeCatalog.themes;
+}
+
 const SHELL_LOCALE_STORAGE_KEY = "nebula-shell-preferred-locale";
 
 function readStoredLocale(): LocaleCode | null {
@@ -20,12 +29,11 @@ export async function hydrateFrontendPublicData() {
     useFrontendStore.getState().setInit(payload);
     const preferredLocale = readStoredLocale() ?? payload.defaultPreference.localeTag ?? payload.frontendConfig.defaultLocale;
     useI18nStore.getState().hydrate(preferredLocale);
-    const initialThemes = payload.defaultTheme
-      ? [
-          ...builtinThemeCatalog.themes.filter((item) => item.themeCode !== payload.defaultTheme?.themeCode),
-          payload.defaultTheme,
-        ]
-      : builtinThemeCatalog.themes;
+    const initialThemes = builtinThemeCatalog.themes;
+    useFrontendStore.getState().setThemeCatalog({
+      configItems: [],
+      themes: initialThemes,
+    });
     useThemeStore.getState().hydrate(payload.defaultPreference.themeCode, initialThemes);
     document.title = payload.frontendConfig.projectName;
   } catch {
@@ -38,7 +46,12 @@ export async function hydrateFrontendPublicData() {
 
 export async function hydrateFrontendThemeCatalog() {
   const payload = await fetchFrontendThemes();
-  useFrontendStore.getState().setThemeCatalog(payload);
-  useThemeStore.getState().setAvailableThemes(payload.themes);
-  return payload;
+  const themes = resolveBuiltinThemes(payload.themes.map((item) => item.themeCode));
+  const nextPayload = {
+    configItems: [],
+    themes,
+  };
+  useFrontendStore.getState().setThemeCatalog(nextPayload);
+  useThemeStore.getState().setAvailableThemes(themes);
+  return nextPayload;
 }

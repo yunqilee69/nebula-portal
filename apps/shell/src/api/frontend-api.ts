@@ -1,5 +1,5 @@
 import type { LocaleCode } from "@platform/core";
-import { requestDelete, requestGet, requestPost, requestPut } from "./client";
+import { requestDelete, requestGet, requestPut } from "./client";
 
 export interface FrontendConfigDto {
   projectName: string;
@@ -32,6 +32,8 @@ export interface FrontendLoginConfigDto {
 export interface FrontendPreferenceDto {
   localeTag: LocaleCode;
   themeCode: string;
+  navigationLayoutCode?: string;
+  sidebarLayoutCode?: string;
 }
 
 export interface FrontendThemeDto {
@@ -82,10 +84,9 @@ export interface SaveFrontendConfigPayload {
   localeOptions: LocaleCode[];
 }
 
-export interface SaveFrontendThemePayload {
-  themeCode: string;
-  themeName: string;
-  themeConfig: Record<string, string>;
+export interface SwitchFrontendLayoutPayload {
+  navigationLayoutCode: string;
+  sidebarLayoutCode: string;
 }
 
 export async function fetchFrontendInit() {
@@ -100,12 +101,12 @@ export async function switchFrontendTheme(themeCode: string) {
   return requestPut<FrontendPreferenceDto>("/api/frontend/preferences/theme", { themeCode }, { silent: true });
 }
 
-export async function fetchFrontendThemes() {
-  return requestGet<FrontendThemeCatalogDto>("/api/frontend/themes", undefined, { silent: true });
+export async function switchFrontendLayout(payload: SwitchFrontendLayoutPayload) {
+  return requestPut<FrontendPreferenceDto>("/api/frontend/preferences/layout", payload, { silent: true });
 }
 
-export async function saveFrontendTheme(payload: SaveFrontendThemePayload) {
-  return requestPost<FrontendThemeDto>("/api/frontend/themes", payload, { silent: true });
+export async function fetchFrontendThemes() {
+  return requestGet<FrontendThemeCatalogDto>("/api/frontend/themes", undefined, { silent: true });
 }
 
 export async function fetchFrontendConfig() {

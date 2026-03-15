@@ -9,6 +9,7 @@ import "antd/dist/reset.css";
 import "./styles.css";
 import { ShellI18nProvider } from "./modules/i18n/shell-i18n-provider";
 import { buildAntdTheme, useThemeBootstrap } from "./modules/theme/theme-config";
+import { builtinThemeCatalog, useThemeStore } from "./modules/theme/theme-store";
 
 function RootApp() {
   const theme = useThemeBootstrap();
@@ -22,6 +23,8 @@ function RootApp() {
     </ConfigProvider>
   );
 }
+
+useThemeStore.getState().hydrate("nebula-light", builtinThemeCatalog.themes);
 
 createRoot(document.getElementById("root")!).render(
   <ShellI18nProvider>

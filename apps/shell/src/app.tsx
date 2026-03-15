@@ -9,7 +9,7 @@ import { AuthGuard } from "./modules/auth/auth-guard";
 import { LoginPage } from "./modules/auth/login-page";
 import { useAuthStore } from "./modules/auth/auth-store";
 import { mergeSessionWithCurrentUser } from "./modules/auth/session-payload";
-import { resolveRefreshDelay, shouldRefreshSession } from "./modules/auth/session-utils";
+import { isSessionExpired, resolveRefreshDelay, shouldRefreshSession } from "./modules/auth/session-utils";
 import { BasicLayout } from "./layout/basic-layout";
 import { UnauthorizedPage } from "./pages/401";
 import { NotFoundPage } from "./pages/404";
@@ -76,6 +76,22 @@ function AppRouter() {
 
       if (!storedSession?.token) {
         if (active) {
+          setAuthReady(true);
+        }
+        return;
+      }
+
+      if (!storedSession.refreshToken && isSessionExpired(storedSession.accessTokenExpiresIn)) {
+        if (active) {
+          clearSession();
+          setAuthReady(true);
+        }
+        return;
+      }
+
+      if (storedSession.refreshToken && isSessionExpired(storedSession.refreshTokenExpiresIn)) {
+        if (active) {
+          clearSession();
           setAuthReady(true);
         }
         return;

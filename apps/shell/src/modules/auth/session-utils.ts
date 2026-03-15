@@ -45,6 +45,14 @@ export function shouldRefreshSession(session: AuthSession, skewMs = 60_000) {
   return session.accessTokenExpiresIn <= Date.now() + skewMs;
 }
 
+export function isSessionExpired(expiresAt?: number, skewMs = 0) {
+  if (!expiresAt) {
+    return false;
+  }
+
+  return expiresAt <= Date.now() + skewMs;
+}
+
 export function resolveRefreshDelay(expiresAt?: number) {
   if (!expiresAt) {
     return undefined;

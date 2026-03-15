@@ -4,6 +4,7 @@ import type { AxiosRequestConfig } from "axios";
 import type { ApiEnvelope, AuthSession } from "@platform/core";
 import { shellEnv } from "../config/env";
 import { getToken, useAuthStore } from "../modules/auth/auth-store";
+import { useI18nStore } from "../modules/i18n/i18n-store";
 
 export const apiClient = axios.create({
   baseURL: shellEnv.apiBaseUrl,
@@ -43,10 +44,17 @@ let refreshPromise: Promise<AuthSession> | null = null;
 apiClient.interceptors.request.use((config) => {
   const token = getToken();
   const hasAuthorizationHeader = Boolean(config.headers?.Authorization);
+  const hasAcceptLanguageHeader = Boolean(config.headers?.["Accept-Language"]);
+  const locale = useI18nStore.getState().locale;
 
   if (token && !hasAuthorizationHeader && !isAuthLifecycleRequest(config)) {
     config.headers.Authorization = `Bearer ${token}`;
   }
+
+  if (locale && !hasAcceptLanguageHeader) {
+    config.headers["Accept-Language"] = locale;
+  }
+
   return config;
 });
 

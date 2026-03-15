@@ -1,124 +1,187 @@
-import { BgColorsOutlined } from "@ant-design/icons";
-import { Button, Divider, Drawer, Form, Input, Select, Space, Typography } from "antd";
+import { BgColorsOutlined, GlobalOutlined, LayoutOutlined, MenuOutlined, SettingOutlined } from "@ant-design/icons";
+import { Button, Drawer, Select, Space, Typography, message } from "antd";
 import { useI18n } from "@platform/core";
 import { useEffect, useMemo, useState } from "react";
-import { saveFrontendTheme, switchFrontendTheme } from "../../api/frontend-api";
+import { switchFrontendLayout, switchFrontendTheme } from "../../api/frontend-api";
+import { normalizeApiError } from "../../api/client";
 import { hydrateFrontendThemeCatalog } from "../frontend/frontend-bootstrap";
 import { useFrontendStore } from "../frontend/frontend-store";
+import { applyShellLocale } from "../i18n/i18n-service";
 import { useThemeStore } from "./theme-store";
-
-interface ThemeFormValues {
-  themeCode: string;
-  themeName: string;
-  primaryColor: string;
-  sidebarColor: string;
-  headerColor: string;
-  backgroundColor: string;
-  textColor: string;
-}
 
 export function ThemeConfigDrawer() {
   const [open, setOpen] = useState(false);
-  const [saving, setSaving] = useState(false);
   const [switching, setSwitching] = useState(false);
-  const [form] = Form.useForm<ThemeFormValues>();
+  const [switchingLocale, setSwitchingLocale] = useState(false);
+  const [switchingLayout, setSwitchingLayout] = useState(false);
   const { t } = useI18n();
+  const locale = useFrontendStore((state) => state.defaultPreference.localeTag);
+  const defaultPreference = useFrontendStore((state) => state.defaultPreference);
+  const localeOptions = useFrontendStore((state) => state.frontendConfig.localeOptions);
   const themeCatalog = useFrontendStore((state) => state.themeCatalog);
+  const setDefaultPreference = useFrontendStore((state) => state.setDefaultPreference);
   const currentTheme = useThemeStore((state) => state.currentTheme);
   const applyTheme = useThemeStore((state) => state.applyTheme);
-  const upsertTheme = useThemeStore((state) => state.upsertTheme);
 
   useEffect(() => {
-    if (!open) {
-      return;
-    }
     hydrateFrontendThemeCatalog().catch(() => undefined);
-  }, [open]);
-
-  useEffect(() => {
-    form.setFieldsValue({
-      themeCode: `${currentTheme.themeCode}-copy`,
-      themeName: `${currentTheme.themeName} Copy`,
-      primaryColor: currentTheme.themeConfig.primaryColor ?? "#1f6feb",
-      sidebarColor: currentTheme.themeConfig.sidebarColor ?? "#0f172a",
-      headerColor: currentTheme.themeConfig.headerColor ?? "#ffffff",
-      backgroundColor: currentTheme.themeConfig.backgroundColor ?? "#f8fafc",
-      textColor: currentTheme.themeConfig.textColor ?? "#0f172a",
-    });
-  }, [currentTheme, form]);
+  }, []);
 
   const themeOptions = useMemo(
     () => themeCatalog.themes.map((item) => ({ label: item.themeName, value: item.themeCode })),
     [themeCatalog.themes],
   );
 
+  const localeSelectOptions = useMemo(
+    () => localeOptions.map((item) => ({ label: t(`app.language.${item}`), value: item })),
+    [localeOptions, t],
+  );
+
+  const navigationLayoutOptions = useMemo(
+    () => [
+      { label: t("frontend.layout.side"), value: "side" },
+      { label: t("frontend.layout.top"), value: "top" },
+      { label: t("frontend.layout.mix"), value: "mix" },
+    ],
+    [t],
+  );
+
+  const sidebarLayoutOptions = useMemo(
+    () => [
+      { label: t("frontend.sidebarLayout.classic"), value: "classic" },
+      { label: t("frontend.sidebarLayout.grouped"), value: "grouped" },
+    ],
+    [t],
+  );
+
   return (
     <>
-      <Button shape="circle" icon={<BgColorsOutlined />} onClick={() => setOpen(true)} />
-      <Drawer title={t("theme.title")} open={open} onClose={() => setOpen(false)} width={360}>
+      <Button
+        shape="circle"
+        type="text"
+        className="app-header__preferences-trigger"
+        icon={<SettingOutlined />}
+        aria-label={t("theme.title")}
+        onClick={() => setOpen(true)}
+      />
+      <Drawer title={t("theme.title")} placement="right" width={360} open={open} onClose={() => setOpen(false)}>
         <Space direction="vertical" size="large" style={{ width: "100%" }}>
           <div>
             <Typography.Text strong>{t("theme.current")}</Typography.Text>
-            <Select
-              style={{ width: "100%", marginTop: 12 }}
-              value={currentTheme.themeCode}
-              options={themeOptions}
-              loading={!themeOptions.length}
-              onChange={async (value) => {
-                setSwitching(true);
-                try {
-                  await switchFrontendTheme(value);
-                  applyTheme(value);
-                } finally {
-                  setSwitching(false);
-                }
-              }}
-            />
+            <Typography.Paragraph type="secondary" style={{ marginTop: 8, marginBottom: 12 }}>
+              {t("theme.drawerHint")}
+            </Typography.Paragraph>
+            <Space.Compact block>
+              <Button icon={<BgColorsOutlined />} disabled />
+              <Select
+                value={currentTheme.themeCode}
+                options={themeOptions}
+                loading={!themeOptions.length}
+                onChange={async (value) => {
+                  setSwitching(true);
+                  try {
+                    try {
+                      const preference = await switchFrontendTheme(value);
+                      setDefaultPreference({ themeCode: preference.themeCode });
+                    } catch (error) {
+                      message.warning(t("theme.switchFallback", undefined, { reason: normalizeApiError(error).message }));
+                    }
+                    applyTheme(value);
+                  } finally {
+                    setSwitching(false);
+                  }
+                }}
+              />
+            </Space.Compact>
             {switching ? <Typography.Paragraph type="secondary" style={{ marginTop: 8, marginBottom: 0 }}>{t("theme.switching")}</Typography.Paragraph> : null}
           </div>
 
-          <Divider />
+          <div>
+            <Typography.Text strong>{t("app.language")}</Typography.Text>
+            <Typography.Paragraph type="secondary" style={{ marginTop: 8, marginBottom: 12 }}>
+              {t("theme.localeHint")}
+            </Typography.Paragraph>
+            <Space.Compact block>
+              <Button icon={<GlobalOutlined />} disabled />
+              <Select
+                value={locale}
+                options={localeSelectOptions}
+                disabled={switchingLocale}
+                onChange={async (value) => {
+                  setSwitchingLocale(true);
+                  try {
+                    await applyShellLocale(value);
+                  } catch (error) {
+                    message.warning(t("theme.localeSwitchFallback", undefined, { reason: normalizeApiError(error).message }));
+                  } finally {
+                    setSwitchingLocale(false);
+                  }
+                }}
+              />
+            </Space.Compact>
+            {switchingLocale ? <Typography.Paragraph type="secondary" style={{ marginTop: 8, marginBottom: 0 }}>{t("theme.localeSwitching")}</Typography.Paragraph> : null}
+          </div>
 
-          <Form
-            form={form}
-            layout="vertical"
-            onFinish={async (values) => {
-              setSaving(true);
-              try {
-                const created = await saveFrontendTheme({
-                  themeCode: values.themeCode,
-                  themeName: values.themeName,
-                  themeConfig: {
-                    primaryColor: values.primaryColor,
-                    sidebarColor: values.sidebarColor,
-                    headerColor: values.headerColor,
-                    backgroundColor: values.backgroundColor,
-                    textColor: values.textColor,
-                  },
-                });
-                upsertTheme(created);
-                await hydrateFrontendThemeCatalog();
-                await switchFrontendTheme(created.themeCode);
-                applyTheme(created.themeCode);
-              } finally {
-                setSaving(false);
-              }
-            }}
-          >
-            <Typography.Text strong>{t("theme.createCustom")}</Typography.Text>
-            <Form.Item name="themeCode" label={t("theme.code")} rules={[{ required: true, message: t("theme.codeRequired") }]}>
-              <Input />
-            </Form.Item>
-            <Form.Item name="themeName" label={t("theme.name")} rules={[{ required: true, message: t("theme.nameRequired") }]}>
-              <Input />
-            </Form.Item>
-            <Form.Item name="primaryColor" label={t("theme.primaryColor")}><Input type="color" /></Form.Item>
-            <Form.Item name="sidebarColor" label={t("theme.sidebarColor")}><Input type="color" /></Form.Item>
-            <Form.Item name="headerColor" label={t("theme.headerColor")}><Input type="color" /></Form.Item>
-            <Form.Item name="backgroundColor" label={t("theme.backgroundColor")}><Input type="color" /></Form.Item>
-            <Form.Item name="textColor" label={t("theme.textColor")}><Input type="color" /></Form.Item>
-            <Button type="primary" htmlType="submit" block loading={saving}>{t("theme.saveTheme")}</Button>
-          </Form>
+          <div>
+            <Typography.Text strong>{t("frontend.navigationLayoutCode")}</Typography.Text>
+            <Typography.Paragraph type="secondary" style={{ marginTop: 8, marginBottom: 12 }}>
+              {t("theme.layoutHint")}
+            </Typography.Paragraph>
+            <Space.Compact block>
+              <Button icon={<LayoutOutlined />} disabled />
+              <Select
+                value={defaultPreference.navigationLayoutCode}
+                options={navigationLayoutOptions}
+                disabled={switchingLayout}
+                onChange={async (value) => {
+                  setSwitchingLayout(true);
+                  try {
+                    const payload = await switchFrontendLayout({
+                      navigationLayoutCode: value,
+                      sidebarLayoutCode: defaultPreference.sidebarLayoutCode ?? "classic",
+                    });
+                    setDefaultPreference(payload);
+                    message.info(t("theme.layoutPending"));
+                  } catch (error) {
+                    message.warning(t("theme.layoutSwitchFallback", undefined, { reason: normalizeApiError(error).message }));
+                  } finally {
+                    setSwitchingLayout(false);
+                  }
+                }}
+              />
+            </Space.Compact>
+          </div>
+
+          <div>
+            <Typography.Text strong>{t("frontend.sidebarLayoutCode")}</Typography.Text>
+            <Typography.Paragraph type="secondary" style={{ marginTop: 8, marginBottom: 12 }}>
+              {t("theme.sidebarHint")}
+            </Typography.Paragraph>
+            <Space.Compact block>
+              <Button icon={<MenuOutlined />} disabled />
+              <Select
+                value={defaultPreference.sidebarLayoutCode}
+                options={sidebarLayoutOptions}
+                disabled={switchingLayout}
+                onChange={async (value) => {
+                  setSwitchingLayout(true);
+                  try {
+                    const payload = await switchFrontendLayout({
+                      navigationLayoutCode: defaultPreference.navigationLayoutCode ?? "side",
+                      sidebarLayoutCode: value,
+                    });
+                    setDefaultPreference(payload);
+                    message.info(t("theme.layoutPending"));
+                  } catch (error) {
+                    message.warning(t("theme.layoutSwitchFallback", undefined, { reason: normalizeApiError(error).message }));
+                  } finally {
+                    setSwitchingLayout(false);
+                  }
+                }}
+              />
+            </Space.Compact>
+            {switchingLayout ? <Typography.Paragraph type="secondary" style={{ marginTop: 8, marginBottom: 0 }}>{t("theme.layoutSwitching")}</Typography.Paragraph> : null}
+          </div>
         </Space>
       </Drawer>
     </>

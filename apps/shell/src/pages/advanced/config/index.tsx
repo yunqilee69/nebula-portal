@@ -20,12 +20,18 @@ interface FrontendSettingsFormProps {
   embedded?: boolean;
 }
 
+function renderPreferenceCode(code?: string) {
+  return code?.trim() ? code : "-";
+}
+
 export function FrontendSettingsForm({ embedded = false }: FrontendSettingsFormProps) {
   const { t } = useI18n();
   const [form] = Form.useForm<FrontendConfigFormValues>();
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
+  const frontendHydrated = useFrontendStore((state) => state.hydrated);
   const frontendConfig = useFrontendStore((state) => state.frontendConfig);
+  const defaultPreference = useFrontendStore((state) => state.defaultPreference);
   const setFrontendConfig = useFrontendStore((state) => state.setFrontendConfig);
   const themeCatalog = useFrontendStore((state) => state.themeCatalog);
 
@@ -124,6 +130,17 @@ export function FrontendSettingsForm({ embedded = false }: FrontendSettingsFormP
             ))}
           </Space>
         </Space>
+        <Card size="small" style={{ marginBottom: 24 }} title={t("frontend.preferenceSnapshot")}>
+          <Space direction="vertical" size="small" style={{ width: "100%" }}>
+            <Typography.Paragraph type="secondary" style={{ marginBottom: 0 }}>
+              {t("frontend.preferenceSnapshotHint")}
+            </Typography.Paragraph>
+            <Space wrap>
+              <Tag color="blue">{`${t("frontend.navigationLayoutCode")}: ${frontendHydrated ? renderPreferenceCode(defaultPreference.navigationLayoutCode) : "-"}`}</Tag>
+              <Tag color="geekblue">{`${t("frontend.sidebarLayoutCode")}: ${frontendHydrated ? renderPreferenceCode(defaultPreference.sidebarLayoutCode) : "-"}`}</Tag>
+            </Space>
+          </Space>
+        </Card>
         <Button type="primary" htmlType="submit" loading={saving} icon={<SaveOutlined />}>
           {t("common.save")}
         </Button>

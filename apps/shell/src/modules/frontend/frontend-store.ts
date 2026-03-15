@@ -20,6 +20,8 @@ const defaultConfig: FrontendConfigDto = {
 const defaultPreference: FrontendPreferenceDto = {
   localeTag: "zh-CN",
   themeCode: "nebula-light",
+  navigationLayoutCode: "side",
+  sidebarLayoutCode: "classic",
 };
 
 interface FrontendState {
@@ -33,6 +35,7 @@ interface FrontendState {
   setThemeCatalog: (payload: FrontendThemeCatalogDto) => void;
   setFrontendConfig: (payload: FrontendConfigDto) => void;
   setDefaultLocale: (locale: LocaleCode) => void;
+  setDefaultPreference: (payload: Partial<FrontendPreferenceDto>) => void;
 }
 
 export const useFrontendStore = create<FrontendState>((set) => ({
@@ -42,13 +45,7 @@ export const useFrontendStore = create<FrontendState>((set) => ({
   defaultPreference,
   themeCatalog: {
     themes: builtinThemeCatalog.themes,
-    configItems: [
-      { configKey: "primaryColor", configName: "Primary Color", defaultValue: "#1f6feb" },
-      { configKey: "sidebarColor", configName: "Sidebar Color", defaultValue: "#0f172a" },
-      { configKey: "headerColor", configName: "Header Color", defaultValue: "#ffffff" },
-      { configKey: "backgroundColor", configName: "Background Color", defaultValue: "#f8fafc" },
-      { configKey: "textColor", configName: "Text Color", defaultValue: "#0f172a" },
-    ],
+    configItems: [],
   },
   setInit: (payload) =>
     set({
@@ -61,4 +58,5 @@ export const useFrontendStore = create<FrontendState>((set) => ({
   setThemeCatalog: (payload) => set({ themeCatalog: payload }),
   setFrontendConfig: (payload) => set({ frontendConfig: payload }),
   setDefaultLocale: (locale) => set((state) => ({ defaultPreference: { ...state.defaultPreference, localeTag: locale } })),
+  setDefaultPreference: (payload) => set((state) => ({ defaultPreference: { ...state.defaultPreference, ...payload } })),
 }));
