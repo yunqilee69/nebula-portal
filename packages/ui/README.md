@@ -26,6 +26,7 @@ import { NePage, NePanel, NeStatusTag } from "@platform/ui";
 - `NeFileCard`：`packages/ui/src/ne-file-card/README.md`
 - `NeFileUploader`：`packages/ui/src/ne-file-uploader/README.md`
 - `NeNavCards`：`packages/ui/src/ne-nav-cards/README.md`
+- `NeTree`：`packages/ui/src/ne-tree/README.md`
 - `NeStatusTag`：`packages/ui/src/ne-status-tag/README.md`
 
 ## 样式说明
@@ -45,6 +46,7 @@ import { NePage, NePanel, NeStatusTag } from "@platform/ui";
 - 空态和异常页优先使用 `NeEmptyState` 和 `NeExceptionResult`
 - 文件上传和文件展示优先使用 `NeFileUploader` 和 `NeFileCard`
 - 平台级入口导航优先使用 `NeNavCards`
+- 树形层级展示优先使用 `NeTree`
 - 状态文本统一使用 `NeStatusTag`
 
 这样可以保证不同业务模块在视觉、交互和命名层面保持一致。
