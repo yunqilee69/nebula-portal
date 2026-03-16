@@ -17,6 +17,10 @@ const organizationChildTypeMap: Record<OrganizationType, OrganizationType[]> = {
 
 const organizationTypeOrder: OrganizationType[] = ["COMPANY", "DEPARTMENT", "TEAM"];
 
+function normalizeOrganizationType(type: OrganizationItem["type"]): OrganizationType {
+  return type && type in organizationChildTypeMap ? type : "COMPANY";
+}
+
 const initialQuery: OrganizationPageQuery = {
   pageNum: 1,
   pageSize: 10,
@@ -33,27 +37,29 @@ const initialForm: OrganizationMutationPayload = {
 };
 
 function getOrganizationTypeLabel(type: OrganizationType | undefined, t: (key: string, fallback?: string, variables?: Record<string, string | number>) => string) {
-  if (type === "DEPARTMENT") {
+  const normalizedType = normalizeOrganizationType(type);
+  if (normalizedType === "DEPARTMENT") {
     return t("organization.typeDepartment");
   }
-  if (type === "TEAM") {
+  if (normalizedType === "TEAM") {
     return t("organization.typeTeam");
   }
   return t("organization.typeCompany");
 }
 
 function getOrganizationTypeColor(type: OrganizationType | undefined) {
-  if (type === "DEPARTMENT") {
+  const normalizedType = normalizeOrganizationType(type);
+  if (normalizedType === "DEPARTMENT") {
     return "gold";
   }
-  if (type === "TEAM") {
+  if (normalizedType === "TEAM") {
     return "cyan";
   }
   return "processing";
 }
 
 function canContainChild(parentType: OrganizationType | undefined, childType: OrganizationType) {
-  const allowedChildTypes = parentType ? organizationChildTypeMap[parentType] ?? [] : organizationTypeOrder;
+  const allowedChildTypes = parentType ? organizationChildTypeMap[normalizeOrganizationType(parentType)] ?? [] : organizationTypeOrder;
   return allowedChildTypes.includes(childType);
 }
 
@@ -309,37 +315,6 @@ export function OperationsOrgPage() {
 
   return (
     <NePage className="organization-page">
-      <NeSearchPanel
-        title={t("common.filters")}
-        labels={{ expand: t("common.expand"), collapse: t("common.collapse"), reset: t("common.reset") }}
-        onReset={() => {
-          filterForm.resetFields();
-          setQuery((current) => ({ ...initialQuery, parentId: current.parentId }));
-        }}
-      >
-        <Form
-          form={filterForm}
-          layout="inline"
-          initialValues={initialQuery}
-          onFinish={(values) => setQuery((current) => ({ ...current, ...values, parentId: current.parentId, pageNum: 1 }))}
-        >
-          <Form.Item name="name" label={t("common.name")}>
-            <Input allowClear placeholder={t("common.organizationPlaceholder")} />
-          </Form.Item>
-          <Form.Item name="code" label={t("common.code")}>
-            <Input allowClear placeholder={t("common.organizationCodePlaceholder")} />
-          </Form.Item>
-          <Form.Item name="status" label={t("common.status")}>
-            <Select style={{ width: 140 }} allowClear options={[{ label: t("common.enabled"), value: 1 }, { label: t("common.disabled"), value: 0 }]} />
-          </Form.Item>
-          <Form.Item>
-            <Button type="primary" htmlType="submit" icon={<SearchOutlined />}>
-              {t("common.search")}
-            </Button>
-          </Form.Item>
-        </Form>
-        {error ? <Typography.Paragraph type="danger" style={{ marginTop: 16, marginBottom: 0 }}>{error}</Typography.Paragraph> : null}
-      </NeSearchPanel>
       <div className="shell-split-grid organization-page__content">
         <NePanel title={t("organization.tree")} className="shell-panel organization-page__tree-panel">
           <OrganizationTree
@@ -367,42 +342,76 @@ export function OperationsOrgPage() {
             }}
           />
         </NePanel>
-        <NeTablePanel
-          className="organization-page__table-panel"
-          toolbar={
-            <NePermission code="platform:org:create">
-              <Button
-                type="primary"
-                icon={<PlusOutlined />}
-                onClick={() => {
-                  setEditing(null);
-                  const defaultParentId = selected && selected.type !== "TEAM" ? selected.id : undefined;
-                  const defaultType = defaultParentId ? organizationChildTypeMap[selected?.type ?? "COMPANY"][0] ?? initialForm.type : initialForm.type;
-                  drawerForm.resetFields();
-                  drawerForm.setFieldsValue({ ...initialForm, parentId: defaultParentId, type: defaultType });
-                  setDrawerOpen(true);
-                }}
-              >
-                {t("organization.new")}
-              </Button>
-            </NePermission>
-          }
-          summary={t("common.recordCount", undefined, { count: total })}
-          pagination={<Pagination align="end" current={query.pageNum} pageSize={query.pageSize} total={total} onChange={(pageNum, pageSize) => setQuery((current) => ({ ...current, pageNum, pageSize }))} />}
-        >
-          <Table<OrganizationItem>
-            rowKey="id"
-            loading={loading}
-            dataSource={rows}
-            columns={columns}
-            onRow={(record) => ({
-              onClick: () => {
-                openDetail(record).catch(() => undefined);
-              },
-            })}
-            pagination={false}
-          />
-        </NeTablePanel>
+        <div className="organization-page__main">
+          <NeSearchPanel
+            title={t("common.filters")}
+            labels={{ expand: t("common.expand"), collapse: t("common.collapse"), reset: t("common.reset") }}
+            onReset={() => {
+              filterForm.resetFields();
+              setQuery((current) => ({ ...initialQuery, parentId: current.parentId }));
+            }}
+          >
+            <Form
+              form={filterForm}
+              layout="inline"
+              initialValues={initialQuery}
+              onFinish={(values) => setQuery((current) => ({ ...current, ...values, parentId: current.parentId, pageNum: 1 }))}
+            >
+              <Form.Item name="name" label={t("common.name")}>
+                <Input allowClear placeholder={t("common.organizationPlaceholder")} />
+              </Form.Item>
+              <Form.Item name="code" label={t("common.code")}>
+                <Input allowClear placeholder={t("common.organizationCodePlaceholder")} />
+              </Form.Item>
+              <Form.Item name="status" label={t("common.status")}>
+                <Select style={{ width: 140 }} allowClear options={[{ label: t("common.enabled"), value: 1 }, { label: t("common.disabled"), value: 0 }]} />
+              </Form.Item>
+              <Form.Item>
+                <Button type="primary" htmlType="submit" icon={<SearchOutlined />}>
+                  {t("common.search")}
+                </Button>
+              </Form.Item>
+            </Form>
+            {error ? <Typography.Paragraph type="danger" style={{ marginTop: 16, marginBottom: 0 }}>{error}</Typography.Paragraph> : null}
+          </NeSearchPanel>
+          <NeTablePanel
+            className="organization-page__table-panel"
+            toolbar={
+              <NePermission code="platform:org:create">
+                <Button
+                  type="primary"
+                  icon={<PlusOutlined />}
+                  onClick={() => {
+                    setEditing(null);
+                    const selectedType = normalizeOrganizationType(selected?.type);
+                    const defaultParentId = selected && selectedType !== "TEAM" ? selected.id : undefined;
+                    const defaultType = defaultParentId ? organizationChildTypeMap[selectedType][0] ?? initialForm.type : initialForm.type;
+                    drawerForm.resetFields();
+                    drawerForm.setFieldsValue({ ...initialForm, parentId: defaultParentId, type: defaultType });
+                    setDrawerOpen(true);
+                  }}
+                >
+                  {t("organization.new")}
+                </Button>
+              </NePermission>
+            }
+            summary={t("common.recordCount", undefined, { count: total })}
+            pagination={<Pagination align="end" current={query.pageNum} pageSize={query.pageSize} total={total} onChange={(pageNum, pageSize) => setQuery((current) => ({ ...current, pageNum, pageSize }))} />}
+          >
+            <Table<OrganizationItem>
+              rowKey="id"
+              loading={loading}
+              dataSource={rows}
+              columns={columns}
+              onRow={(record) => ({
+                onClick: () => {
+                  openDetail(record).catch(() => undefined);
+                },
+              })}
+              pagination={false}
+            />
+          </NeTablePanel>
+        </div>
       </div>
       <NeModal title={t("organization.detail")} open={detailOpen && Boolean(detail)} onClose={() => setDetailOpen(false)} width={640}>
         {detail ? (

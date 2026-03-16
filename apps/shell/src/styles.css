@@ -400,20 +400,39 @@ body,
 }
 
 .organization-page__content {
+  display: grid;
   flex: 1;
   min-height: 0;
   align-items: stretch;
   grid-template-columns: minmax(240px, 1fr) minmax(0, 3fr);
 }
 
-.organization-page__tree-panel.ant-card {
+.user-management-page__content {
+  display: grid;
+  flex: 1;
+  min-height: 0;
+  align-items: stretch;
+  grid-template-columns: minmax(240px, 1fr) minmax(0, 3fr);
+}
+
+.organization-page__main,
+.user-management-page__main {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  gap: var(--shell-content-gap);
+}
+
+.organization-page__tree-panel.ant-card,
+.user-management-page__tree-panel.ant-card {
   display: flex;
   flex-direction: column;
   min-height: 0;
   height: 100%;
 }
 
-.organization-page__tree-panel .ant-card-body {
+.organization-page__tree-panel .ant-card-body,
+.user-management-page__tree-panel .ant-card-body {
   display: flex;
   flex: 1;
   min-height: 0;
@@ -421,6 +440,7 @@ body,
 }
 
 .organization-page__tree-surface,
+.user-management-page__tree-surface,
 .permission-assignment-layout__tree-surface,
 .organization-tree {
   display: flex;
@@ -430,28 +450,44 @@ body,
   gap: 12px;
 }
 
-.organization-page__tree {
+.organization-page__tree,
+.user-management-page__tree {
   flex: 1;
   min-height: 0;
   overflow: auto;
 }
 
-.organization-page__tree .ne-tree__body .ant-tree {
+.organization-page__tree .ne-tree__body .ant-tree,
+.user-management-page__tree .ne-tree__body .ant-tree {
   padding: 6px 6px 6px 2px;
 }
 
 .organization-page__tree .ne-tree__body .ant-tree-switcher,
-.organization-page__tree .ne-tree__body .ant-tree-indent-unit {
+.organization-page__tree .ne-tree__body .ant-tree-indent-unit,
+.user-management-page__tree .ne-tree__body .ant-tree-switcher,
+.user-management-page__tree .ne-tree__body .ant-tree-indent-unit {
   width: 16px;
 }
 
-.organization-page__tree .ne-tree__body .ant-tree-switcher-noop {
+.organization-page__tree .ne-tree__body .ant-tree-switcher-noop,
+.user-management-page__tree .ne-tree__body .ant-tree-switcher-noop {
   width: 6px;
   min-width: 6px;
 }
 
-.organization-page__table-panel {
+.organization-page__table-panel,
+.user-management-page__table-panel {
+  display: flex;
+  flex: 1;
   min-height: 0;
+}
+
+.organization-page__table-panel .ant-card-body,
+.user-management-page__table-panel .ant-card-body {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  flex-direction: column;
 }
 
 .cache-management-layout {

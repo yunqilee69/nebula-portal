@@ -1,12 +1,13 @@
 import { DeleteOutlined, EditOutlined, PlusOutlined, SearchOutlined } from "@ant-design/icons";
 import { Button, Descriptions, Form, Input, Pagination, Popconfirm, Select, Space, Table, Tag, Typography } from "antd";
-import type { OrganizationItem, RoleItem, UserDetail, UserItem, UserMutationPayload, UserPageQuery } from "@platform/core";
+import type { OrganizationItem, OrganizationTreeItem, RoleItem, UserDetail, UserItem, UserMutationPayload, UserPageQuery } from "@platform/core";
 import { useI18n } from "@platform/core";
 import { useEffect, useMemo, useState } from "react";
-import { fetchOrganizationList } from "@/api/organization-api";
+import { fetchOrganizationList, fetchOrganizationTree } from "@/api/organization-api";
 import { fetchRoleList } from "@/api/role-api";
 import { createUser, deleteUser, fetchUserDetail, fetchUserPage, updateUser } from "@/api/user-api";
-import { NeDetailDrawer, NeModal, NePage, NeSearchPanel, NeTablePanel } from "@platform/ui";
+import { OrganizationTree } from "@/modules/organization/organization-tree";
+import { NeDetailDrawer, NeModal, NePage, NePanel, NeSearchPanel, NeTablePanel } from "@platform/ui";
 
 const initialQuery: UserPageQuery = {
   pageNum: 1,
@@ -36,12 +37,26 @@ function formatRelation(items: Array<{ id: string; name: string; code: string }>
   return items.map((item) => `${item.name} (${item.code})`).join(", ");
 }
 
+function findOrganization(nodes: OrganizationTreeItem[], id: string): OrganizationTreeItem | null {
+  for (const node of nodes) {
+    if (node.id === id) {
+      return node;
+    }
+    const match = findOrganization(node.children ?? [], id);
+    if (match) {
+      return match;
+    }
+  }
+  return null;
+}
+
 export function OperationsUserPage() {
   const { t } = useI18n();
   const [form] = Form.useForm<UserPageQuery>();
   const [drawerForm] = Form.useForm<UserMutationPayload>();
   const [query, setQuery] = useState<UserPageQuery>(initialQuery);
   const [rows, setRows] = useState<UserItem[]>([]);
+  const [organizationTree, setOrganizationTree] = useState<OrganizationTreeItem[]>([]);
   const [roles, setRoles] = useState<RoleItem[]>([]);
   const [organizations, setOrganizations] = useState<OrganizationItem[]>([]);
   const [total, setTotal] = useState(0);
@@ -53,6 +68,7 @@ export function OperationsUserPage() {
   const [editing, setEditing] = useState<UserItem | null>(null);
   const [detail, setDetail] = useState<UserDetail | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [selectedOrganizationId, setSelectedOrganizationId] = useState<string | null>(null);
 
   const roleOptions = useMemo(
     () => roles.map((role) => ({ label: `${role.name} (${role.code})`, value: role.id })),
@@ -66,9 +82,10 @@ export function OperationsUserPage() {
   async function loadMeta() {
     setMetaLoading(true);
     try {
-      const [roleRows, organizationRows] = await Promise.all([fetchRoleList(), fetchOrganizationList()]);
+      const [roleRows, organizationRows, organizationTreeRows] = await Promise.all([fetchRoleList(), fetchOrganizationList(), fetchOrganizationTree()]);
       setRoles(roleRows);
       setOrganizations(organizationRows);
+      setOrganizationTree(organizationTreeRows);
     } finally {
       setMetaLoading(false);
     }
@@ -189,67 +206,106 @@ export function OperationsUserPage() {
   );
 
   return (
-    <NePage>
-      <NeSearchPanel
-        title={t("common.filters")}
-        labels={{ expand: t("common.expand"), collapse: t("common.collapse"), reset: t("common.reset") }}
-        onReset={() => {
-          form.resetFields();
-          setQuery(initialQuery);
-        }}
-      >
-        <Form form={form} layout="inline" initialValues={initialQuery} onFinish={(values) => setQuery((current) => ({ ...current, ...values, pageNum: 1 }))}>
-          <Form.Item name="username" label={t("common.username")}>
-            <Input allowClear placeholder={t("common.search")} />
-          </Form.Item>
-          <Form.Item name="nickname" label={t("common.nickname")}>
-            <Input allowClear placeholder={t("common.search")} />
-          </Form.Item>
-          <Form.Item name="email" label={t("common.email")}>
-            <Input allowClear placeholder={t("common.emailExample")} />
-          </Form.Item>
-          <Form.Item name="phone" label={t("common.phone")}>
-            <Input allowClear placeholder={t("common.phoneExample")} />
-          </Form.Item>
-          <Form.Item name="status" label={t("common.status")}>
-            <Select style={{ width: 140 }} allowClear options={[{ label: t("common.enabled"), value: 1 }, { label: t("common.disabled"), value: 0 }]} />
-          </Form.Item>
-          <Form.Item>
-            <Button type="primary" htmlType="submit" icon={<SearchOutlined />}>
-              {t("common.search")}
-            </Button>
-          </Form.Item>
-        </Form>
-        {error ? <Typography.Paragraph type="danger" style={{ marginTop: 16, marginBottom: 0 }}>{error}</Typography.Paragraph> : null}
-      </NeSearchPanel>
-      <NeTablePanel
-        toolbar={
-          <Button
-            type="primary"
-            icon={<PlusOutlined />}
-            onClick={() => {
-              openEditor(null).catch(() => undefined);
+    <NePage className="user-management-page">
+      <div className="shell-split-grid user-management-page__content">
+        <NePanel title={t("organization.tree")} className="shell-panel user-management-page__tree-panel">
+          <OrganizationTree
+            className="user-management-page__tree-surface"
+            treeClassName="user-management-page__tree"
+            data={organizationTree}
+            selectedIds={selectedOrganizationId ? [selectedOrganizationId] : []}
+            searchPlaceholder={t("permissionAssignment.searchOrganizations")}
+            onSelectIdsChange={(ids) => {
+              const key = ids[0];
+              if (!key) {
+                setSelectedOrganizationId(null);
+                setDetail(null);
+                setDetailOpen(false);
+                setQuery((current) => ({ ...initialQuery, orgId: undefined, orgIds: undefined }));
+                return;
+              }
+
+              const next = findOrganization(organizationTree, key);
+              if (!next) {
+                return;
+              }
+
+              setSelectedOrganizationId(next.id);
+              setDetail(null);
+              setDetailOpen(false);
+              setQuery((current) => ({
+                ...current,
+                orgId: next.id,
+                orgIds: [next.id],
+                pageNum: 1,
+              }));
+            }}
+          />
+        </NePanel>
+        <div className="user-management-page__main">
+          <NeSearchPanel
+            title={t("common.filters")}
+            labels={{ expand: t("common.expand"), collapse: t("common.collapse"), reset: t("common.reset") }}
+            onReset={() => {
+              form.resetFields();
+              setQuery((current) => ({ ...initialQuery, orgId: current.orgId, orgIds: current.orgIds }));
             }}
           >
-            {t("userManagement.createUser")}
-          </Button>
-        }
-        summary={t("common.recordCount", undefined, { count: total })}
-        pagination={<Pagination align="end" current={query.pageNum} pageSize={query.pageSize} total={total} onChange={(pageNum, pageSize) => setQuery((current) => ({ ...current, pageNum, pageSize }))} />}
-      >
-        <Table<UserItem>
-          rowKey="id"
-          loading={loading}
-          dataSource={rows}
-          columns={columns}
-          pagination={false}
-          onRow={(record) => ({
-            onClick: () => {
-              openDetail(record.id).catch(() => undefined);
-            },
-          })}
-        />
-      </NeTablePanel>
+            <Form form={form} layout="inline" initialValues={initialQuery} onFinish={(values) => setQuery((current) => ({ ...current, ...values, pageNum: 1 }))}>
+              <Form.Item name="username" label={t("common.username")}>
+                <Input allowClear placeholder={t("common.search")} />
+              </Form.Item>
+              <Form.Item name="nickname" label={t("common.nickname")}>
+                <Input allowClear placeholder={t("common.search")} />
+              </Form.Item>
+              <Form.Item name="email" label={t("common.email")}>
+                <Input allowClear placeholder={t("common.emailExample")} />
+              </Form.Item>
+              <Form.Item name="phone" label={t("common.phone")}>
+                <Input allowClear placeholder={t("common.phoneExample")} />
+              </Form.Item>
+              <Form.Item name="status" label={t("common.status")}>
+                <Select style={{ width: 140 }} allowClear options={[{ label: t("common.enabled"), value: 1 }, { label: t("common.disabled"), value: 0 }]} />
+              </Form.Item>
+              <Form.Item>
+                <Button type="primary" htmlType="submit" icon={<SearchOutlined />}>
+                  {t("common.search")}
+                </Button>
+              </Form.Item>
+            </Form>
+            {error ? <Typography.Paragraph type="danger" style={{ marginTop: 16, marginBottom: 0 }}>{error}</Typography.Paragraph> : null}
+          </NeSearchPanel>
+          <NeTablePanel
+            className="user-management-page__table-panel"
+            toolbar={
+              <Button
+                type="primary"
+                icon={<PlusOutlined />}
+                onClick={() => {
+                  openEditor(null).catch(() => undefined);
+                }}
+              >
+                {t("userManagement.createUser")}
+              </Button>
+            }
+            summary={t("common.recordCount", undefined, { count: total })}
+            pagination={<Pagination align="end" current={query.pageNum} pageSize={query.pageSize} total={total} onChange={(pageNum, pageSize) => setQuery((current) => ({ ...current, pageNum, pageSize }))} />}
+          >
+            <Table<UserItem>
+              rowKey="id"
+              loading={loading}
+              dataSource={rows}
+              columns={columns}
+              pagination={false}
+              onRow={(record) => ({
+                onClick: () => {
+                  openDetail(record.id).catch(() => undefined);
+                },
+              })}
+            />
+          </NeTablePanel>
+        </div>
+      </div>
       <NeDetailDrawer title={t("userManagement.detailTitle")} open={detailOpen && Boolean(detail)} onClose={() => setDetailOpen(false)} width={520}>
         {detail ? (
           <Descriptions column={1} bordered>
