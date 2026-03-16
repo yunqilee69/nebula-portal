@@ -145,6 +145,8 @@ export interface UserPageQuery {
   pageSize: number;
   orderName?: string;
   orderType?: string;
+  orgId?: string;
+  orgIds?: string[];
   username?: string;
   nickname?: string;
   email?: string;
