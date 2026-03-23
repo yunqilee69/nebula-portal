@@ -3,11 +3,20 @@ import type { AppContextValue, ModuleLoadResult, PlatformModule } from "./types"
 
 const moduleRegistry = new Map<string, PlatformModule>();
 const bootstrappedModules = new Set<string>();
+const moduleRegistrationConflicts: Array<{ id: string; existingName: string; nextName: string }> = [];
 
 export function registerModule(module: PlatformModule) {
+  const existingModule = moduleRegistry.get(module.id);
+  if (existingModule && existingModule !== module) {
+    moduleRegistrationConflicts.push({
+      id: module.id,
+      existingName: existingModule.name,
+      nextName: module.name,
+    });
+  }
   moduleRegistry.set(module.id, module);
   if (module.components) {
-    registerComponents(module.components);
+    registerComponents(module.components, module.name);
   }
 }
 
@@ -22,6 +31,11 @@ export function getModuleById(id: string) {
 export function clearModules() {
   moduleRegistry.clear();
   bootstrappedModules.clear();
+  moduleRegistrationConflicts.length = 0;
+}
+
+export function getModuleRegistrationConflicts() {
+  return [...moduleRegistrationConflicts];
 }
 
 export async function bootstrapRegisteredModules(ctx: AppContextValue) {

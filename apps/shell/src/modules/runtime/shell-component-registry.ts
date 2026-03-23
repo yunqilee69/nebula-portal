@@ -23,7 +23,7 @@ export function registerShellComponents() {
     "shell/NotificationsRecordPage": async () => ({ default: (await import("@/pages/notifications/record/index")).NotificationsRecordPage }),
     "shell/NotificationsAnnouncementPage": async () => ({ default: (await import("@/pages/notifications/announcement/index")).NotificationsAnnouncementPage }),
     "shell/OperationsRolePage": async () => ({ default: (await import("@/pages/operations/role/index")).OperationsRolePage }),
-  });
+  }, "Nebula Shell");
 
   registered = true;
 }
