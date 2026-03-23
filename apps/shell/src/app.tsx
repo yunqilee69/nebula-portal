@@ -1,6 +1,7 @@
 import { AppContextProvider, bootstrapRegisteredModules, buildModuleRoutes, buildRoutesFromMenus, eventBus } from "@platform/core";
 import type { AppContextValue, ModuleLoadResult } from "@platform/core";
 import { Spin } from "antd";
+import { Alert, Typography } from "antd";
 import { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { BrowserRouter, Navigate, useNavigate, useRoutes } from "react-router-dom";
 import { AppErrorBoundary } from "./components/app-error-boundary";
@@ -25,6 +26,10 @@ import { useFrontendStore } from "./modules/frontend/frontend-store";
 import { useMenuStore } from "./modules/menu/menu-store";
 import { useNotifyStore } from "./modules/notify/notify-store";
 import { useResourceStore } from "./modules/runtime/resource-store";
+import { reportPlatformValidation, validatePlatformConsistency } from "./modules/runtime/platform-validator";
+import { NeExceptionResult } from "@platform/ui";
+import { useI18nStore } from "./modules/i18n/i18n-store";
+import { translateShellMessage } from "./modules/i18n/translate";
 
 registerShellComponents();
 
@@ -32,6 +37,42 @@ function AppLoadingFallback() {
   return (
     <div style={{ minHeight: "100vh", display: "grid", placeItems: "center" }}>
       <Spin size="large" />
+    </div>
+  );
+}
+
+function PlatformValidationFallback({ issues }: { issues: ReturnType<typeof validatePlatformConsistency>["issues"] }) {
+  const locale = useI18nStore.getState().locale;
+  return (
+    <div style={{ minHeight: "100vh", padding: 24, display: "grid", alignContent: "center", gap: 24 }}>
+      <NeExceptionResult
+        status="error"
+        title={translateShellMessage(locale, "layout.platformValidationFailed", "Platform startup validation failed")}
+        subtitle={translateShellMessage(locale, "layout.platformValidationSubtitle", "The shell found conflicting modules, routes, or menu component bindings. Review the console logs and fix the reported metadata before continuing.")}
+        actionText={translateShellMessage(locale, "layout.platformValidationReload", "Reload")}
+        onAction={() => window.location.reload()}
+      />
+      <Alert
+        type="error"
+        showIcon
+        message={translateShellMessage(locale, "layout.platformValidationIssues", "Validation issues")}
+        description={
+          <div>
+            {issues.map((issue) => (
+              <div key={issue.code} style={{ marginBottom: 12 }}>
+                <Typography.Text strong>{issue.summary}</Typography.Text>
+                <ul style={{ marginTop: 8, marginBottom: 0, paddingLeft: 20 }}>
+                  {issue.details.map((detail) => (
+                    <li key={`${issue.code}-${detail}`}>
+                      <Typography.Text>{detail}</Typography.Text>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        }
+      />
     </div>
   );
 }
@@ -52,6 +93,7 @@ function AppRouter() {
   const [authReady, setAuthReady] = useState(false);
   const frontendHydrated = useFrontendStore((state) => state.hydrated);
   const refreshTimerRef = useRef<number | null>(null);
+  const lastValidationSignatureRef = useRef<string | null>(null);
 
   useEffect(() => {
     hydrate();
@@ -246,6 +288,25 @@ function AppRouter() {
 
   const dynamicRoutes = useMemo(() => buildRoutesFromMenus(menus, UnavailablePage), [menus]);
   const moduleRoutes = useMemo(() => buildModuleRoutes(), [remotesLoaded]);
+  const platformValidation = useMemo(
+    () => (authReady && session?.token && remotesLoaded ? validatePlatformConsistency(menus) : { issues: [], hasErrors: false }),
+    [authReady, menus, remotesLoaded, session?.token],
+  );
+
+  useEffect(() => {
+    if (!platformValidation.hasErrors) {
+      lastValidationSignatureRef.current = null;
+      return;
+    }
+
+    const signature = JSON.stringify(platformValidation.issues);
+    if (lastValidationSignatureRef.current === signature) {
+      return;
+    }
+
+    reportPlatformValidation(platformValidation);
+    lastValidationSignatureRef.current = signature;
+  }, [platformValidation]);
 
   const routes = [
     { path: "/login", element: session?.token ? <Navigate to="/" replace /> : <LoginPage /> },
@@ -282,6 +343,10 @@ function AppRouter() {
 
   if (!hydrated || !authReady || !frontendHydrated || waitingForProtectedRoutes) {
     return <AppLoadingFallback />;
+  }
+
+  if (platformValidation.hasErrors && session?.token) {
+    return <PlatformValidationFallback issues={platformValidation.issues} />;
   }
 
   return (
