@@ -90,7 +90,7 @@ async function main() {
     }
 
     output.write(`Created app at ${targetDir}\n`);
-    output.write(`Next: add ${remoteName} remote config to apps/shell/vite.config.ts\n`);
+    output.write(`Next: add ${remoteName} to shell VITE_REMOTE_MODULES config (or the default remote list in apps/shell/src/config/env.ts)\n`);
   } finally {
     rl.close();
   }

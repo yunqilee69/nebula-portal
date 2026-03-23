@@ -39,7 +39,8 @@ The shell reads backend and remote settings from Vite env vars. Copy values into
 - `VITE_API_BASE_URL`: request base URL used by the browser client; defaults to empty so local development uses relative paths and the Vite dev proxy
 - `VITE_BACKEND_PROXY_TARGET`: shell dev proxy target, defaults to `http://127.0.0.1:8080`
 - `VITE_MODULE_MODE`: `embedded` by default for single-package startup, or `federation` to load remote modules from remote entries
-- `VITE_DEMO_REMOTE_URL`: remote entry URL for the demo app
+- `VITE_DEMO_REMOTE_URL`: remote entry URL used by the default demo module fallback
+- `VITE_REMOTE_MODULES`: JSON array of remote module definitions for config-driven loading, for example `[ { "id": "@business/demo", "remoteName": "demoBusiness", "url": "http://127.0.0.1:3001/assets/remoteEntry.js", "exposedModule": "./register" } ]`
 - `VITE_STORAGE_UPLOAD_TASK_PATH`: create storage upload task path, defaults to `/storage/upload-tasks`
 - `VITE_STORAGE_UPLOAD_SIMPLE_PATH_TEMPLATE`: simple upload path template, defaults to `/storage/upload-tasks/{id}/simple`
 - `VITE_STORAGE_UPLOAD_COMPLETE_PATH_TEMPLATE`: upload complete path template, defaults to `/storage/upload-tasks/{id}/complete`
@@ -47,3 +48,11 @@ The shell reads backend and remote settings from Vite env vars. Copy values into
 - `VITE_STORAGE_FILE_PAGE_PATH`: storage file page path, defaults to `/storage/files/page`
 - `VITE_STORAGE_FILE_DETAIL_PATH_TEMPLATE`: storage file detail path template, defaults to `/storage/files/{id}`
 - `VITE_STORAGE_FILE_CONTENT_PATH_TEMPLATE`: storage file content path template, defaults to `/storage/files/{id}/content`
+
+## Deferred Roadmap
+
+- Remote module metadata is currently driven by `VITE_REMOTE_MODULES` for predictable local and deployment-time configuration.
+- A later platform upgrade can move this configuration to a backend API so the shell fetches the active remote module list before calling the federation runtime loader.
+- That future change is intended for scenarios such as module enable/disable switches, environment-specific rollout, gray releases, and tenant-specific module visibility.
+- Keep the env-based path as a bootstrap fallback even after the API version is introduced, so shell startup still has a safe local-development mode.
+- See `business-module-development-manual.md` for the deferred implementation outline.

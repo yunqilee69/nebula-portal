@@ -348,7 +348,55 @@ Current behavior:
 - shell platform pages: `apps/shell/src/pages/`
 - shell runtime bootstrap: `apps/shell/src/modules/runtime/bootstrap.ts`
 
-## 15. Verification Commands
+## 15. Deferred Remote Module API Roadmap
+
+The current shell runtime loads business remotes from `VITE_REMOTE_MODULES`, which is enough for local development and deployment-time configuration.
+
+This capability is intentionally reserved for a later platform upgrade: let the shell request remote module metadata from a backend API before loading federation remotes.
+
+### Intended goal
+
+- keep the current runtime loading contract (`id`, `remoteName`, `url`, `exposedModule`)
+- move the source of truth from `.env` files to a backend-managed API response
+- support module enable/disable control without editing shell code
+- make room for gray rollout, tenant isolation, and environment-specific module lists
+
+### Expected runtime flow
+
+1. shell starts with the current embedded/public bootstrap flow
+2. shell requests a backend endpoint such as `/api/frontend/remotes`
+3. backend returns the active remote module list
+4. shell registers each remote through the federation runtime API
+5. shell loads each module `./register` entry and continues the existing module bootstrap process
+6. if the backend endpoint is unavailable, shell falls back to `VITE_REMOTE_MODULES`
+
+### Suggested response shape
+
+```json
+[
+  {
+    "id": "@business/demo",
+    "remoteName": "demoBusiness",
+    "url": "http://127.0.0.1:3001/assets/remoteEntry.js",
+    "exposedModule": "./register"
+  }
+]
+```
+
+### Recommended implementation boundary
+
+- create a dedicated shell API adapter for remote module metadata
+- keep env parsing as fallback logic in the config/runtime layer
+- do not let page components or business modules know whether remotes came from env or backend
+- keep the module registration contract unchanged so existing business modules do not need migration
+
+### Why this is deferred
+
+- the current env-driven approach is already stable and build-safe
+- backend delivery introduces startup sequencing, cache, and availability concerns
+- this change is most valuable when the platform starts managing multiple business modules dynamically
+
+## 16. Verification Commands
 
 ```bash
 pnpm typecheck
