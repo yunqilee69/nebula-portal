@@ -1,3 +1,60 @@
+interface RemoteModuleConfig {
+  id: string;
+  remoteName: string;
+  url: string;
+  exposedModule: string;
+}
+
+const defaultRemoteModules: RemoteModuleConfig[] = [
+  {
+    id: "@business/demo",
+    remoteName: "demoBusiness",
+    url: import.meta.env.VITE_DEMO_REMOTE_URL ?? "http://127.0.0.1:3001/assets/remoteEntry.js",
+    exposedModule: "./register",
+  },
+];
+
+function parseRemoteModules(value: string | undefined): RemoteModuleConfig[] {
+  if (!value) {
+    return defaultRemoteModules;
+  }
+
+  try {
+    const parsed = JSON.parse(value) as unknown;
+    if (!Array.isArray(parsed)) {
+      return defaultRemoteModules;
+    }
+
+    const items = parsed
+      .map((item) => {
+        if (!item || typeof item !== "object") {
+          return null;
+        }
+
+        const candidate = item as Partial<RemoteModuleConfig>;
+        if (
+          typeof candidate.id !== "string"
+          || typeof candidate.remoteName !== "string"
+          || typeof candidate.url !== "string"
+        ) {
+          return null;
+        }
+
+        return {
+          id: candidate.id,
+          remoteName: candidate.remoteName,
+          url: candidate.url,
+          exposedModule: typeof candidate.exposedModule === "string" ? candidate.exposedModule : "./register",
+        } satisfies RemoteModuleConfig;
+      })
+      .filter((item): item is RemoteModuleConfig => item !== null);
+
+    return items.length ? items : defaultRemoteModules;
+  } catch {
+    return defaultRemoteModules;
+  }
+}
+
 export const shellEnv = {
   moduleMode: import.meta.env.VITE_MODULE_MODE ?? "embedded",
   apiBaseUrl: import.meta.env.VITE_API_BASE_URL ?? "",
@@ -38,4 +95,5 @@ export const shellEnv = {
   storageFileDeletePathTemplate:
     import.meta.env.VITE_STORAGE_FILE_DELETE_PATH_TEMPLATE ?? "/storage/files/{id}",
   demoRemoteUrl: import.meta.env.VITE_DEMO_REMOTE_URL ?? "http://127.0.0.1:3001/assets/remoteEntry.js",
+  remoteModules: parseRemoteModules(import.meta.env.VITE_REMOTE_MODULES),
 };

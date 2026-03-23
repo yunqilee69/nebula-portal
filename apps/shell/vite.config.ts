@@ -8,28 +8,19 @@ const projectDir = path.dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, projectDir, "");
-  const demoRemoteUrl = env.VITE_DEMO_REMOTE_URL ?? "http://127.0.0.1:3001/assets/remoteEntry.js";
   const backendTarget = env.VITE_BACKEND_PROXY_TARGET ?? "http://127.0.0.1:8080";
-  const moduleMode = env.VITE_MODULE_MODE ?? "embedded";
 
   return {
     resolve: {
       alias: {
         "@": path.resolve(projectDir, "src"),
-        ...(moduleMode === "embedded"
-          ? {
-              "demoBusiness/register": path.resolve(projectDir, "../demo-business/src/register.ts"),
-            }
-          : {}),
       },
     },
     plugins: [
       react(),
       federation({
         name: "shell",
-        remotes: moduleMode === "federation" ? {
-          demoBusiness: demoRemoteUrl,
-        } : {},
+        remotes: {},
         shared: ["react", "react-dom", "react-router-dom", "antd", "@platform/core", "@platform/ui"],
       }),
     ],
