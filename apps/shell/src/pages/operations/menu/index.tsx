@@ -1,8 +1,8 @@
 import { DeleteOutlined, EditOutlined, PlusOutlined, SearchOutlined } from "@ant-design/icons";
 import { Button, Form, Input, InputNumber, Pagination, Popconfirm, Select, Space, Table, Tag, Typography } from "antd";
 import type { MenuItem, MenuMutationPayload, MenuPageQuery } from "@platform/core";
-import { NePermission, useI18n } from "@platform/core";
-import { useEffect, useMemo, useState } from "react";
+import { NePermission, getRegisteredComponentSource, getRegisteredModules, listRegisteredComponents, useI18n } from "@platform/core";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { createMenu, deleteMenu, fetchMenuPage, fetchMenuTree, updateMenu } from "@/api/menu-admin-api";
 import { NeModal, NePage, NeSearchPanel, NeTablePanel } from "@platform/ui";
 
@@ -44,7 +44,7 @@ function toMutationPayload(values: MenuMutationPayload) {
     code: values.code || undefined,
     path: values.path || undefined,
     icon: values.icon || undefined,
-    component: values.component || undefined,
+    component: values.type === "MENU" ? values.component || undefined : undefined,
     sort: values.sort ?? 1,
     status: values.status ?? 1,
   } satisfies MenuMutationPayload;
@@ -98,6 +98,67 @@ function findMenuNode(nodes: MenuItem[], id: string | null): MenuItem | null {
   return null;
 }
 
+function collectSuggestedPaths(menuTree: MenuItem[]) {
+  const suggestions = new Map<string, Set<string>>();
+
+  const registerPath = (componentKey: string | undefined, path: string | undefined) => {
+    if (!componentKey || !path) {
+      return;
+    }
+
+    const normalizedPath = path.trim();
+    if (!normalizedPath) {
+      return;
+    }
+
+    if (!suggestions.has(componentKey)) {
+      suggestions.set(componentKey, new Set<string>());
+    }
+
+    suggestions.get(componentKey)?.add(normalizedPath);
+  };
+
+  const visitMenus = (nodes: MenuItem[]) => {
+    nodes.forEach((node) => {
+      registerPath(node.component, node.path);
+      if (node.children?.length) {
+        visitMenus(node.children);
+      }
+    });
+  };
+
+  visitMenus(menuTree);
+
+  getRegisteredModules().forEach((module) => {
+    module.routes?.forEach((route) => {
+      registerPath(route.componentKey, route.path);
+    });
+  });
+
+  return suggestions;
+}
+
+function collectComponentSources() {
+  const sources = new Map<string, string>();
+
+  listRegisteredComponents().forEach((componentKey) => {
+    const source = getRegisteredComponentSource(componentKey);
+    if (source) {
+      sources.set(componentKey, source);
+    }
+  });
+
+  getRegisteredModules().forEach((module) => {
+    Object.keys(module.components ?? {}).forEach((componentKey) => {
+      if (!sources.has(componentKey)) {
+        sources.set(componentKey, module.name);
+      }
+    });
+  });
+
+  return sources;
+}
+
 export function OperationsMenuPage() {
   const { t } = useI18n();
   const [form] = Form.useForm<MenuPageQuery>();
@@ -111,11 +172,67 @@ export function OperationsMenuPage() {
   const [error, setError] = useState<string | null>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [editing, setEditing] = useState<MenuItem | null>(null);
+  const lastAutoSuggestedPathRef = useRef<string | null>(null);
   const currentType = Form.useWatch("type", drawerForm) ?? initialForm.type;
+  const currentComponent = Form.useWatch("component", drawerForm);
+  const currentPath = Form.useWatch("path", drawerForm);
   const editingTreeNode = useMemo(() => findMenuNode(menuTree, editing ? String(editing.id) : null), [editing, menuTree]);
   const editingDescendantIds = useMemo(() => collectDescendantIds(editingTreeNode ?? editing), [editing, editingTreeNode]);
   const parentOptions = useMemo(() => flattenDirectoryOptions(menuTree, editingDescendantIds), [editingDescendantIds, menuTree]);
   const editingHasChildren = Boolean(editingTreeNode?.children?.length);
+  const suggestedPathsByComponent = useMemo(() => collectSuggestedPaths(menuTree), [menuTree]);
+  const componentSources = useMemo(() => collectComponentSources(), [drawerOpen]);
+  const componentOptions = useMemo(() => {
+    const registeredOptions = listRegisteredComponents().map((componentKey) => ({
+      label: `${componentKey} · ${componentSources.get(componentKey) ?? (componentKey.startsWith("shell/") ? t("menuManagement.shellComponentSource") : t("menuManagement.unknownComponentSource"))}`,
+      value: componentKey,
+    }));
+
+    if (!currentComponent) {
+      return registeredOptions;
+    }
+
+    return registeredOptions.some((item) => item.value === currentComponent)
+      ? registeredOptions
+      : [{ label: `${currentComponent} (${t("menuManagement.unregisteredComponent")})`, value: currentComponent }, ...registeredOptions];
+  }, [componentSources, currentComponent, drawerOpen, t]);
+  const suggestedPaths = useMemo(
+    () => (currentComponent ? [...(suggestedPathsByComponent.get(currentComponent) ?? [])].sort((left, right) => left.localeCompare(right)) : []),
+    [currentComponent, suggestedPathsByComponent],
+  );
+
+  useEffect(() => {
+    if (currentType !== "MENU" && drawerForm.getFieldValue("component")) {
+      drawerForm.setFieldValue("component", undefined);
+    }
+  }, [currentType, drawerForm]);
+
+  useEffect(() => {
+    if (currentType !== "MENU") {
+      lastAutoSuggestedPathRef.current = null;
+      return;
+    }
+
+    const nextSuggestedPath = suggestedPaths[0];
+    if (!nextSuggestedPath) {
+      lastAutoSuggestedPathRef.current = null;
+      return;
+    }
+
+    const normalizedCurrentPath = currentPath?.trim() ?? "";
+    const previousSuggestedPath = lastAutoSuggestedPathRef.current;
+    const canAutofill = !normalizedCurrentPath || normalizedCurrentPath === previousSuggestedPath;
+
+    if (!canAutofill) {
+      return;
+    }
+
+    if (normalizedCurrentPath !== nextSuggestedPath) {
+      drawerForm.setFieldValue("path", nextSuggestedPath);
+    }
+
+    lastAutoSuggestedPathRef.current = nextSuggestedPath;
+  }, [currentPath, currentType, drawerForm, suggestedPaths]);
 
   async function loadRows(nextQuery: MenuPageQuery) {
     setLoading(true);
@@ -297,7 +414,19 @@ export function OperationsMenuPage() {
             />
           </Form.Item>
           <Form.Item name="code" label={t("common.code")}><Input /></Form.Item>
-          <Form.Item name="path" label={t("common.path")}><Input /></Form.Item>
+          <Form.Item
+            name="path"
+            label={t("common.path")}
+            extra={
+              currentType === "MENU"
+                ? suggestedPaths.length
+                  ? t("menuManagement.pathSuggestionHint", undefined, { paths: suggestedPaths.join(" / ") })
+                  : t("menuManagement.pathSuggestionEmpty")
+                : undefined
+            }
+          >
+            <Input placeholder={currentType === "MENU" ? t("menuManagement.pathPlaceholder") : undefined} />
+          </Form.Item>
           <Form.Item
             name="icon"
             label={t("common.icon")}
@@ -305,7 +434,22 @@ export function OperationsMenuPage() {
           >
             <Input placeholder={t("menuManagement.iconPlaceholder")} />
           </Form.Item>
-          <Form.Item name="component" label={t("common.component")}><Input /></Form.Item>
+          <Form.Item
+            name="component"
+            label={t("common.component")}
+            rules={currentType === "MENU" ? [{ required: true, message: t("validation.selectField", undefined, { field: t("common.component") }) }] : undefined}
+            extra={currentType === "MENU" ? t("menuManagement.componentHint") : t("menuManagement.componentDisabledHint")}
+          >
+            <Select
+              showSearch
+              allowClear
+              disabled={currentType !== "MENU"}
+              options={componentOptions}
+              placeholder={t("menuManagement.componentPlaceholder")}
+              optionFilterProp="label"
+              notFoundContent={t("menuManagement.noComponentOptions")}
+            />
+          </Form.Item>
           <Form.Item
             name="type"
             label={t("common.type")}
