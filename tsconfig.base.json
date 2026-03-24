@@ -17,7 +17,10 @@
     "jsx": "react-jsx",
     "baseUrl": ".",
     "paths": {
+      "@nebula/auth": ["packages/auth/src/index.ts"],
+      "@nebula/request": ["packages/request/src/index.ts"],
       "@platform/core": ["packages/core/src/index.ts"],
+      "@platform/mobile-core": ["packages/mobile-core/src/index.ts"],
       "@platform/ui": ["packages/ui/src/index.ts"]
     }
   }

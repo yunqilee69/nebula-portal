@@ -1,4 +1,5 @@
 import { AppContextProvider, bootstrapRegisteredModules, buildModuleRoutes, buildRoutesFromMenus, eventBus } from "@platform/core";
+import { restoreSessionOnStartup } from "@nebula/auth";
 import type { AppContextValue, ModuleLoadResult } from "@platform/core";
 import { Spin } from "antd";
 import { Alert, Typography } from "antd";
@@ -9,8 +10,7 @@ import { fetchCurrentUser, refreshSession } from "./api/auth-api";
 import { AuthGuard } from "./modules/auth/auth-guard";
 import { LoginPage } from "./modules/auth/login-page";
 import { useAuthStore } from "./modules/auth/auth-store";
-import { mergeSessionWithCurrentUser } from "./modules/auth/session-payload";
-import { isSessionExpired, resolveRefreshDelay, shouldRefreshSession } from "./modules/auth/session-utils";
+import { resolveRefreshDelay } from "./modules/auth/session-utils";
 import { BasicLayout } from "./layout/basic-layout";
 import { UnauthorizedPage } from "./pages/401";
 import { NotFoundPage } from "./pages/404";
@@ -116,69 +116,18 @@ function AppRouter() {
     (async () => {
       const storedSession = useAuthStore.getState().session;
 
-      if (!storedSession?.token) {
-        if (active) {
-          setAuthReady(true);
-        }
-        return;
-      }
-
-      if (!storedSession.refreshToken && isSessionExpired(storedSession.accessTokenExpiresIn)) {
-        if (active) {
-          clearSession();
-          setAuthReady(true);
-        }
-        return;
-      }
-
-      if (storedSession.refreshToken && isSessionExpired(storedSession.refreshTokenExpiresIn)) {
-        if (active) {
-          clearSession();
-          setAuthReady(true);
-        }
-        return;
-      }
-
-      if (!shouldRefreshSession(storedSession)) {
-        try {
-          const currentUser = await fetchCurrentUser(storedSession.token);
-          if (active) {
-            setSession(mergeSessionWithCurrentUser(storedSession, currentUser));
-          }
-        } catch {
-          if (active) {
-            clearSession();
-          }
-        } finally {
-          if (active) {
-            setAuthReady(true);
-          }
-        }
-        return;
-      }
-
-      if (!storedSession.refreshToken) {
-        try {
-          const currentUser = await fetchCurrentUser(storedSession.token);
-          if (active) {
-            setSession(mergeSessionWithCurrentUser(storedSession, currentUser));
-          }
-        } catch {
-          if (active) {
-            clearSession();
-          }
-        } finally {
-          if (active) {
-            setAuthReady(true);
-          }
-        }
-        return;
-      }
-
       try {
-        const nextSession = await refreshSession(storedSession.refreshToken);
+        const nextSession = await restoreSessionOnStartup({
+          storedSession,
+          fetchCurrentUser,
+          refreshSession,
+        });
         if (active) {
-          setSession(nextSession);
+          if (nextSession) {
+            setSession(nextSession);
+          } else {
+            clearSession();
+          }
         }
       } catch {
         if (active) {

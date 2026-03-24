@@ -1,16 +1,13 @@
 import { shellEnv } from "../config/env";
+import { createAuthHeaders, resolveSessionFromTokenPayload } from "@nebula/auth";
 import { apiClient } from "./client";
-import { buildSessionFromPayload, normalizeCurrentUser, normalizeTokenPayload } from "../modules/auth/session-payload";
+import { normalizeCurrentUser } from "../modules/auth/session-payload";
 
 interface LoginPayload {
   username: string;
   password: string;
   captcha?: string;
   captchaKey?: string;
-}
-
-function createAuthHeaders(token?: string) {
-  return token ? { Authorization: `Bearer ${token}` } : undefined;
 }
 
 export async function fetchCurrentUser(token?: string) {
@@ -22,14 +19,12 @@ export async function fetchCurrentUser(token?: string) {
 
 export async function loginWithPassword(payload: LoginPayload) {
   const response = await apiClient.post(shellEnv.loginPath, payload);
-  const currentUser = await fetchCurrentUser(normalizeTokenPayload(response.data).token);
-  return buildSessionFromPayload(response.data, currentUser);
+  return resolveSessionFromTokenPayload(response.data, fetchCurrentUser);
 }
 
 export async function refreshSession(refreshToken: string) {
   const response = await apiClient.post(shellEnv.refreshPath, { refreshToken });
-  const currentUser = await fetchCurrentUser(normalizeTokenPayload(response.data).token);
-  return buildSessionFromPayload(response.data, currentUser);
+  return resolveSessionFromTokenPayload(response.data, fetchCurrentUser);
 }
 
 export async function logoutSession() {

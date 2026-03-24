@@ -2,8 +2,12 @@
   "extends": "./tsconfig.base.json",
   "files": [],
   "references": [
+    { "path": "./packages/auth" },
     { "path": "./packages/core" },
+    { "path": "./packages/mobile-core" },
+    { "path": "./packages/request" },
     { "path": "./packages/ui" },
+    { "path": "./apps/mobile" },
     { "path": "./apps/shell" },
     { "path": "./apps/demo-business" },
     { "path": "./templates/business-starter" }

@@ -1,0 +1,24 @@
+{
+  "expo": {
+    "name": "Nebula Mobile",
+    "slug": "nebula-mobile",
+    "scheme": "nebula-mobile",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "automatic",
+    "plugins": ["expo-router", "expo-secure-store"],
+    "experiments": {
+      "typedRoutes": true
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.nebula.mobile"
+    },
+    "android": {
+      "package": "com.nebula.mobile"
+    },
+    "extra": {
+      "harmonyAdapterPlanned": true
+    }
+  }
+}

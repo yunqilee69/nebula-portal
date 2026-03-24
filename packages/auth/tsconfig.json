@@ -1,0 +1,19 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "composite": true,
+    "declaration": true,
+    "declarationMap": true,
+    "noEmit": false,
+    "outDir": "dist",
+    "lib": ["ES2022"],
+    "baseUrl": ".",
+    "paths": {
+      "@nebula/request": ["../request/dist/src/index.d.ts"],
+      "@platform/core": ["../core/dist/index.d.ts"],
+      "axios": ["../../node_modules/.pnpm/node_modules/axios/index.d.ts"]
+    }
+  },
+  "include": ["src"],
+  "references": [{ "path": "../core" }, { "path": "../request" }]
+}

@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import type { AuthSession } from "@platform/core";
 import { hasPermissionCode } from "@platform/core";
+import { hasSessionToken, parseStoredSession, stringifyStoredSession } from "@nebula/auth";
 import { normalizeSessionExpiry, normalizeSessionExpiryFields } from "./session-utils";
 
 const STORAGE_KEY = "nebula-shell-session";
@@ -79,30 +80,29 @@ interface AuthState {
 }
 
 function isPersistedSession(value: unknown): value is PersistedSession {
-  if (typeof value !== "object" || value === null) {
+  if (!hasSessionToken(value)) {
     return false;
   }
 
-  const candidate = value as Record<string, unknown>;
-  return typeof candidate.token === "string" && candidate.token.length > 0;
+  return true;
 }
 
 function readStoredSession() {
   const raw = localStorage.getItem(STORAGE_KEY);
-  if (!raw) {
-    return null;
-  }
-  try {
-    const parsed: unknown = JSON.parse(raw);
+  const session = parseStoredSession(raw, (parsed) => {
     if (!isPersistedSession(parsed)) {
-      localStorage.removeItem(STORAGE_KEY);
       return null;
     }
+
     return normalizeSessionExpiryFields(parsed);
-  } catch {
+  });
+
+  if (!session) {
     localStorage.removeItem(STORAGE_KEY);
     return null;
   }
+
+  return session;
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
@@ -110,7 +110,7 @@ export const useAuthStore = create<AuthState>((set) => ({
   hydrated: false,
   setSession: (session) => {
     const normalizedSession = normalizeSessionExpiry(session);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(toPersistedSession(normalizedSession)));
+    localStorage.setItem(STORAGE_KEY, stringifyStoredSession(toPersistedSession(normalizedSession)));
     syncSessionCookies(normalizedSession);
     set({ session: normalizedSession, hydrated: true });
   },
@@ -120,7 +120,7 @@ export const useAuthStore = create<AuthState>((set) => ({
       return;
     }
     const next = normalizeSessionExpiry({ ...current, ...patch });
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(toPersistedSession(next)));
+    localStorage.setItem(STORAGE_KEY, stringifyStoredSession(toPersistedSession(next)));
     syncSessionCookies(next);
     set({ session: next, hydrated: true });
   },
@@ -133,7 +133,7 @@ export const useAuthStore = create<AuthState>((set) => ({
     const storedSession = readStoredSession();
     const session = storedSession ? fromPersistedSession(storedSession) : null;
     if (session) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(toPersistedSession(session)));
+      localStorage.setItem(STORAGE_KEY, stringifyStoredSession(toPersistedSession(session)));
     }
     syncSessionCookies(session);
     set({ session, hydrated: true });
