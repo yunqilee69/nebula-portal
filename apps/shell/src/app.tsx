@@ -28,8 +28,7 @@ import { useNotifyStore } from "./modules/notify/notify-store";
 import { useResourceStore } from "./modules/runtime/resource-store";
 import { reportPlatformValidation, validatePlatformConsistency } from "./modules/runtime/platform-validator";
 import { NeExceptionResult } from "@platform/ui";
-import { useI18nStore } from "./modules/i18n/i18n-store";
-import { translateShellMessage } from "./modules/i18n/translate";
+import { useI18nStore, translateShellMessage } from "@nebula/i18n";
 
 registerShellComponents();
 
