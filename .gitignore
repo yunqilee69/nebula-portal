@@ -1,7 +1,9 @@
 node_modules
 dist
+dist-native
 .turbo
 .sisyphus
 .DS_Store
 coverage
 pnpm-lock.yaml
+*.tsbuildinfo
