@@ -1,6 +1,6 @@
 import { Descriptions } from "antd";
 import { useAppContext } from "@platform/core";
-import { NePage, NePanel } from "@platform/ui";
+import { NeDict, NePage, NePanel } from "@platform/ui";
 
 export function CustomerDetailPage() {
   const ctx = useAppContext();
@@ -16,7 +16,7 @@ export function CustomerDetailPage() {
           <Descriptions.Item label={t("demoCustomer.permissions")}>{ctx.auth.getSession()?.permissions.join(", ") || "-"}</Descriptions.Item>
           <Descriptions.Item label={t("demoCustomer.uploadLimit")}>{uploadLimit.toString()}</Descriptions.Item>
           <Descriptions.Item label={t("demoCustomer.dictionaryFileType")}>
-            {ctx.dict.get("file_type").map((item) => item.label).join(", ") || "-"}
+            <NeDict dictCode="file_type" />
           </Descriptions.Item>
         </Descriptions>
       </NePanel>
