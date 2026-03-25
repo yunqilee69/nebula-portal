@@ -17,6 +17,9 @@
     "build": "rm -rf dist tsconfig.tsbuildinfo && tsc -p tsconfig.json --emitDeclarationOnly false && cp src/nebula.css dist/nebula.css",
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
+  "dependencies": {
+    "@platform/core": "workspace:*"
+  },
   "peerDependencies": {
     "antd": "^5.24.0",
     "react": "^18.3.1",

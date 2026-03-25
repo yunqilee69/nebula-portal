@@ -2,6 +2,7 @@ import "./nebula.css";
 
 export * from "./ne-detail-drawer/ne-detail-drawer";
 export * from "./ne-breadcrumbs/ne-breadcrumbs";
+export * from "./ne-dict/ne-dict";
 export * from "./ne-empty-state/ne-empty-state";
 export * from "./ne-exception-result/ne-exception-result";
 export * from "./ne-file-card/ne-file-card";
