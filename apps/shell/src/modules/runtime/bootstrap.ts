@@ -1,5 +1,6 @@
 import { eventBus, hasAllPermissionCode, hasAllRoleCode, hasAnyPermissionCode, hasAnyRoleCode, hasPermissionCode, hasRoleCode } from "@platform/core";
 import type { AppContextValue, AuthSession, LocaleCode, MenuItem } from "@platform/core";
+import { shellEnv } from "../../config/env";
 import { fetchCurrentConfig } from "../../api/config-api";
 import { fetchCurrentMenus } from "../../api/menu-api";
 import { fetchCurrentNotifications } from "../../api/notify-api";
@@ -20,11 +21,13 @@ import { useResourceStore } from "./resource-store";
 
 export async function preloadShellData() {
   useResourceStore.getState().start("menus");
+  useResourceStore.getState().start("dicts");
   useResourceStore.getState().start("config");
   useResourceStore.getState().start("notifications");
 
   const sessionMenus = useAuthStore.getState().session?.menuList;
   const menuPromise = sessionMenus ? Promise.resolve(sessionMenus) : fetchCurrentMenus();
+  const dictCodes = shellEnv.dictTypeCodes;
 
   await Promise.all([
     menuPromise
@@ -35,6 +38,13 @@ export async function preloadShellData() {
       .catch((error: unknown) => {
         useMenuStore.getState().setMenus(withDefaultShellMenus([], useI18nStore.getState().locale));
         useResourceStore.getState().fail("menus", error instanceof Error ? error.message : "Failed to load menus");
+      }),
+    Promise.all(dictCodes.map((code: string) => ensureDictRecords(code)))
+      .then(() => {
+        useResourceStore.getState().succeed("dicts");
+      })
+      .catch((error: unknown) => {
+        useResourceStore.getState().fail("dicts", error instanceof Error ? error.message : "Failed to load dictionaries");
       }),
     fetchCurrentConfig()
       .then((config) => {
