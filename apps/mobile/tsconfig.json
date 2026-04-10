@@ -3,14 +3,13 @@
   "compilerOptions": {
     "strict": true,
     "jsx": "react-jsx",
-    "lib": ["ES2022"],
+    "lib": ["DOM", "DOM.Iterable", "ES2022"],
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"],
       "@nebula/auth": ["../../packages/auth/dist/src/index.d.ts"],
       "@nebula/request": ["../../packages/request/dist/src/index.d.ts"],
-      "@platform/core": ["../../packages/core/dist/index.d.ts"],
-      "@platform/mobile-core": ["../../packages/mobile-core/dist/index.d.ts"]
+      "@nebula/core": ["../../packages/core/dist/index.d.ts"]
     },
     "types": ["expo-router/types", "node"]
   },

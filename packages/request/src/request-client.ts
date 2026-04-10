@@ -1,6 +1,16 @@
 import axios from "axios";
 import type { AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig } from "axios";
-import type { ApiEnvelope, LocaleCode } from "@platform/core";
+
+export type LocaleCode = "zh-CN" | "en-US";
+
+export interface ApiEnvelope<T> {
+  code?: number | string;
+  message?: string;
+  msg?: string;
+  data?: T;
+  result?: T;
+  rows?: T;
+}
 
 export class PlatformApiClientError extends Error {
   status?: number;

@@ -1,0 +1,17 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"],
+      "@nebula/auth": ["../../packages/auth/src/index.ts"],
+      "@nebula/request": ["../../packages/request/src/index.ts"],
+      "@nebula/core": ["../../packages/core/src/index.ts"],
+      "@nebula/ui-web": ["../../packages/ui/src/index.ts"],
+      "axios": ["../../node_modules/.pnpm/node_modules/axios/index.d.ts"]
+    },
+    "types": ["vite/client"],
+    "noEmit": true
+  },
+  "include": ["src", "vite.config.ts"]
+}

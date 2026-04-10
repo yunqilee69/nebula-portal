@@ -1,6 +1,6 @@
 import axios from "axios";
 import type { AxiosInstance, AxiosRequestConfig } from "axios";
-import type { AuthSession } from "@platform/core";
+import type { AuthSession } from "./session-utils";
 
 export interface AttachAuthRequestOptions {
   client: AxiosInstance;

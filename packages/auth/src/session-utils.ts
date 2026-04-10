@@ -1,4 +1,26 @@
-import type { AuthSession } from "@platform/core";
+export interface UserProfile {
+  userId: string;
+  username: string;
+  avatar?: string;
+  roles: string[];
+}
+
+export interface AuthMenuItem {
+  id: string;
+  name: string;
+  path?: string;
+  children?: AuthMenuItem[];
+}
+
+export interface AuthSession {
+  token: string;
+  refreshToken?: string;
+  accessTokenExpiresIn?: number;
+  refreshTokenExpiresIn?: number;
+  user: UserProfile;
+  permissions: string[];
+  menuList?: AuthMenuItem[];
+}
 
 interface SessionExpiryFields {
   accessTokenExpiresIn?: number;

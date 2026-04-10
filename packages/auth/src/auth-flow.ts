@@ -1,5 +1,5 @@
-import type { AuthSession } from "@platform/core";
 import { buildSessionFromPayload, mergeSessionWithCurrentUser, normalizeTokenPayload } from "./session-payload";
+import type { AuthSession } from "./session-utils";
 import type { CurrentUserSessionPayload } from "./session-payload";
 import { isSessionExpired, shouldRefreshSession } from "./session-utils";
 

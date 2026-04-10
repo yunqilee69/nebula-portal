@@ -1,4 +1,4 @@
-import type { LocaleBundle } from "@platform/core";
+import type { LocaleCode } from "@nebula/request";
 import m0 from "./messages/zh-cn/app-shell-messages";
 import m1 from "./messages/zh-cn/auth-messages";
 import m2 from "./messages/zh-cn/common-messages";
@@ -35,6 +35,9 @@ import e14 from "./messages/en-us/storage-messages";
 import e15 from "./messages/en-us/system-params-messages";
 import e16 from "./messages/en-us/user-management-messages";
 import e17 from "./messages/en-us/frontend-messages";
+
+export type LocaleMessages = Record<string, string>;
+export type LocaleBundle = Record<LocaleCode, LocaleMessages>;
 
 export const shellMessages: LocaleBundle = {
   "zh-CN": {

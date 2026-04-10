@@ -6,7 +6,20 @@
     "declarationMap": true,
     "noEmit": false,
     "outDir": "dist",
-    "rootDir": "src"
+    "rootDir": "src",
+    "lib": ["DOM", "DOM.Iterable", "ES2022"],
+    "baseUrl": ".",
+    "paths": {
+      "@nebula/auth": ["../auth/dist/src/index.d.ts"],
+      "@nebula/request": ["../request/dist/src/index.d.ts"],
+      "@nebula/i18n": ["../i18n/dist/index.d.ts"],
+      "@nebula/tokens": ["../tokens/dist/src/index.d.ts"]
+    }
   },
-  "include": ["src"]
+  "include": ["src"],
+  "references": [
+    { "path": "../auth" },
+    { "path": "../request" },
+    { "path": "../tokens" }
+  ]
 }

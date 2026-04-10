@@ -1,0 +1,31 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "composite": true,
+    "declaration": true,
+    "declarationMap": true,
+    "noEmit": false,
+    "outDir": "dist",
+    "rootDir": "src",
+    "lib": ["DOM", "DOM.Iterable", "ES2022"],
+    "baseUrl": ".",
+    "paths": {
+      "@nebula/auth": ["../auth/dist/src/index.d.ts"],
+      "@nebula/core": ["../core/dist/index.d.ts"],
+      "@nebula/i18n": ["../i18n/dist/index.d.ts"],
+      "@nebula/request": ["../request/dist/src/index.d.ts"],
+      "@nebula/tokens": ["../tokens/dist/src/index.d.ts"],
+      "@nebula/ui-web": ["../ui/dist/index.d.ts"],
+      "axios": ["../../node_modules/.pnpm/node_modules/axios/index.d.ts"]
+    }
+  },
+  "include": ["src"],
+  "references": [
+    { "path": "../auth" },
+    { "path": "../core" },
+    { "path": "../i18n" },
+    { "path": "../request" },
+    { "path": "../tokens" },
+    { "path": "../ui" }
+  ]
+}

@@ -1,5 +1,5 @@
-import { useAppContext } from "@platform/core";
-import type { DictRecord } from "@platform/core";
+import { useAppContext } from "@nebula/core";
+import type { DictRecord } from "@nebula/core";
 import { Space, Spin, Tag } from "antd";
 import type { ReactNode } from "react";
 import { useEffect, useMemo, useRef, useState } from "react";

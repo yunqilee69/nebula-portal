@@ -1,7 +1,7 @@
 import { restoreSessionOnStartup } from "@nebula/auth";
-import type { AppContextValue, AuthSession, LocaleBundle, LocaleCode } from "@platform/core";
-import { createMobileAppContext, createMobileRequestClient, createMobileSessionStorage, createMobileStorageService } from "@platform/mobile-core";
-import type { KeyValueStorageDriver } from "@platform/mobile-core";
+import type { AppContextValue, AuthSession, LocaleBundle, LocaleCode } from "@nebula/core";
+import { createMobileAppContext, createMobileRequestClient, createMobileSessionStorage, createMobileStorageService, toStorageAdapter } from "@nebula/core";
+import type { KeyValueStorageDriver } from "@nebula/core";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as SecureStore from "expo-secure-store";
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
@@ -33,7 +33,7 @@ const preferenceStorageDriver: KeyValueStorageDriver = {
   removeItem: (key) => AsyncStorage.removeItem(key),
 };
 
-const sessionStorage = createMobileSessionStorage(secureStorageDriver);
+const sessionStorage = createMobileSessionStorage(toStorageAdapter(secureStorageDriver));
 
 interface MobileRuntimeValue {
   appContext: AppContextValue;

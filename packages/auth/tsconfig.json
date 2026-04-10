@@ -10,10 +10,11 @@
     "baseUrl": ".",
     "paths": {
       "@nebula/request": ["../request/dist/src/index.d.ts"],
-      "@platform/core": ["../core/dist/index.d.ts"],
-      "axios": ["../../node_modules/.pnpm/node_modules/axios/index.d.ts"]
+      "axios": ["../../node_modules/.pnpm/node_modules/axios/index.d.ts"],
+      "react-router-dom": ["../../node_modules/.pnpm/node_modules/react-router-dom/dist/index.d.ts"],
+      "zustand": ["../../node_modules/.pnpm/node_modules/zustand/index.d.ts"]
     }
   },
   "include": ["src"],
-  "references": [{ "path": "../core" }, { "path": "../request" }]
+  "references": [{ "path": "../request" }]
 }

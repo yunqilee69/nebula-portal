@@ -19,7 +19,6 @@
   },
   "dependencies": {
     "@nebula/request": "workspace:*",
-    "@platform/core": "workspace:*",
     "axios": "^1.13.6"
   }
 }

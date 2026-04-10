@@ -4,12 +4,13 @@
   "references": [
     { "path": "./packages/auth" },
     { "path": "./packages/core" },
-    { "path": "./packages/mobile-core" },
+    { "path": "./packages/i18n" },
     { "path": "./packages/request" },
+    { "path": "./packages/tokens" },
     { "path": "./packages/ui" },
+    { "path": "./packages/pages-web" },
+    { "path": "./packages/pages-mobile" },
     { "path": "./apps/mobile" },
-    { "path": "./apps/shell" },
-    { "path": "./apps/demo-business" },
-    { "path": "./templates/business-starter" }
+    { "path": "./apps/web" }
   ]
 }

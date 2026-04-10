@@ -1,0 +1,1 @@
+{"version":3,"file":"ne-breadcrumbs.d.ts","sourceRoot":"","sources":["ne-breadcrumbs.tsx"],"names":[],"mappings":"AAEA,MAAM,WAAW,gBAAgB;IAC/B,GAAG,EAAE,MAAM,CAAC;IACZ,KAAK,EAAE,MAAM,CAAC;IACd,IAAI,CAAC,EAAE,MAAM,CAAC;CACf;AAED,MAAM,WAAW,kBAAkB;IACjC,KAAK,EAAE,gBAAgB,EAAE,CAAC;CAC3B;AAED,wBAAgB,aAAa,CAAC,EAAE,KAAK,EAAE,EAAE,kBAAkB,kDAM1D"}

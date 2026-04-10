@@ -13,8 +13,7 @@
   "dependencies": {
     "@nebula/auth": "workspace:*",
     "@nebula/request": "workspace:*",
-    "@platform/core": "workspace:*",
-    "@platform/mobile-core": "workspace:*",
+    "@nebula/core": "workspace:*",
     "@react-native-async-storage/async-storage": "2.2.0",
     "expo": "55.0.8",
     "expo-constants": "55.0.9",

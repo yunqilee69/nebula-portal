@@ -13,7 +13,7 @@ export default function AppHomeScreen() {
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.title}>Nebula mobile foundation</Text>
       <Text style={styles.subtitle}>
-        Shared contracts are active through @platform/core and runtime services come from @platform/mobile-core.
+        Shared contracts and runtime services are active through @nebula/core.
       </Text>
 
       <View style={styles.card}>

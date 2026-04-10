@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import type { LocaleCode } from "@platform/core";
+import type { LocaleCode } from "@nebula/request";
 
 interface I18nState {
   locale: LocaleCode;

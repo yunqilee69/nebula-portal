@@ -1,0 +1,1 @@
+{"version":3,"file":"shell-i18n-provider.d.ts","sourceRoot":"","sources":["shell-i18n-provider.tsx"],"names":[],"mappings":"AACA,OAAO,KAAK,EAAE,SAAS,EAAE,MAAM,OAAO,CAAC;AAIvC,UAAU,sBAAsB;IAC9B,QAAQ,EAAE,SAAS,CAAC;IACpB,cAAc,CAAC,EAAE,CAAC,MAAM,EAAE,OAAO,GAAG,OAAO,KAAK,IAAI,CAAC;CACtD;AAED,wBAAgB,iBAAiB,CAAC,EAAE,QAAQ,EAAE,cAAc,EAAE,EAAE,sBAAsB,2CAgBrF"}

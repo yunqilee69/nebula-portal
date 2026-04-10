@@ -1,4 +1,4 @@
-import type { MobileEnvironment } from "@platform/mobile-core";
+import type { MobileEnvironment } from "@nebula/core";
 
 export const mobileEnv: MobileEnvironment = {
   apiBaseUrl: process.env.EXPO_PUBLIC_API_BASE_URL ?? "",

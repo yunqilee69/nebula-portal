@@ -1,5 +1,5 @@
 {
-  "name": "@platform/core",
+  "name": "@nebula/core",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -17,7 +17,18 @@
     "build": "tsc -p tsconfig.json --emitDeclarationOnly false",
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
+  "dependencies": {
+    "@nebula/request": "workspace:*",
+    "@nebula/tokens": "workspace:*",
+    "axios": "^1.7.9",
+    "zustand": "^5.0.0",
+    "react-router-dom": "^7.6.2"
+  },
+  "devDependencies": {
+    "@nebula/i18n": "workspace:*"
+  },
   "peerDependencies": {
+    "antd": "^5.24.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   }

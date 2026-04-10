@@ -1,6 +1,6 @@
-import type { AuthSession, UserProfile } from "@platform/core";
 import { getArray, getRecord, getString, unwrapEnvelope } from "@nebula/request";
 import { normalizeSessionExpiry } from "./session-utils";
+import type { AuthSession, UserProfile } from "./session-utils";
 
 export interface CurrentUserSessionPayload {
   user: UserProfile;

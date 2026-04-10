@@ -3,15 +3,13 @@
   "private": true,
   "packageManager": "pnpm@10.8.0",
   "scripts": {
-    "dev": "pnpm dev:shell",
+    "dev": "pnpm dev:web",
     "dev:federation": "turbo run dev --parallel",
-    "dev:shell": "pnpm --filter shell dev",
+    "dev:web": "pnpm --filter web dev",
     "dev:mobile": "pnpm --filter mobile dev",
-    "dev:demo": "pnpm --filter demo-business dev",
     "check:naming": "node scripts/check-frontend-naming.mjs",
     "build": "pnpm check:naming && turbo run build",
-    "typecheck": "pnpm check:naming && turbo run typecheck",
-    "create-app": "node scripts/create-app.mjs"
+    "typecheck": "pnpm check:naming && turbo run typecheck"
   },
   "devDependencies": {
     "@types/node": "^24.0.0",

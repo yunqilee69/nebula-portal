@@ -1,0 +1,8 @@
+import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
+import { Button, Modal, Space, Typography } from "antd";
+export function NeModal(props) {
+    const { title, icon, open, onClose, onConfirm, width = 720, footer = null, className, bodyHeight = "min(72vh, 760px)", confirmText = "Save", cancelText = "Cancel", confirmLoading = false, confirmButtonProps, cancelButtonProps, children, } = props;
+    const hasExplicitFooter = Object.prototype.hasOwnProperty.call(props, "footer");
+    const resolvedFooter = hasExplicitFooter ? footer : onConfirm ? (_jsxs(Space, { children: [_jsx(Button, { ...cancelButtonProps, onClick: onClose, children: cancelText }), _jsx(Button, { ...confirmButtonProps, type: "primary", loading: confirmLoading, onClick: onConfirm, children: confirmText })] })) : null;
+    return (_jsx(Modal, { open: open, onCancel: onClose, footer: resolvedFooter ? _jsx("div", { className: "ne-modal__footer", children: resolvedFooter }) : resolvedFooter, centered: true, width: width, title: _jsx("div", { className: "ne-modal__header", children: _jsxs(Space, { size: 10, align: "center", className: "ne-modal__title", children: [icon ? _jsx("span", { className: "ne-modal__title-icon", children: icon }) : null, _jsx(Typography.Text, { strong: true, children: title })] }) }), className: ["ne-modal", className].filter(Boolean).join(" "), children: _jsx("div", { className: ["ne-modal__content", resolvedFooter ? "ne-modal__content--with-footer" : ""].filter(Boolean).join(" "), children: _jsx("div", { className: "ne-modal__body", style: { maxHeight: bodyHeight }, children: children }) }) }));
+}

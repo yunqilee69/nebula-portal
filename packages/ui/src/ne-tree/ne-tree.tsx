@@ -247,7 +247,7 @@ export function NeTree<TNode extends object>({
             value={currentSearchValue}
             placeholder={searchPlaceholder}
             onChange={(event) => {
-              const nextValue = event.target.value;
+              const nextValue = event.currentTarget.value;
               if (searchValue === undefined) {
                 setInternalSearchValue(nextValue);
               }

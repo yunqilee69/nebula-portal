@@ -1,46 +1,40 @@
 # Nebula Portal
 
-Frontend monorepo for the shell-based middle-platform architecture described in `中台前端架构完整方案 (1).docx`.
+Frontend monorepo for the Nebula web and mobile clients described in `中台前端架构完整方案 (1).docx`.
 
 ## Structure
 
-- `apps/shell`: host shell with auth, layout, dynamic menus, and module loading.
-- `apps/demo-business`: sample remote business module.
+- `apps/web`: web app entry with auth, layout, dynamic menus, and module loading.
+- `apps/mobile`: mobile client entry built on the shared runtime contracts.
 - `packages/core`: shared contracts, event bus, context, registries, permission helpers.
-- `packages/ui`: shared UI building blocks.
-- `templates/business-starter`: starter template for new business modules.
-- `scripts/create-app.mjs`: scaffolds a new remote app from the template.
+- `packages/ui`: shared web UI building blocks.
+- `packages/pages-web`: shared web page layer consumed by `apps/web`.
+- `packages/pages-mobile`: shared mobile page/navigation layer consumed by `apps/mobile`.
 
 ## Documentation
 
-- `business-module-development-manual.md`: business module integration guide for shell capabilities, shared APIs, shared UI, routing, permissions, and storage reuse.
+- `business-module-development-manual.md`: business module integration guide for web platform capabilities, shared APIs, shared UI, routing, permissions, and storage reuse.
 
 ## Commands
 
 ```bash
 pnpm install
 pnpm dev
-pnpm dev:federation
 pnpm typecheck
 pnpm build
 pnpm create-app
 ```
 
-## Local Startup Modes
+## Local Startup
 
-- `pnpm dev`: starts only `apps/shell` and uses the default embedded module mode, so the shell and demo business module are packaged together for local preview.
-- `pnpm dev:federation`: starts the shell and remote apps in parallel to verify the runtime Module Federation mode.
-- `pnpm dev:demo`: starts the demo business remote alone on port `3001`.
+- `pnpm dev`: starts `apps/web` for local preview.
 
 ## Environment
 
-The shell reads backend and remote settings from Vite env vars. Copy values into `.env.local` files per app if needed.
+The web app reads backend settings from Vite env vars. Copy values into `.env.local` files per app if needed.
 
 - `VITE_API_BASE_URL`: request base URL used by the browser client; defaults to empty so local development uses relative paths and the Vite dev proxy
-- `VITE_BACKEND_PROXY_TARGET`: shell dev proxy target, defaults to `http://127.0.0.1:8080`
-- `VITE_MODULE_MODE`: `embedded` by default for single-package startup, or `federation` to load remote modules from remote entries
-- `VITE_DEMO_REMOTE_URL`: remote entry URL used by the default demo module fallback
-- `VITE_REMOTE_MODULES`: JSON array of remote module definitions for config-driven loading, for example `[ { "id": "@business/demo", "remoteName": "demoBusiness", "url": "http://127.0.0.1:3001/assets/remoteEntry.js", "exposedModule": "./register" } ]`
+- `VITE_BACKEND_PROXY_TARGET`: web dev proxy target, defaults to `http://127.0.0.1:8080`
 - `VITE_STORAGE_UPLOAD_TASK_PATH`: create storage upload task path, defaults to `/storage/upload-tasks`
 - `VITE_STORAGE_UPLOAD_SIMPLE_PATH_TEMPLATE`: simple upload path template, defaults to `/storage/upload-tasks/{id}/simple`
 - `VITE_STORAGE_UPLOAD_COMPLETE_PATH_TEMPLATE`: upload complete path template, defaults to `/storage/upload-tasks/{id}/complete`
@@ -48,11 +42,3 @@ The shell reads backend and remote settings from Vite env vars. Copy values into
 - `VITE_STORAGE_FILE_PAGE_PATH`: storage file page path, defaults to `/storage/files/page`
 - `VITE_STORAGE_FILE_DETAIL_PATH_TEMPLATE`: storage file detail path template, defaults to `/storage/files/{id}`
 - `VITE_STORAGE_FILE_CONTENT_PATH_TEMPLATE`: storage file content path template, defaults to `/storage/files/{id}/content`
-
-## Deferred Roadmap
-
-- Remote module metadata is currently driven by `VITE_REMOTE_MODULES` for predictable local and deployment-time configuration.
-- A later platform upgrade can move this configuration to a backend API so the shell fetches the active remote module list before calling the federation runtime loader.
-- That future change is intended for scenarios such as module enable/disable switches, environment-specific rollout, gray releases, and tenant-specific module visibility.
-- Keep the env-based path as a bootstrap fallback even after the API version is introduced, so shell startup still has a safe local-development mode.
-- See `business-module-development-manual.md` for the deferred implementation outline.

@@ -1,6 +1,6 @@
 import { createAuthHeaders, normalizeCurrentUser, resolveSessionFromTokenPayload } from "@nebula/auth";
+import type { LocaleCode, MenuItem } from "@nebula/core";
 import { createPlatformRequestClient, getRecord, getString, unwrapEnvelope } from "@nebula/request";
-import type { LocaleCode, MenuItem } from "@platform/core";
 import { mobileEnv } from "@/config/mobile-env";
 
 interface LoginPayload {

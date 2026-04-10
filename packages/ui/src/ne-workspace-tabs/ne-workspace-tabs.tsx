@@ -141,7 +141,7 @@ export function NeWorkspaceTabs({
           allowClear
           value={renameValue}
           placeholder={menuLabels.renameInputPlaceholder}
-          onChange={(event) => setRenameValue(event.target.value)}
+          onChange={(event) => setRenameValue(event.currentTarget.value)}
           onPressEnter={() => {
             if (!renamingItem) {
               return;

@@ -1,4 +1,4 @@
-import type { LocaleCode } from "@platform/core";
+import type { LocaleCode } from "@nebula/request";
 import { shellMessages } from "./shell-messages";
 
 export function translateShellMessage(

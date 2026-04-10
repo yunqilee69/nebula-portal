@@ -9,10 +9,9 @@
     "lib": ["ES2022"],
     "baseUrl": ".",
     "paths": {
-      "@platform/core": ["../core/dist/index.d.ts"],
       "axios": ["../../node_modules/.pnpm/node_modules/axios/index.d.ts"]
     }
   },
   "include": ["src"],
-  "references": [{ "path": "../core" }]
+  "references": []
 }

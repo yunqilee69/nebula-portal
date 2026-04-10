@@ -1,5 +1,5 @@
-import { I18nProvider } from "@platform/core";
 import type { ReactNode } from "react";
+import { I18nProvider } from "./i18n-provider";
 import { shellMessages } from "./shell-messages";
 import { useI18nStore } from "./i18n-store";
 

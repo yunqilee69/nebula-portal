@@ -1,6 +1,6 @@
 import { createContext, useContext } from "react";
 import type { ReactNode } from "react";
-import type { AppContextValue } from "@platform/core";
+import type { AppContextValue } from "@nebula/core";
 
 const AppContext = createContext<AppContextValue | null>(null);
 
