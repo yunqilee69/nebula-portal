@@ -3,7 +3,7 @@ import { Button, Descriptions, Form, Input, Pagination, Popconfirm, Select, Spac
 import type { OrganizationItem, OrganizationMutationPayload, OrganizationPageQuery, OrganizationTreeItem } from "@nebula/core";
 import { NePermission, useI18n } from "@nebula/core";
 import { useEffect, useMemo, useState } from "react";
-import { createOrganization, deleteOrganization, fetchOrganizationDetail, fetchOrganizationPage, fetchOrganizationTree, updateOrganization } from "@/api/organization-api";
+import { createOrganization, deleteOrganization, fetchOrganizationDetail, fetchOrganizationPage, fetchOrganizationTree, updateOrganization } from "../../api/organization-api";
 import { OrganizationTree } from "@nebula/ui-web";
 import { NeModal, NePage, NePanel, NeSearchPanel, NeTablePanel } from "@nebula/ui-web";
 

@@ -3,7 +3,7 @@ import { Button, Descriptions, Form, Input, Pagination, Popconfirm, Select, Spac
 import type { OAuth2AccountDetail, OAuth2AccountItem, OAuth2AccountMutationPayload, OAuth2AccountPageQuery } from "@nebula/core";
 import { useI18n } from "@nebula/core";
 import { useEffect, useMemo, useState } from "react";
-import { createOAuth2Account, deleteOAuth2Account, fetchOAuth2AccountDetail, fetchOAuth2AccountPage, updateOAuth2Account } from "@/api/oauth2-account-api";
+import { createOAuth2Account, deleteOAuth2Account, fetchOAuth2AccountDetail, fetchOAuth2AccountPage, updateOAuth2Account } from "../../../api/oauth2-account-api";
 import { NeDetailDrawer, NeModal, NePage, NeSearchPanel, NeTablePanel } from "@nebula/ui-web";
 
 const initialQuery: OAuth2AccountPageQuery = { pageNum: 1, pageSize: 10, orderName: "updateTime", orderType: "desc" };

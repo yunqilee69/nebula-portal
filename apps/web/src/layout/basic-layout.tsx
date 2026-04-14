@@ -7,7 +7,7 @@ import { useEffect, useMemo, useState } from "react";
 import { AppHeader } from "./app-header";
 import { AppSidebar } from "./app-sidebar";
 import { CachedOutlet } from "./cached-outlet";
-import { logoutSession } from "../api/auth-api";
+import { logoutSession } from "@nebula/pages-web";
 import { useMenuStore } from "@nebula/core";
 import { useAuthStore } from "@nebula/core";
 import { useConfigStore } from "@nebula/core";

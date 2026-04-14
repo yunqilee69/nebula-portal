@@ -1,4 +1,4 @@
-import $$$ from "@nebula/core";
+import type { ButtonItem, ButtonMutationPayload, ButtonPageQuery, ButtonPageResult } from "@nebula/core";
 import { apiClient, getArray, getRecord, getString, unwrapEnvelope } from "./client";
 
 function mapButton(item: unknown): ButtonItem | null {

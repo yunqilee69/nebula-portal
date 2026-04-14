@@ -1,4 +1,4 @@
-import $$$ from "@nebula/core";
+import type { DictItemDetail, DictItemMutationPayload, DictItemPageQuery, DictItemPageResult, DictTypeDetail, DictTypeItem, DictTypeMutationPayload, DictTypePageQuery, DictTypePageResult } from "@nebula/core";
 import { getArray, getRecord, getString, requestDelete, requestGet, requestPost, requestPut } from "./client";
 
 function getNumber(value: unknown) {

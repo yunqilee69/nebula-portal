@@ -1,4 +1,4 @@
-import $$$ from "@nebula/core";
+import type { OAuth2ClientDetail, OAuth2ClientItem, OAuth2ClientMutationPayload, OAuth2ClientPageQuery, OAuth2ClientPageResult } from "@nebula/core";
 import { getArray, getRecord, getString, requestDelete, requestGet, requestPost, requestPut } from "./client";
 
 function getNumber(value: unknown) {

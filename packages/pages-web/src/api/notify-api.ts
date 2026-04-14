@@ -1,5 +1,5 @@
-import $$$ from "@nebula/core";
-import { shellEnv } from "../config/env";
+import type { NotificationItem } from "@nebula/core";
+import { webEnv } from "../config/env";
 import { apiClient, getArray, getRecord, getString, unwrapEnvelope } from "./client";
 
 function normalizeCategory(value: unknown): NotificationItem["category"] {
@@ -97,12 +97,12 @@ function mapSiteMessage(item: unknown): NotificationItem {
 }
 
 export async function fetchCurrentNotifications() {
-  const response = await apiClient.post(shellEnv.notifyPath, { pageNum: 1, pageSize: 8, readStatus: false });
+  const response = await apiClient.post(webEnv.notifyPath, { pageNum: 1, pageSize: 8, readStatus: false });
   const payload = unwrapEnvelope<Record<string, unknown>>(response.data);
 
   return extractNotificationRows(payload).map<NotificationItem>(mapSiteMessage);
 }
 
 export async function markNotificationRead(id: string) {
-  await apiClient.put(shellEnv.notifyReadPathTemplate.replace("{id}", encodeURIComponent(id)));
+  await apiClient.put(webEnv.notifyReadPathTemplate.replace("{id}", encodeURIComponent(id)));
 }

@@ -1,4 +1,4 @@
-import $$$ from "@nebula/core";
+import type { OrganizationItem, OrganizationMutationPayload, OrganizationPageQuery, OrganizationPageResult, OrganizationTreeItem } from "@nebula/core";
 import { apiClient, getArray, getRecord, getString, unwrapEnvelope } from "./client";
 
 function mapOrganization(item: unknown): OrganizationItem | null {

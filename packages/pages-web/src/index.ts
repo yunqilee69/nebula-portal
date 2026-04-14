@@ -19,3 +19,29 @@ export { NotificationsRecordPage as NotificationRecordPage } from "./pages/notif
 export { NotificationsTemplatePage as NotificationTemplatePage } from "./pages/notifications/template";
 export { NotificationsAnnouncementPage as AnnouncementPage } from "./pages/notifications/announcement";
 export { createNebulaRoutes, type NebulaRoutesOptions } from "./routes";
+export { fetchCurrentUser, loginWithPassword, logoutSession, refreshSession } from "./api/auth-api";
+export {
+  deleteFrontendCacheEntry,
+  fetchFrontendCaches,
+  fetchFrontendConfig,
+  fetchFrontendInit,
+  fetchFrontendThemes,
+  saveFrontendConfig,
+  switchFrontendLayout,
+  switchFrontendLocale,
+  switchFrontendTheme,
+} from "./api/frontend-api";
+export type {
+  FrontendCacheEntry,
+  FrontendCacheGroup,
+  FrontendConfigDto,
+  FrontendInitDto,
+  FrontendLoginConfigDto,
+  FrontendPreferenceDto,
+  FrontendThemeCatalogDto,
+  FrontendThemeConfigItemDto,
+  FrontendThemeDto,
+  SaveFrontendConfigPayload,
+  SwitchFrontendLayoutPayload,
+} from "./api/frontend-api";
+export { ApiClientError, apiClient, normalizeApiError } from "./api/client";

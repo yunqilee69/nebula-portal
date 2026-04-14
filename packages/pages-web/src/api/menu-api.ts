@@ -1,5 +1,5 @@
-import $$$ from "@nebula/core";
-import { shellEnv } from "../config/env";
+import type { MenuItem } from "@nebula/core";
+import { webEnv } from "../config/env";
 import { apiClient, getRecord, getString, unwrapEnvelope } from "./client";
 
 function normalizeMenuType(type: unknown): MenuItem["type"] {
@@ -50,6 +50,6 @@ export function normalizeMenus(payload: unknown): MenuItem[] {
 }
 
 export async function fetchCurrentMenus() {
-  const response = await apiClient.get(shellEnv.menuPath);
+  const response = await apiClient.get(webEnv.menuPath);
   return normalizeMenus(response.data);
 }

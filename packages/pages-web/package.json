@@ -18,6 +18,7 @@
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "dependencies": {
+    "@ant-design/icons": "^6.0.0",
     "@nebula/core": "workspace:*",
     "@nebula/ui-web": "workspace:*",
     "@nebula/tokens": "workspace:*",

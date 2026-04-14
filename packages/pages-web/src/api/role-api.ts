@@ -1,4 +1,4 @@
-import $$$ from "@nebula/core";
+import type { RoleDetail, RoleItem, RoleMutationPayload, RolePageQuery, RolePageResult } from "@nebula/core";
 import { apiClient, getArray, getRecord, getString, unwrapEnvelope } from "./client";
 
 function mapRole(item: unknown): RoleItem | null {

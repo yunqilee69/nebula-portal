@@ -3,7 +3,7 @@ import { Button, Descriptions, Form, Input, InputNumber, Pagination, Popconfirm,
 import type { OAuth2ClientDetail, OAuth2ClientItem, OAuth2ClientMutationPayload, OAuth2ClientPageQuery } from "@nebula/core";
 import { useI18n } from "@nebula/core";
 import { useEffect, useMemo, useState } from "react";
-import { createOAuth2Client, deleteOAuth2Client, fetchOAuth2ClientDetail, fetchOAuth2ClientPage, updateOAuth2Client } from "@/api/oauth2-client-api";
+import { createOAuth2Client, deleteOAuth2Client, fetchOAuth2ClientDetail, fetchOAuth2ClientPage, updateOAuth2Client } from "../../../api/oauth2-client-api";
 import { NeDetailDrawer, NeModal, NePage, NeSearchPanel, NeTablePanel } from "@nebula/ui-web";
 
 const initialQuery: OAuth2ClientPageQuery = { pageNum: 1, pageSize: 10, orderName: "updateTime", orderType: "desc" };

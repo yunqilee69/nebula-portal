@@ -4,8 +4,7 @@ import { hydrateFrontendThemeCatalog, useFrontendStore, useI18n } from "@nebula/
 import { applyShellLocale } from "@nebula/i18n";
 import { useThemeStore } from "@nebula/tokens";
 import { useEffect, useMemo, useState } from "react";
-import { switchFrontendLayout, switchFrontendTheme } from "../api/frontend-api";
-import { normalizeApiError } from "../api/client";
+import { normalizeApiError, switchFrontendLayout, switchFrontendTheme } from "@nebula/pages-web";
 
 export function ThemeConfigDrawer() {
   const [open, setOpen] = useState(false);

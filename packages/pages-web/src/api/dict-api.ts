@@ -1,5 +1,5 @@
-import $$$ from "@nebula/core";
-import { shellEnv } from "../config/env";
+import type { DictRecord } from "@nebula/core";
+import { webEnv } from "../config/env";
 import { apiClient, getArray, getRecord, getString, unwrapEnvelope } from "./client";
 
 function pickRecordExtras(record: Record<string, unknown>) {
@@ -32,7 +32,7 @@ function normalizeDictPayload(payload: unknown) {
 
 export async function fetchDictByCode(typeCode: string) {
   const response = await apiClient.get(
-    shellEnv.dictItemPathTemplate.replace("{typeCode}", encodeURIComponent(typeCode)),
+    webEnv.dictItemPathTemplate.replace("{typeCode}", encodeURIComponent(typeCode)),
   );
   const payload = unwrapEnvelope<unknown>(response.data);
   return normalizeDictPayload(payload);

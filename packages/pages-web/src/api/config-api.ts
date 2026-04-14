@@ -1,5 +1,5 @@
-import $$$ from "@nebula/core";
-import { shellEnv } from "../config/env";
+import type { ConfigMap } from "@nebula/core";
+import { webEnv } from "../config/env";
 import { apiClient, unwrapEnvelope } from "./client";
 
 function normalizeSystemParamValue(rawValue: string): string | number | boolean | null {
@@ -24,13 +24,13 @@ function normalizeSystemParamValue(rawValue: string): string | number | boolean 
 }
 
 export async function fetchCurrentConfig() {
-  if (shellEnv.configKeys.length === 0) {
+  if (webEnv.configKeys.length === 0) {
     return {};
   }
   const entries = await Promise.all(
-    shellEnv.configKeys.map(async (paramKey: string) => {
+    webEnv.configKeys.map(async (paramKey: string) => {
       const response = await apiClient.get(
-        shellEnv.systemParamKeyPathTemplate.replace("{paramKey}", encodeURIComponent(paramKey)),
+        webEnv.systemParamKeyPathTemplate.replace("{paramKey}", encodeURIComponent(paramKey)),
       );
       const payload = unwrapEnvelope<unknown>(response.data);
       return [paramKey, typeof payload === "string" ? normalizeSystemParamValue(payload) : null] as const;

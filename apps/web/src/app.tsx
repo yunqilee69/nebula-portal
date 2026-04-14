@@ -23,14 +23,16 @@ import { Alert, Spin, Typography } from "antd";
 import { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { BrowserRouter, Navigate, useNavigate, useRoutes } from "react-router-dom";
 import { AppErrorBoundary } from "./components/app-error-boundary";
-import { fetchCurrentUser, refreshSession } from "./api/auth-api";
-import { LoginPage } from "@nebula/pages-web";
-import { BasicLayout } from "./layout/basic-layout";
-import { UnauthorizedPage } from "./pages/401";
-import { NotFoundPage } from "./pages/404";
-import { DashboardPage } from "./pages/dashboard";
-import { IframePage } from "./pages/iframe";
-import { UnavailablePage } from "./pages/unavailable";
+import {
+  DashboardPage,
+  fetchCurrentUser,
+  IframePage,
+  LoginPage,
+  NotFoundPage,
+  refreshSession,
+  UnauthorizedPage,
+  UnavailablePage,
+} from "@nebula/pages-web";
 import { preloadShellData } from "@nebula/core";
 import { NeExceptionResult } from "@nebula/ui-web";
 import { useI18nStore, translateShellMessage } from "@nebula/i18n";

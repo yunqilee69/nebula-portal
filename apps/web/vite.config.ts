@@ -9,12 +9,20 @@ export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, projectDir, "");
   const backendTarget = env.VITE_BACKEND_PROXY_TARGET ?? "http://127.0.0.1:8080";
 
-  return {
-    resolve: {
-      alias: {
-        "@": path.resolve(projectDir, "src"),
+    return {
+      resolve: {
+        alias: {
+          "@": path.resolve(projectDir, "src"),
+          "@nebula/auth": path.resolve(projectDir, "../../packages/auth/src/index.ts"),
+          "@nebula/request": path.resolve(projectDir, "../../packages/request/src/index.ts"),
+          "@nebula/core": path.resolve(projectDir, "../../packages/core/src/index.ts"),
+          "@nebula/i18n": path.resolve(projectDir, "../../packages/i18n/src/index.ts"),
+          "@nebula/tokens": path.resolve(projectDir, "../../packages/tokens/src/index.ts"),
+          "@nebula/ui-web": path.resolve(projectDir, "../../packages/ui/src/index.ts"),
+          "@nebula/pages-web": path.resolve(projectDir, "../../packages/pages-web/src/index.ts"),
+        },
       },
-    },
+
     plugins: [
       react(),
     ],

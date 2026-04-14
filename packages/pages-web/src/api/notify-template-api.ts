@@ -1,4 +1,4 @@
-import $$$ from "@nebula/core";
+import type { NotifyTemplateDetail, NotifyTemplateItem, NotifyTemplateMutationPayload, NotifyTemplatePageQuery, NotifyTemplatePageResult, SendNotifyPayload } from "@nebula/core";
 import { getArray, getRecord, getString, requestDelete, requestGet, requestPost, requestPut } from "./client";
 
 function getNumber(value: unknown) {

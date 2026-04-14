@@ -7,7 +7,10 @@
       "@nebula/auth": ["../../packages/auth/src/index.ts"],
       "@nebula/request": ["../../packages/request/src/index.ts"],
       "@nebula/core": ["../../packages/core/src/index.ts"],
+      "@nebula/i18n": ["../../packages/i18n/src/index.ts"],
+      "@nebula/tokens": ["../../packages/tokens/src/index.ts"],
       "@nebula/ui-web": ["../../packages/ui/src/index.ts"],
+      "@nebula/pages-web": ["../../packages/pages-web/src/index.ts"],
       "axios": ["../../node_modules/.pnpm/node_modules/axios/index.d.ts"]
     },
     "types": ["vite/client"],

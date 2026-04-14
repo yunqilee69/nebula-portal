@@ -6,9 +6,19 @@ export interface UserProfile {
 }
 
 export interface AuthMenuItem {
-  id: string;
+  id: string | number;
+  parentId?: string | number;
   name: string;
+  sort?: number;
+  status?: 0 | 1;
+  type?: 1 | 2 | 3;
   path?: string;
+  component?: string;
+  linkType?: 1 | 2 | 3;
+  linkUrl?: string;
+  icon?: string;
+  visible?: 0 | 1;
+  permission?: string;
   children?: AuthMenuItem[];
 }
 

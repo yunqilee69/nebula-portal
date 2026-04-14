@@ -1,4 +1,4 @@
-import $$$ from "@nebula/core";
+import type { MenuItem, MenuMutationPayload, MenuPageQuery, MenuPageResult } from "@nebula/core";
 import { apiClient, getArray, getRecord, getString, unwrapEnvelope } from "./client";
 
 function normalizeMenuType(type: unknown): MenuItem["type"] {
