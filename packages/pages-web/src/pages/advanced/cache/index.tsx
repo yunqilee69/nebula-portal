@@ -3,8 +3,8 @@ import { Badge, Button, Descriptions, Input, Popconfirm, Space, Table, Tag, Typo
 import { useI18n } from "@nebula/core";
 import { NeEmptyState, NePage, NePanel } from "@nebula/ui-web";
 import { useEffect, useMemo, useState } from "react";
-import type { FrontendCacheEntry, FrontendCacheGroup } from "../../api/frontend-api";
-import { deleteFrontendCacheEntry, fetchFrontendCaches } from "../../api/frontend-api";
+import type { FrontendCacheEntry, FrontendCacheGroup } from "../../../api/frontend-api";
+import { deleteFrontendCacheEntry, fetchFrontendCaches } from "../../../api/frontend-api";
 
 interface CachePageState {
   loading: boolean;

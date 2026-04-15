@@ -2,8 +2,8 @@ import { ReloadOutlined, SaveOutlined } from "@ant-design/icons";
 import { Button, Card, Form, Input, Select, Space, Tag, Typography } from "antd";
 import { useI18n } from "@nebula/core";
 import { useEffect, useMemo, useState } from "react";
-import type { SaveFrontendConfigPayload } from "../../api/frontend-api";
-import { fetchFrontendConfig, saveFrontendConfig } from "../../api/frontend-api";
+import type { SaveFrontendConfigPayload } from "../../../api/frontend-api";
+import { fetchFrontendConfig, fetchFrontendThemes, saveFrontendConfig } from "../../../api/frontend-api";
 import { hydrateFrontendThemeCatalog, useFrontendStore } from "@nebula/core";
 import { NePage } from "@nebula/ui-web";
 
@@ -56,7 +56,9 @@ export function FrontendSettingsForm({ embedded = false }: FrontendSettingsFormP
 
   useEffect(() => {
     void loadConfig();
-    hydrateFrontendThemeCatalog().catch(() => undefined);
+    fetchFrontendThemes().then((catalog) => {
+      hydrateFrontendThemeCatalog(catalog);
+    }).catch(() => undefined);
   }, []);
 
   const content = (

@@ -341,7 +341,7 @@ export interface MenuItem {
   name: string;
   sort?: number;
   status?: 0 | 1;
-  type: MenuType;
+  type?: MenuType;
   path?: string;
   component?: string;
   linkType?: LinkType;

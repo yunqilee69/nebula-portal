@@ -1,18 +1,18 @@
 {
-  "extends": "expo/tsconfig.base",
+  "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "strict": true,
-    "jsx": "react-jsx",
-    "lib": ["DOM", "DOM.Iterable", "ES2022"],
     "baseUrl": ".",
+    "jsx": "react-jsx",
+    "module": "ESNext",
+    "target": "ES2022",
     "paths": {
-      "@/*": ["./src/*"],
-      "@nebula/auth": ["../../packages/auth/dist/src/index.d.ts"],
-      "@nebula/request": ["../../packages/request/dist/src/index.d.ts"],
-      "@nebula/core": ["../../packages/core/dist/index.d.ts"],
-      "@nebula/pages-mobile": ["../../packages/pages-mobile/src/index.ts"]
+      "@/*": ["src/*"],
+      "@nebula/auth": ["../../packages/auth/src/index.ts"],
+      "@nebula/request": ["../../packages/request/src/index.ts"],
+      "@nebula/core": ["../../packages/core/src/index.ts"]
     },
-    "types": ["expo-router/types", "node"]
+    "types": ["@tarojs/taro", "node"],
+    "noEmit": true
   },
-  "include": ["app", "src", "expo-env.d.ts"]
+  "include": ["src/**/*.ts", "src/**/*.tsx", "config", "types", "project.config.json"]
 }

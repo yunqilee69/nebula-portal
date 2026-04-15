@@ -3,9 +3,9 @@ import { Button, Descriptions, Form, Input, Pagination, Popconfirm, Select, Spac
 import type { OrganizationItem, OrganizationTreeItem, RoleItem, UserDetail, UserItem, UserMutationPayload, UserPageQuery } from "@nebula/core";
 import { useI18n } from "@nebula/core";
 import { useEffect, useMemo, useState } from "react";
-import { fetchOrganizationList, fetchOrganizationTree } from "../../api/organization-api";
-import { fetchRoleList } from "../../api/role-api";
-import { createUser, deleteUser, fetchUserDetail, fetchUserPage, updateUser } from "../../api/user-api";
+import { fetchOrganizationList, fetchOrganizationTree } from "../../../api/organization-api";
+import { fetchRoleList } from "../../../api/role-api";
+import { createUser, deleteUser, fetchUserDetail, fetchUserPage, updateUser } from "../../../api/user-api";
 import { OrganizationTree } from "@nebula/ui-web";
 import { NeDetailDrawer, NeModal, NePage, NePanel, NeSearchPanel, NeTablePanel } from "@nebula/ui-web";
 

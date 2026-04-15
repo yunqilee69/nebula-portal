@@ -12,7 +12,7 @@ import {
   fetchDictTypePage,
   updateDictItem,
   updateDictType,
-} from "../../api/dict-admin-api";
+} from "../../../api/dict-admin-api";
 import { NeModal, NePage, NePanel, NeSearchPanel, NeTablePanel } from "@nebula/ui-web";
 
 const initialTypeQuery = { pageNum: 1, pageSize: 10, orderName: "updateTime", orderType: "desc" };

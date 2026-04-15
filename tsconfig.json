@@ -7,9 +7,8 @@
     { "path": "./packages/i18n" },
     { "path": "./packages/request" },
     { "path": "./packages/tokens" },
-    { "path": "./packages/ui" },
+    { "path": "./packages/ui-web" },
     { "path": "./packages/pages-web" },
-    { "path": "./packages/pages-mobile" },
     { "path": "./apps/mobile" },
     { "path": "./apps/web" }
   ]

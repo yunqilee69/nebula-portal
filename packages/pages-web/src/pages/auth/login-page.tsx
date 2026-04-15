@@ -4,6 +4,10 @@ import { eventBus, preloadShellData, useAuthStore, useFrontendStore, useI18n } f
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { loginWithPassword } from "../../api/auth-api";
+import { fetchCurrentMenus } from "../../api/menu-api";
+import { fetchDictCodes, fetchDictByCode } from "../../api/dict-api";
+import { fetchCurrentConfig } from "../../api/config-api";
+import { fetchCurrentNotifications } from "../../api/notify-api";
 
 interface LoginFormValues {
   username: string;
@@ -31,7 +35,13 @@ export function LoginPage() {
       const session = await loginWithPassword(values);
       setSession(session);
       eventBus.emit("auth:login", session);
-      await preloadShellData();
+      await preloadShellData({
+        fetchMenus: fetchCurrentMenus,
+        fetchDictCodes: fetchDictCodes,
+        fetchDictByCode: fetchDictByCode,
+        fetchConfig: fetchCurrentConfig,
+        fetchNotifications: fetchCurrentNotifications,
+      });
       navigate(from, { replace: true });
     } catch (caughtError) {
       setError(caughtError instanceof Error ? caughtError.message : t("login.failed"));

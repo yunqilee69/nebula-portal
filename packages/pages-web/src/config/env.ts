@@ -5,6 +5,7 @@ export const webEnv = {
   logoutPath: import.meta.env.VITE_AUTH_LOGOUT_PATH ?? "/api/auth/logout",
   currentUserPath: import.meta.env.VITE_AUTH_CURRENT_USER_PATH ?? "/api/auth/current-user",
   menuPath: import.meta.env.VITE_MENU_CURRENT_PATH ?? "/api/auth/menus/tree",
+  dictTypePath: import.meta.env.VITE_DICT_TYPE_PATH ?? "/api/dict/types/page",
   dictItemPathTemplate: import.meta.env.VITE_DICT_ITEM_PATH_TEMPLATE ?? "/api/dict/items/type/{typeCode}",
   dictTypeCodes: (import.meta.env.VITE_DICT_TYPE_CODES ?? "file_type")
     .split(",")

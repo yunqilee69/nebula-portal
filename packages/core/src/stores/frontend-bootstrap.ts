@@ -59,7 +59,7 @@ export function hydrateFrontendPublicData(payload: {
   }
 }
 
-export function hydrateFrontendThemeCatalog(payload: { themes: Array<{ themeCode: string }> }) {
+export function hydrateFrontendThemeCatalog(payload: { themes: Array<{ themeCode: string; themeName?: string; builtinFlag?: boolean }> }) {
   const themes = resolveBuiltinThemes(payload.themes.map((item) => item.themeCode));
   const nextPayload = {
     configItems: [],

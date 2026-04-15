@@ -3,7 +3,7 @@ import { Button, Descriptions, Form, Input, List, Pagination, Popconfirm, Select
 import type { RoleDetail, RoleItem, RoleMutationPayload, RolePageQuery } from "@nebula/core";
 import { NePermission, useI18n } from "@nebula/core";
 import { useEffect, useMemo, useState } from "react";
-import { createRole, deleteRole, fetchRoleDetail, fetchRoleList, fetchRolePage, updateRole } from "../../api/role-api";
+import { createRole, deleteRole, fetchRoleDetail, fetchRoleList, fetchRolePage, updateRole } from "../../../api/role-api";
 import { NeDetailDrawer, NeModal, NePage, NeSearchPanel, NeTablePanel } from "@nebula/ui-web";
 
 const initialQuery: RolePageQuery = {

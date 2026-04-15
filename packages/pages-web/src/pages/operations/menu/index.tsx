@@ -3,7 +3,7 @@ import { Button, Form, Input, InputNumber, Pagination, Popconfirm, Select, Space
 import type { MenuItem, MenuMutationPayload, MenuPageQuery } from "@nebula/core";
 import { NePermission, getRegisteredComponentSource, getRegisteredModules, listRegisteredComponents, useI18n } from "@nebula/core";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { createMenu, deleteMenu, fetchMenuPage, fetchMenuTree, updateMenu } from "../../api/menu-admin-api";
+import { createMenu, deleteMenu, fetchMenuPage, fetchMenuTree, updateMenu } from "../../../api/menu-admin-api";
 import { NeModal, NePage, NeSearchPanel, NeTablePanel } from "@nebula/ui-web";
 
 const initialQuery: MenuPageQuery = {

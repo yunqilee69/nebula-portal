@@ -30,6 +30,16 @@ function normalizeDictPayload(payload: unknown) {
   });
 }
 
+export async function fetchDictCodes(): Promise<Array<{ code: string }>> {
+  const response = await apiClient.get(webEnv.dictTypePath);
+  const payload = unwrapEnvelope<unknown>(response.data);
+  const items = getArray<unknown>(payload);
+  return items.map((item) => {
+    const record = getRecord(item) ?? {};
+    return { code: getString(record.typeCode) ?? getString(record.code) ?? "" };
+  }).filter((item) => item.code !== "");
+}
+
 export async function fetchDictByCode(typeCode: string) {
   const response = await apiClient.get(
     webEnv.dictItemPathTemplate.replace("{typeCode}", encodeURIComponent(typeCode)),

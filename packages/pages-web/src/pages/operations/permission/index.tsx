@@ -15,12 +15,12 @@ import { OrganizationTree } from "@nebula/ui-web";
 import { NePage, NePanel, NeSearchPanel, NeTablePanel } from "@nebula/ui-web";
 import { useEffect, useMemo, useState } from "react";
 import type { Key } from "react";
-import { fetchButtonPage } from "../../api/button-api";
-import { fetchMenuTree } from "../../api/menu-admin-api";
-import { fetchOrganizationTree } from "../../api/organization-api";
-import { createPermission, deletePermission, fetchPermissionPage, updatePermission } from "../../api/permission-api";
-import { fetchRoleList } from "../../api/role-api";
-import { fetchUserPage } from "../../api/user-api";
+import { fetchButtonPage } from "../../../api/button-api";
+import { fetchMenuTree } from "../../../api/menu-admin-api";
+import { fetchOrganizationTree } from "../../../api/organization-api";
+import { createPermission, deletePermission, fetchPermissionPage, updatePermission } from "../../../api/permission-api";
+import { fetchRoleList } from "../../../api/role-api";
+import { fetchUserPage } from "../../../api/user-api";
 
 type SubjectKey = "ORG" | "ROLE" | "USER";
 type ResourceKey = "MENU" | "BUTTON";

@@ -28,7 +28,7 @@ import {
   fetchSystemParamDetail,
   fetchSystemParamPage,
   updateSystemParam,
-} from "../../api/system-param-api";
+} from "../../../api/system-param-api";
 import { NeDetailDrawer, NeModal, NePage, NeSearchPanel, NeTablePanel } from "@nebula/ui-web";
 
 const initialQuery: SystemParamPageQuery = {

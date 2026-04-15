@@ -3,7 +3,7 @@ import { Button, Descriptions, Form, Input, Pagination, Select, Table, Tag, Typo
 import type { NotifyRecordDetail, NotifyRecordItem, NotifyRecordPageQuery } from "@nebula/core";
 import { useI18n } from "@nebula/core";
 import { useEffect, useMemo, useState } from "react";
-import { fetchNotifyRecordDetail, fetchNotifyRecordPage } from "../../api/notify-record-api";
+import { fetchNotifyRecordDetail, fetchNotifyRecordPage } from "../../../api/notify-record-api";
 import { NeDetailDrawer, NePage, NeSearchPanel, NeTablePanel } from "@nebula/ui-web";
 
 const initialQuery: NotifyRecordPageQuery = { pageNum: 1, pageSize: 10, orderName: "updateTime", orderType: "desc" };

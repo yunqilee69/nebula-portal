@@ -14,7 +14,7 @@
     "./package.json": "./package.json"
   },
   "scripts": {
-    "build": "tsc -p tsconfig.json --emitDeclarationOnly false",
+    "build": "tsc -p tsconfig.json --noEmit",
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "dependencies": {
@@ -24,7 +24,8 @@
     "@nebula/tokens": "workspace:*",
     "@nebula/i18n": "workspace:*",
     "@nebula/auth": "workspace:*",
-    "@nebula/request": "workspace:*"
+    "@nebula/request": "workspace:*",
+    "axios": "^1.7.9"
   },
   "peerDependencies": {
     "antd": "^5.24.0",
