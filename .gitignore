@@ -7,8 +7,9 @@ dist-native
 coverage
 pnpm-lock.yaml
 *.tsbuildinfo
-*.d.ts
-*.d.ts.map
-*.js
 %TEMP%/
 nul
+apps/mini-program/.swc/
+packages/*/src/**/*.js
+packages/*/src/**/*.d.ts
+packages/*/src/**/*.d.ts.map
