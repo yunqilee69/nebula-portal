@@ -1,7 +1,7 @@
 import { readdir, stat } from "node:fs/promises";
 import path from "node:path";
 
-const root = "/Users/yunqi/project/nebula-portal";
+const root = process.cwd();
 const sourceRoots = [
   path.join(root, "apps"),
   path.join(root, "packages"),
@@ -39,6 +39,8 @@ const allowedFileNames = new Set([
   "nebula.css",
   "global.d.ts",
   "README.md",
+  "app.config.ts",
+  "index.config.ts",
 ]);
 
 const directoryPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;

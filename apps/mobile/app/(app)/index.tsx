@@ -1,4 +1,4 @@
-import { Redirect } from "expo-router";
+import { Link, Redirect } from "expo-router";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useMobileRuntime } from "@/providers/mobile-root-provider";
 
@@ -30,6 +30,12 @@ export default function AppHomeScreen() {
         <Text style={styles.listItem}>• Storage upload service aligned with Nebula backend flow</Text>
         <Text style={styles.listItem}>• Harmony adapter reserved behind runtime boundary</Text>
       </View>
+
+      <Link href="/(app)/personal-center" asChild>
+        <Pressable style={styles.secondaryButton}>
+          <Text style={styles.secondaryButtonLabel}>Open personal center</Text>
+        </Pressable>
+      </Link>
 
       <Pressable style={[styles.button, authBusy ? styles.buttonDisabled : null]} disabled={authBusy} onPress={() => void signOut()}>
         <Text style={styles.buttonLabel}>{authBusy ? "Signing out..." : "Sign out"}</Text>
@@ -75,6 +81,18 @@ const styles = StyleSheet.create({
     fontSize: 14,
     lineHeight: 21,
     color: "#344054",
+  },
+  secondaryButton: {
+    backgroundColor: "#355dff",
+    borderRadius: 16,
+    paddingHorizontal: 18,
+    paddingVertical: 14,
+    alignItems: "center",
+  },
+  secondaryButtonLabel: {
+    color: "#ffffff",
+    fontSize: 15,
+    fontWeight: "700",
   },
   button: {
     backgroundColor: "#111827",

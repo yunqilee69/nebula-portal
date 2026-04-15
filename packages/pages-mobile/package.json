@@ -22,8 +22,11 @@
     "@nebula/tokens": "workspace:*"
   },
   "peerDependencies": {
-    "react": "^18.3.1",
-    "react-native": "*",
+    "react": "^19.2.0",
+    "react-native": "^0.83.2",
     "@react-navigation/native": "*"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.14"
   }
 }

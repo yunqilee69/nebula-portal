@@ -6,7 +6,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as SecureStore from "expo-secure-store";
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import type { ReactNode } from "react";
-import { createMobileAuthApi } from "@/api/auth-api";
+import { createMobileAuthApi, toCoreSession } from "@/api/auth-api";
 import { mobileEnv } from "@/config/mobile-env";
 import { AppContextProvider } from "@/providers/app-context-provider";
 
@@ -79,11 +79,12 @@ export function MobileRootProvider({ children }: { children: ReactNode }) {
 
       if (storedSession?.token) {
         try {
-          restoredSession = await restoreSessionOnStartup({
+          const startupSession = await restoreSessionOnStartup({
             storedSession,
             fetchCurrentUser: startupAuthApi.fetchCurrentUser,
             refreshSession: startupAuthApi.refreshSession,
           });
+          restoredSession = startupSession ? toCoreSession(startupSession) : null;
 
           if (restoredSession) {
             await sessionStorage.write(restoredSession);

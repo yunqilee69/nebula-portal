@@ -1,0 +1,18 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "jsx": "react-jsx",
+    "module": "ESNext",
+    "target": "ES2022",
+    "paths": {
+      "@/*": ["src/*"],
+      "@nebula/auth": ["../../packages/auth/src/index.ts"],
+      "@nebula/request": ["../../packages/request/src/index.ts"],
+      "@nebula/core": ["../../packages/core/src/index.ts"]
+    },
+    "types": ["@tarojs/taro", "node"],
+    "noEmit": true
+  },
+  "include": ["src/**/*.ts", "src/**/*.tsx", "config", "types", "project.config.json"]
+}

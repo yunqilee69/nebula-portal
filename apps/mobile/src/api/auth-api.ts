@@ -1,5 +1,6 @@
 import { createAuthHeaders, normalizeCurrentUser, resolveSessionFromTokenPayload } from "@nebula/auth";
-import type { LocaleCode, MenuItem } from "@nebula/core";
+import type { AuthSession as AuthPackageSession } from "@nebula/auth";
+import type { AuthSession, LocaleCode, MenuItem } from "@nebula/core";
 import { createPlatformRequestClient, getRecord, getString, unwrapEnvelope } from "@nebula/request";
 import { mobileEnv } from "@/config/mobile-env";
 
@@ -8,6 +9,42 @@ interface LoginPayload {
   password: string;
   captcha?: string;
   captchaKey?: string;
+}
+
+function normalizeMenuItem(item: NonNullable<AuthPackageSession["menuList"]>[number]): MenuItem {
+  return {
+    id: String(item.id),
+    parentId: item.parentId ? String(item.parentId) : undefined,
+    name: item.name,
+    sort: item.sort ?? 0,
+    status: item.status ?? 1,
+    type: item.type ?? 2,
+    path: item.path,
+    component: item.component,
+    linkType: item.linkType,
+    linkUrl: item.linkUrl,
+    icon: item.icon,
+    visible: item.visible ?? 1,
+    permission: item.permission,
+    children: item.children?.map(normalizeMenuItem),
+  };
+}
+
+export function toCoreSession(session: AuthPackageSession): AuthSession {
+  return {
+    token: session.token,
+    refreshToken: session.refreshToken,
+    accessTokenExpiresIn: session.accessTokenExpiresIn,
+    refreshTokenExpiresIn: session.refreshTokenExpiresIn,
+    user: {
+      userId: session.user.userId,
+      username: session.user.username,
+      avatar: session.user.avatar,
+      roles: session.user.roles,
+    },
+    permissions: Array.isArray(session.permissions) ? session.permissions : [],
+    menuList: session.menuList?.map(normalizeMenuItem),
+  };
 }
 
 function normalizeMenuType(type: unknown): MenuItem["type"] {
@@ -79,11 +116,13 @@ export function createMobileAuthApi(locale: LocaleCode) {
     fetchCurrentUser,
     async loginWithPassword(payload: LoginPayload) {
       const response = await client.raw.post(mobileEnv.loginPath, payload);
-      return resolveSessionFromTokenPayload(response.data, fetchCurrentUser);
+      const session = await resolveSessionFromTokenPayload(response.data, fetchCurrentUser);
+      return toCoreSession(session);
     },
     async refreshSession(refreshToken: string) {
       const response = await client.raw.post(mobileEnv.refreshPath, { refreshToken });
-      return resolveSessionFromTokenPayload(response.data, fetchCurrentUser);
+      const session = await resolveSessionFromTokenPayload(response.data, fetchCurrentUser);
+      return toCoreSession(session);
     },
     async logoutSession() {
       await client.raw.post(mobileEnv.logoutPath);

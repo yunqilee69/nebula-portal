@@ -1,0 +1,73 @@
+.sign-in-page {
+  min-height: 100vh;
+  padding: 48px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  background: #f5f7fb;
+}
+
+.sign-in-page__eyebrow {
+  font-size: 13px;
+  font-weight: 700;
+  color: #355dff;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.sign-in-page__title {
+  font-size: 30px;
+  line-height: 38px;
+  font-weight: 800;
+  color: #101828;
+}
+
+.sign-in-page__description {
+  font-size: 16px;
+  line-height: 24px;
+  color: #475467;
+}
+
+.sign-in-page__card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 20px;
+  background: #ffffff;
+  border-radius: 20px;
+}
+
+.sign-in-page__label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #344054;
+}
+
+.sign-in-page__input {
+  height: 48px;
+  padding: 0 14px;
+  border: 1px solid #d0d5dd;
+  border-radius: 14px;
+  background: #ffffff;
+  font-size: 16px;
+  color: #101828;
+}
+
+.sign-in-page__error {
+  font-size: 14px;
+  line-height: 20px;
+  color: #d92d20;
+}
+
+.sign-in-page__button {
+  margin-top: 8px;
+  border-radius: 14px;
+  background: #355dff;
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.sign-in-page__button--secondary {
+  background: #111827;
+}

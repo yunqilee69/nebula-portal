@@ -1,0 +1,51 @@
+.home-page {
+  min-height: 100vh;
+  padding: 32px 24px 48px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  background: #f8fafc;
+}
+
+.home-page__title {
+  font-size: 28px;
+  line-height: 36px;
+  font-weight: 800;
+  color: #101828;
+}
+
+.home-page__subtitle {
+  font-size: 15px;
+  line-height: 22px;
+  color: #475467;
+}
+
+.home-page__card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 20px;
+  background: #ffffff;
+  border-radius: 20px;
+}
+
+.home-page__card-title {
+  font-size: 17px;
+  font-weight: 700;
+  color: #111827;
+}
+
+.home-page__card-value {
+  font-size: 14px;
+  line-height: 21px;
+  color: #344054;
+}
+
+.home-page__button {
+  margin-top: 8px;
+  border-radius: 16px;
+  background: #111827;
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 700;
+}

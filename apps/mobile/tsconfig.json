@@ -9,7 +9,8 @@
       "@/*": ["./src/*"],
       "@nebula/auth": ["../../packages/auth/dist/src/index.d.ts"],
       "@nebula/request": ["../../packages/request/dist/src/index.d.ts"],
-      "@nebula/core": ["../../packages/core/dist/index.d.ts"]
+      "@nebula/core": ["../../packages/core/dist/index.d.ts"],
+      "@nebula/pages-mobile": ["../../packages/pages-mobile/src/index.ts"]
     },
     "types": ["expo-router/types", "node"]
   },
