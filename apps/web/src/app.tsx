@@ -23,15 +23,25 @@ import { Alert, Spin, Typography } from "antd";
 import { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { BrowserRouter, Navigate, useNavigate, useRoutes } from "react-router-dom";
 import { AppErrorBoundary } from "./components/app-error-boundary";
+import { BasicLayout } from "./layout/basic-layout";
 import {
   DashboardPage,
   fetchCurrentUser,
+  fetchFrontendInit,
+  fetchFrontendThemes,
+  fetchCurrentMenus,
+  fetchDictCodes,
+  fetchDictByCode,
+  fetchCurrentConfig,
+  fetchCurrentNotifications,
   IframePage,
   LoginPage,
   NotFoundPage,
   refreshSession,
   UnauthorizedPage,
   UnavailablePage,
+  apiClient,
+  webEnv,
 } from "@nebula/pages-web";
 import { preloadShellData } from "@nebula/core";
 import { NeExceptionResult } from "@nebula/ui-web";
@@ -94,7 +104,7 @@ function AppRouter() {
   const menus = useMenuStore((state) => state.menus);
   const menuResource = useResourceStore((state) => state.resources.menus);
   const dictRecords = useDictStore((state) => state.records);
-  const [remoteStatuses] = useState<ModuleLoadResult[]>([]);
+  const [remoteStatuses, setRemoteStatuses] = useState<ModuleLoadResult[]>([]);
   const [remotesLoaded] = useState(true);
   const [authReady, setAuthReady] = useState(false);
   const frontendHydrated = useFrontendStore((state) => state.hydrated);
@@ -109,7 +119,19 @@ function AppRouter() {
     if (frontendHydrated) {
       return;
     }
-    hydrateFrontendPublicData().catch(() => undefined);
+    fetchFrontendInit()
+      .then((initData) => {
+        hydrateFrontendPublicData({
+          frontendConfig: initData.frontendConfig,
+          defaultPreference: initData.defaultPreference,
+        });
+      })
+      .catch(() => {
+        hydrateFrontendPublicData({
+          frontendConfig: { projectName: "Nebula", defaultLocale: "zh-CN" },
+          defaultPreference: { localeTag: "zh-CN", themeCode: "nebula-light" },
+        });
+      });
   }, [frontendHydrated]);
 
   useEffect(() => {
@@ -160,7 +182,13 @@ function AppRouter() {
     if (!authReady || !session?.token) {
       return;
     }
-    preloadShellData().catch(() => undefined);
+    preloadShellData({
+      fetchMenus: fetchCurrentMenus,
+      fetchDictCodes: fetchDictCodes,
+      fetchDictByCode: fetchDictByCode,
+      fetchConfig: fetchCurrentConfig,
+      fetchNotifications: fetchCurrentNotifications,
+    }).catch(() => undefined);
   }, [authReady, session?.token]);
 
   useEffect(() => {
@@ -206,8 +234,25 @@ function AppRouter() {
           navigate("/login");
         },
         () => useAuthStore.getState().session,
+        {
+          requestGet: <T,>(url: string, params?: Record<string, unknown>) => apiClient.get<T>(url, { params }).then((r) => r.data),
+          requestPost: <T,>(url: string, payload?: unknown) => apiClient.post<T>(url, payload).then((r) => r.data),
+          requestPut: <T,>(url: string, payload?: unknown) => apiClient.put<T>(url, payload).then((r) => r.data),
+          requestDelete: <T,>(url: string) => apiClient.delete<T>(url).then((r) => r.data),
+          buildStoragePreviewUrl: (file) => {
+            if (file.previewUrl) return file.previewUrl;
+            if (file.id) return `${webEnv.apiBaseUrl}${webEnv.storageFileContentPathTemplate.replace("{id}", file.id)}`;
+            if (file.fileUrl) return file.fileUrl;
+            return "";
+          },
+          buildStorageDownloadUrl: (file) => {
+            if (file.id) return `${webEnv.apiBaseUrl}${webEnv.storageFileDetailPathTemplate.replace("{id}", file.id)}`;
+            if (file.fileUrl) return file.fileUrl;
+            return "";
+          },
+        },
       ),
-    [clearSession, dictRecords, navigate],
+    [clearSession, navigate],
   );
 
   useEffect(() => {

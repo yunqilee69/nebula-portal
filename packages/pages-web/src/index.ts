@@ -45,3 +45,8 @@ export type {
   SwitchFrontendLayoutPayload,
 } from "./api/frontend-api";
 export { ApiClientError, apiClient, normalizeApiError } from "./api/client";
+export { fetchCurrentMenus } from "./api/menu-api";
+export { fetchDictCodes, fetchDictByCode } from "./api/dict-api";
+export { fetchCurrentConfig } from "./api/config-api";
+export { fetchCurrentNotifications, markNotificationRead } from "./api/notify-api";
+export { webEnv } from "./config/env";

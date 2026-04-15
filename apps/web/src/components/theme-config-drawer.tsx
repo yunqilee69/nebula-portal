@@ -4,7 +4,7 @@ import { hydrateFrontendThemeCatalog, useFrontendStore, useI18n } from "@nebula/
 import { applyShellLocale } from "@nebula/i18n";
 import { useThemeStore } from "@nebula/tokens";
 import { useEffect, useMemo, useState } from "react";
-import { normalizeApiError, switchFrontendLayout, switchFrontendTheme } from "@nebula/pages-web";
+import { normalizeApiError, switchFrontendLayout, switchFrontendTheme, fetchFrontendThemes } from "@nebula/pages-web";
 
 export function ThemeConfigDrawer() {
   const [open, setOpen] = useState(false);
@@ -21,7 +21,11 @@ export function ThemeConfigDrawer() {
   const applyTheme = useThemeStore((state) => state.applyTheme);
 
   useEffect(() => {
-    hydrateFrontendThemeCatalog().catch(() => undefined);
+    fetchFrontendThemes()
+      .then((catalog) => {
+        hydrateFrontendThemeCatalog(catalog);
+      })
+      .catch(() => undefined);
   }, []);
 
   const themeOptions = useMemo(
