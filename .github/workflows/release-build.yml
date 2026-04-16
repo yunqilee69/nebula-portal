@@ -1,0 +1,68 @@
+name: release-build
+
+on:
+  push:
+    tags:
+      - "v*"
+  release:
+    types:
+      - published
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-release-assets:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.8.0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --no-frozen-lockfile
+
+      - name: Verify typecheck
+        run: pnpm typecheck
+
+      - name: Build workspace
+        run: pnpm build
+
+      - name: Archive web artifact
+        run: |
+          mkdir -p release-assets
+          tar -C apps/web/dist -czf release-assets/nebula-web-dist.tar.gz .
+
+      - name: Archive mini program artifact
+        run: |
+          tar -C apps/mobile/dist -czf release-assets/nebula-mini-program-dist.tar.gz .
+
+      - name: Upload workflow artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: nebula-release-assets
+          path: release-assets/*.tar.gz
+          if-no-files-found: error
+
+      - name: Upload web release asset
+        if: github.event_name == 'release'
+        uses: softprops/action-gh-release@v2
+        with:
+          files: release-assets/nebula-web-dist.tar.gz
+
+      - name: Upload mini program release asset
+        if: github.event_name == 'release'
+        uses: softprops/action-gh-release@v2
+        with:
+          files: release-assets/nebula-mini-program-dist.tar.gz

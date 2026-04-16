@@ -9,6 +9,7 @@ pnpm-lock.yaml
 *.tsbuildinfo
 %TEMP%/
 nul
+apps/mobile/.swc/
 apps/mini-program/.swc/
 packages/*/src/**/*.js
 packages/*/src/**/*.d.ts
