@@ -35,7 +35,7 @@
 ```tsx
 import { Form, Input } from "antd";
 import { useState } from "react";
-import { NeFormDrawer } from "@platform/ui";
+import { NeFormDrawer } from "@nebula/ui-web";
 
 export function UserEditor() {
   const [open, setOpen] = useState(true);

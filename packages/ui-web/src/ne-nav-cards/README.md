@@ -31,7 +31,7 @@
 
 ```tsx
 import { useNavigate } from "react-router-dom";
-import { NeNavCards, NeStatusTag } from "@platform/ui";
+import { NeNavCards, NeStatusTag } from "@nebula/ui-web";
 
 export function PortalNav() {
   const navigate = useNavigate();

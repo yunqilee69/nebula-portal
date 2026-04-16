@@ -25,7 +25,7 @@
 
 ```tsx
 import { Button, Space } from "antd";
-import { NePage, NeStatusTag } from "@platform/ui";
+import { NePage, NeStatusTag } from "@nebula/ui-web";
 
 export function DemoPage() {
   return (

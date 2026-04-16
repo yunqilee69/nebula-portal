@@ -25,7 +25,7 @@
 
 ```tsx
 import { Descriptions } from "antd";
-import { NeDetailDrawer, NeStatusTag } from "@platform/ui";
+import { NeDetailDrawer, NeStatusTag } from "@nebula/ui-web";
 
 export function UserDetailDrawer() {
   return (

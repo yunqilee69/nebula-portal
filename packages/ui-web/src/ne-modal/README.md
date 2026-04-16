@@ -38,7 +38,7 @@
 ## 示例
 
 ```tsx
-import { NeModal } from "@platform/ui";
+import { NeModal } from "@nebula/ui-web";
 
 export function DemoModal() {
   return (

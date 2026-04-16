@@ -30,7 +30,7 @@
 ## 示例
 
 ```tsx
-import { NeDict } from "@platform/ui";
+import { NeDict } from "@nebula/ui-web";
 
 export function StatusCell({ value }: { value: string }) {
   return <NeDict dictCode="user_status" value={value} variant="tag" />;

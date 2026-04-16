@@ -24,7 +24,7 @@
 
 ```tsx
 import { Button, Table } from "antd";
-import { NePanel } from "@platform/ui";
+import { NePanel } from "@nebula/ui-web";
 
 export function UserTablePanel() {
   return (

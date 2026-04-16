@@ -1,4 +1,4 @@
-# @platform/core
+# @nebula/core
 
 Nebula 中台基座的共享核心契约包。
 
@@ -17,7 +17,7 @@ Nebula 中台基座的共享核心契约包。
 业务模块通过 `PlatformModule` 向基座声明自己提供的能力：
 
 ```ts
-import type { PlatformModule } from "@platform/core";
+import type { PlatformModule } from "@nebula/core";
 
 const module: PlatformModule = {
   id: "@business/demo",
@@ -115,4 +115,4 @@ export default module;
 
 - 业务模块只维护本模块的页面、菜单、组件映射和初始化逻辑
 - 认证、权限、请求、主题、通知、字典、配置、存储地址解析等平台级能力优先复用基座提供的上下文
-- 公共界面组件优先从 `@platform/ui` 获取，不在业务模块重复封装
+- 公共界面组件优先从 `@nebula/ui-web` 获取，不在业务模块重复封装

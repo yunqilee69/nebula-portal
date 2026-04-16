@@ -18,7 +18,7 @@
 ## 示例
 
 ```tsx
-import { NeWorkspaceTabs } from "@platform/ui";
+import { NeWorkspaceTabs } from "@nebula/ui-web";
 
 <NeWorkspaceTabs
   activeKey="/storage/list"

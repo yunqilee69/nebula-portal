@@ -17,7 +17,7 @@
 
 ```tsx
 import { Button } from "antd";
-import { NeEmptyState } from "@platform/ui";
+import { NeEmptyState } from "@nebula/ui-web";
 
 <NeEmptyState title="暂无文件" extra={<Button type="primary">立即上传</Button>} />
 ```

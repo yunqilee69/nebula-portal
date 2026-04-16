@@ -27,7 +27,7 @@
 
 ```tsx
 import { useState } from "react";
-import { NeFileUploader } from "@platform/ui";
+import { NeFileUploader } from "@nebula/ui-web";
 
 export function DemoUploader() {
   const [files, setFiles] = useState([]);

@@ -14,7 +14,7 @@
 ## 示例
 
 ```tsx
-import { NeBreadcrumbs } from "@platform/ui";
+import { NeBreadcrumbs } from "@nebula/ui-web";
 
 <NeBreadcrumbs
   items={[

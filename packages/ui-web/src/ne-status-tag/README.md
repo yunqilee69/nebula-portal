@@ -20,7 +20,7 @@
 ## 示例
 
 ```tsx
-import { NeStatusTag } from "@platform/ui";
+import { NeStatusTag } from "@nebula/ui-web";
 
 export function StatusCell() {
   return <NeStatusTag tone="warning" label="待处理" />;

@@ -1,4 +1,4 @@
-# @platform/ui
+# @nebula/ui-web
 
 Nebula 中台前端共享 UI 组件包。
 
@@ -6,33 +6,33 @@ Nebula 中台前端共享 UI 组件包。
 
 ## 使用方式
 
-所有共享组件统一从 `@platform/ui` 导入：
+所有共享组件统一从 `@nebula/ui-web` 导入：
 
 ```tsx
-import { NePage, NePanel, NeStatusTag } from "@platform/ui";
+import { NePage, NePanel, NeStatusTag } from "@nebula/ui-web";
 ```
 
 ## 组件列表
 
-- `NePage`：`packages/ui/src/ne-page/README.md`
-- `NePanel`：`packages/ui/src/ne-panel/README.md`
-- `NeFormDrawer`：`packages/ui/src/ne-form-drawer/README.md`
-- `NeModal`：`packages/ui/src/ne-modal/README.md`
-- `NeDetailDrawer`：`packages/ui/src/ne-detail-drawer/README.md`
-- `NeBreadcrumbs`：`packages/ui/src/ne-breadcrumbs/README.md`
-- `NeWorkspaceTabs`：`packages/ui/src/ne-workspace-tabs/README.md`
-- `NeEmptyState`：`packages/ui/src/ne-empty-state/README.md`
-- `NeExceptionResult`：`packages/ui/src/ne-exception-result/README.md`
-- `NeFileCard`：`packages/ui/src/ne-file-card/README.md`
-- `NeFileUploader`：`packages/ui/src/ne-file-uploader/README.md`
-- `NeNavCards`：`packages/ui/src/ne-nav-cards/README.md`
-- `NeTree`：`packages/ui/src/ne-tree/README.md`
-- `NeStatusTag`：`packages/ui/src/ne-status-tag/README.md`
+- `NePage`：`packages/ui-web/src/ne-page/README.md`
+- `NePanel`：`packages/ui-web/src/ne-panel/README.md`
+- `NeFormDrawer`：`packages/ui-web/src/ne-form-drawer/README.md`
+- `NeModal`：`packages/ui-web/src/ne-modal/README.md`
+- `NeDetailDrawer`：`packages/ui-web/src/ne-detail-drawer/README.md`
+- `NeBreadcrumbs`：`packages/ui-web/src/ne-breadcrumbs/README.md`
+- `NeWorkspaceTabs`：`packages/ui-web/src/ne-workspace-tabs/README.md`
+- `NeEmptyState`：`packages/ui-web/src/ne-empty-state/README.md`
+- `NeExceptionResult`：`packages/ui-web/src/ne-exception-result/README.md`
+- `NeFileCard`：`packages/ui-web/src/ne-file-card/README.md`
+- `NeFileUploader`：`packages/ui-web/src/ne-file-uploader/README.md`
+- `NeNavCards`：`packages/ui-web/src/ne-nav-cards/README.md`
+- `NeTree`：`packages/ui-web/src/ne-tree/README.md`
+- `NeStatusTag`：`packages/ui-web/src/ne-status-tag/README.md`
 
 ## 样式说明
 
 - 组件包内部会自动引入 `nebula.css`
-- 共享样式由 `@platform/ui` 自己提供，不再依赖 Shell 私有样式文件
+- 共享样式由 `@nebula/ui-web` 自己提供，不再依赖 Shell 私有样式文件
 - 组件样式会优先使用 Nebula 平台定义的 CSS 变量，例如 `--shell-primary`、`--shell-border`、`--shell-radius`
 
 ## 推荐使用规范

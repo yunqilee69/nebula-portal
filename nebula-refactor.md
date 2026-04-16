@@ -29,7 +29,7 @@
 2. **联邦配置已从运行时代码中移除**：代码侧已无 `vite-plugin-federation` 和 `VITE_MODULE_MODE` 使用痕迹。
 3. **页面与模块迁移大体完成**：`OrganizationTree`、`NotificationPanel`、auth/navigation/menu/runtime/store 等共享化迁移已存在于 `packages/ui` 与 `packages/core`。
 4. **Web 页面层已建成**：`packages/pages-web` 中已存在页面实现与 `createNebulaRoutes`。
-5. **Mobile 当前并非 Taro**：`apps/mobile/package.json` 明确使用 `expo`、`react-native`、`expo-router`、`@react-native-async-storage/async-storage`。
+5. **Mobile 当前已切到 Taro**：`apps/mobile/package.json` 明确使用 `@tarojs/*` 相关依赖并执行 `taro build --type weapp`，已经不再是 Expo / React Native 技术栈。
 6. **计划中的删除项尚未彻底清理**：`packages/theme`、`packages/mobile-core`、`apps/demo-business`、`apps/shell`、`templates/business-starter` 仍残留构建产物或目录壳。
 7. **Web 还不是纯消费者**：`apps/web/src/app.tsx` 仍混合引用 `@nebula/pages-web` 与本地 `./pages/*`；`apps/web/src/pages` 和 `apps/web/src/api` 仍保留重复实现。
 

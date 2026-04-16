@@ -18,7 +18,7 @@
 ## 示例
 
 ```tsx
-import { NeExceptionResult } from "@platform/ui";
+import { NeExceptionResult } from "@nebula/ui-web";
 
 <NeExceptionResult status="warning" title="加载失败" subtitle="请稍后重试" actionText="重试" onAction={() => {}} />
 ```

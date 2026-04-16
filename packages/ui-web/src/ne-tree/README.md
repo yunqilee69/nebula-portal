@@ -30,7 +30,7 @@
 ## 示例
 
 ```tsx
-import { NeTree } from "@platform/ui";
+import { NeTree } from "@nebula/ui-web";
 
 type OrgNode = {
   id: string;

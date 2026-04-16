@@ -18,7 +18,7 @@
 ## 示例
 
 ```tsx
-import { NeFileCard } from "@platform/ui";
+import { NeFileCard } from "@nebula/ui-web";
 
 <NeFileCard file={{ id: "1", fileName: "contract.pdf", extension: "pdf", size: 102400 }} />
 ```
