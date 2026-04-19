@@ -22,6 +22,7 @@ const messages = {
   "common.path": "Path",
   "common.icon": "Icon",
   "common.component": "Component",
+  "common.page": "Page",
   "common.sort": "Sort",
   "common.actions": "Actions",
   "common.filters": "Filters",

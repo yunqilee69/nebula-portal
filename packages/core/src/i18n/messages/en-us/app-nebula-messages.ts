@@ -8,7 +8,7 @@ const messages = {
   "app.language.en-US": "English",
   "layout.remoteModulesFailed": "Some remote modules failed to load",
   "layout.platformValidationFailed": "Platform startup validation failed",
-  "layout.platformValidationSubtitle": "Nebula found conflicting modules, routes, or menu component bindings. Review the console logs and fix the reported metadata before continuing.",
+  "layout.platformValidationSubtitle": "Nebula found conflicting modules, routes, or menu page bindings. Review the console logs and fix the reported metadata before continuing.",
   "layout.platformValidationIssues": "Validation issues",
   "layout.platformValidationReload": "Reload",
   "layout.tab.rename": "Rename",

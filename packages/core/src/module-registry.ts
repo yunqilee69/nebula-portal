@@ -1,4 +1,4 @@
-import { registerComponents } from "./component-registry";
+import { registryRouteComponents } from "./route-component-registry";
 import type { AppContextValue, ModuleLoadResult, PlatformModule } from "./types";
 
 const moduleRegistry = new Map<string, PlatformModule>();
@@ -15,8 +15,8 @@ export function registerModule(module: PlatformModule) {
     });
   }
   moduleRegistry.set(module.id, module);
-  if (module.components) {
-    registerComponents(module.components, module.name);
+  if (module.routeComponents) {
+    registryRouteComponents(module.routeComponents, module.name);
   }
 }
 

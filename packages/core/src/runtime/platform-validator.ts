@@ -1,12 +1,12 @@
 import { getModuleRegistrationConflicts, getRegisteredModules } from "../module-registry";
-import { getComponentRegistrationConflicts, getRegisteredComponentSource, hasComponent } from "../component-registry";
+import { getRegisteredRouteComponentSource, getRouteComponentRegistrationConflicts, hasRouteComponent } from "../route-component-registry";
 import type { MenuItem } from "../types";
 
 export type PlatformValidationIssueCode =
   | "duplicate-module-id"
-  | "duplicate-component-key"
+  | "duplicate-route-component-key"
   | "duplicate-route-path"
-  | "menu-component-missing";
+  | "menu-route-component-missing";
 
 export interface PlatformValidationIssue {
   code: PlatformValidationIssueCode;
@@ -48,13 +48,13 @@ export function validatePlatformConsistency(menus: MenuItem[]) {
     });
   }
 
-  const componentConflicts = getComponentRegistrationConflicts();
-  if (componentConflicts.length > 0) {
+  const routeComponentConflicts = getRouteComponentRegistrationConflicts();
+  if (routeComponentConflicts.length > 0) {
     issues.push({
-      code: "duplicate-component-key",
+      code: "duplicate-route-component-key",
       severity: "error",
-      summary: "Duplicate component keys detected.",
-      details: componentConflicts.map((item) => `component key "${item.key}" was registered by both "${item.existingSource}" and "${item.nextSource}"`),
+      summary: "Duplicate route component keys detected.",
+      details: routeComponentConflicts.map((item) => `route component key "${item.key}" was registered by both "${item.existingSource}" and "${item.nextSource}"`),
     });
   }
 
@@ -84,7 +84,7 @@ export function validatePlatformConsistency(menus: MenuItem[]) {
       registerRouteOwner(route.path, {
         kind: "module-route",
         path: route.path,
-        description: `module route "${module.name}" (${module.id})${route.componentKey ? ` -> ${route.componentKey}` : ""}`,
+        description: `module route "${module.name}" (${module.id})${route.routeComponentKey ? ` -> ${route.routeComponentKey}` : ""}`,
       });
     });
   });
@@ -102,33 +102,58 @@ export function validatePlatformConsistency(menus: MenuItem[]) {
     });
   }
 
-  const missingMenuComponents: string[] = [];
+  const missingModuleRouteComponents = getRegisteredModules().flatMap((module) =>
+    (module.routes ?? []).flatMap((route) => {
+      if (!route.routeComponentKey) {
+        return [];
+      }
+      if (!hasRouteComponent(route.routeComponentKey)) {
+        return [`module route "${module.name}" (${module.id}) points to missing route component key "${route.routeComponentKey}" at path "${route.path}"`];
+      }
+      const source = getRegisteredRouteComponentSource(route.routeComponentKey);
+      if (!source) {
+        return [`module route "${module.name}" (${module.id}) uses route component key "${route.routeComponentKey}" but its registration source is unknown`];
+      }
+      return [];
+    }),
+  );
+
+  if (missingModuleRouteComponents.length > 0) {
+    issues.push({
+      code: "menu-route-component-missing",
+      severity: "error",
+      summary: "Module routes reference invalid frontend route components.",
+      details: missingModuleRouteComponents,
+    });
+  }
+
+  const missingMenuRouteComponents: string[] = [];
   visitMenus(menus, (menu) => {
     if (menu.type !== 2 || menu.linkType !== 1 || !menu.component) {
       return;
     }
 
-    if (!hasComponent(menu.component)) {
-      missingMenuComponents.push(
-        `menu "${menu.name}" (${String(menu.id)}) points to missing component key "${menu.component}"${menu.path ? ` at path "${menu.path}"` : ""}`,
+    if (!hasRouteComponent(menu.component)) {
+      missingMenuRouteComponents.push(
+        `menu "${menu.name}" (${String(menu.id)}) points to missing route component key "${menu.component}"${menu.path ? ` at path "${menu.path}"` : ""}`,
       );
       return;
     }
 
-    const source = getRegisteredComponentSource(menu.component);
+    const source = getRegisteredRouteComponentSource(menu.component);
     if (!source) {
-      missingMenuComponents.push(
-        `menu "${menu.name}" (${String(menu.id)}) uses component key "${menu.component}" but its registration source is unknown`,
+      missingMenuRouteComponents.push(
+        `menu "${menu.name}" (${String(menu.id)}) uses route component key "${menu.component}" but its registration source is unknown`,
       );
     }
   });
 
-  if (missingMenuComponents.length > 0) {
+  if (missingMenuRouteComponents.length > 0) {
     issues.push({
-      code: "menu-component-missing",
+      code: "menu-route-component-missing",
       severity: "error",
-      summary: "Menu items reference invalid frontend components.",
-      details: missingMenuComponents,
+      summary: "Menu items reference invalid frontend route components.",
+      details: missingMenuRouteComponents,
     });
   }
 

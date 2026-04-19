@@ -1,7 +1,7 @@
 import { DeleteOutlined, EditOutlined, PlusOutlined, SearchOutlined } from "@ant-design/icons";
 import { Button, Form, Input, InputNumber, Pagination, Popconfirm, Select, Space, Table, Tag, Typography } from "antd";
 import type { MenuItem, MenuMutationPayload, MenuPageQuery } from "@nebula/core";
-import { NePermission, getRegisteredComponentSource, getRegisteredModules, listRegisteredComponents, useI18n } from "@nebula/core";
+import { NePermission, getRegisteredRouteComponentSource, getRegisteredModules, listRegisteredRouteComponents, useI18n } from "@nebula/core";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { createMenu, deleteMenu, fetchMenuPage, fetchMenuTree, updateMenu } from "../../../api/menu-admin-api";
 import { NeModal, NePage, NeSearchPanel, NeTablePanel } from "@nebula/ui-web";
@@ -121,6 +121,7 @@ function collectSuggestedPaths(menuTree: MenuItem[]) {
   const visitMenus = (nodes: MenuItem[]) => {
     nodes.forEach((node) => {
       registerPath(node.component, node.path);
+
       if (node.children?.length) {
         visitMenus(node.children);
       }
@@ -131,25 +132,25 @@ function collectSuggestedPaths(menuTree: MenuItem[]) {
 
   getRegisteredModules().forEach((module) => {
     module.routes?.forEach((route) => {
-      registerPath(route.componentKey, route.path);
+      registerPath(route.routeComponentKey, route.path);
     });
   });
 
   return suggestions;
 }
 
-function collectComponentSources() {
+function collectRouteComponentSources() {
   const sources = new Map<string, string>();
 
-  listRegisteredComponents().forEach((componentKey) => {
-    const source = getRegisteredComponentSource(componentKey);
+  listRegisteredRouteComponents().forEach((componentKey) => {
+    const source = getRegisteredRouteComponentSource(componentKey);
     if (source) {
       sources.set(componentKey, source);
     }
   });
 
   getRegisteredModules().forEach((module) => {
-    Object.keys(module.components ?? {}).forEach((componentKey) => {
+    Object.keys(module.routeComponents ?? {}).forEach((componentKey) => {
       if (!sources.has(componentKey)) {
         sources.set(componentKey, module.name);
       }
@@ -181,10 +182,10 @@ export function OperationsMenuPage() {
   const parentOptions = useMemo(() => flattenDirectoryOptions(menuTree, editingDescendantIds), [editingDescendantIds, menuTree]);
   const editingHasChildren = Boolean(editingTreeNode?.children?.length);
   const suggestedPathsByComponent = useMemo(() => collectSuggestedPaths(menuTree), [menuTree]);
-  const componentSources = useMemo(() => collectComponentSources(), [drawerOpen]);
+  const routeComponentSources = useMemo(() => collectRouteComponentSources(), [drawerOpen]);
   const componentOptions = useMemo(() => {
-    const registeredOptions = listRegisteredComponents().map((componentKey) => ({
-      label: `${componentKey} · ${componentSources.get(componentKey) ?? (componentKey.startsWith("nebula/") ? t("menuManagement.nebulaComponentSource") : t("menuManagement.unknownComponentSource"))}`,
+    const registeredOptions = listRegisteredRouteComponents().map((componentKey) => ({
+      label: `${componentKey} · ${routeComponentSources.get(componentKey) ?? (componentKey.startsWith("nebula/") ? t("menuManagement.nebulaPageSource") : t("menuManagement.unknownPageSource"))}`,
       value: componentKey,
     }));
 
@@ -194,8 +195,8 @@ export function OperationsMenuPage() {
 
     return registeredOptions.some((item) => item.value === currentComponent)
       ? registeredOptions
-      : [{ label: `${currentComponent} (${t("menuManagement.unregisteredComponent")})`, value: currentComponent }, ...registeredOptions];
-  }, [componentSources, currentComponent, drawerOpen, t]);
+      : [{ label: `${currentComponent} (${t("menuManagement.unregisteredPage")})`, value: currentComponent }, ...registeredOptions];
+  }, [currentComponent, drawerOpen, routeComponentSources, t]);
   const suggestedPaths = useMemo(
     () => (currentComponent ? [...(suggestedPathsByComponent.get(currentComponent) ?? [])].sort((left, right) => left.localeCompare(right)) : []),
     [currentComponent, suggestedPathsByComponent],
@@ -261,7 +262,7 @@ export function OperationsMenuPage() {
       { title: t("common.name"), dataIndex: "name" },
       { title: t("common.codeOrPath"), render: (_: unknown, row: MenuItem) => row.path ?? row.permission ?? "-" },
        { title: t("common.type"), render: (_: unknown, row: MenuItem) => menuTypeLabel(row.type, t) },
-      { title: t("common.component"), dataIndex: "component", render: (value: string | undefined) => value ?? "-" },
+      { title: t("common.page"), dataIndex: "component", render: (value: string | undefined) => value ?? "-" },
       {
         title: t("common.status"),
         render: (_: unknown, row: MenuItem) =>
@@ -271,7 +272,7 @@ export function OperationsMenuPage() {
         title: t("common.actions"),
         render: (_: unknown, row: MenuItem) => (
           <Space>
-            <NePermission code="crm:customer:edit">
+            <NePermission code="system:menu:edit">
               <Button
                 size="small"
                 icon={<EditOutlined />}
@@ -294,7 +295,7 @@ export function OperationsMenuPage() {
                 {t("common.edit")}
               </Button>
             </NePermission>
-            <NePermission code="crm:customer:export">
+            <NePermission code="system:menu:delete">
               <Popconfirm
                 title={t("common.confirmDelete")}
                 onConfirm={async () => {
@@ -342,7 +343,7 @@ export function OperationsMenuPage() {
       </NeSearchPanel>
       <NeTablePanel
         toolbar={
-          <NePermission code="crm:customer:create">
+          <NePermission code="system:menu:create">
             <Button
               type="primary"
               icon={<PlusOutlined />}
@@ -436,18 +437,18 @@ export function OperationsMenuPage() {
           </Form.Item>
           <Form.Item
             name="component"
-            label={t("common.component")}
-            rules={currentType === "MENU" ? [{ required: true, message: t("validation.selectField", undefined, { field: t("common.component") }) }] : undefined}
-            extra={currentType === "MENU" ? t("menuManagement.componentHint") : t("menuManagement.componentDisabledHint")}
+            label={t("common.page")}
+            rules={currentType === "MENU" ? [{ required: true, message: t("validation.selectField", undefined, { field: t("common.page") }) }] : undefined}
+            extra={currentType === "MENU" ? t("menuManagement.pageHint") : t("menuManagement.pageDisabledHint")}
           >
             <Select
               showSearch
               allowClear
               disabled={currentType !== "MENU"}
               options={componentOptions}
-              placeholder={t("menuManagement.componentPlaceholder")}
+              placeholder={t("menuManagement.pagePlaceholder")}
               optionFilterProp="label"
-              notFoundContent={t("menuManagement.noComponentOptions")}
+              notFoundContent={t("menuManagement.noPageOptions")}
             />
           </Form.Item>
           <Form.Item

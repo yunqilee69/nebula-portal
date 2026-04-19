@@ -4,7 +4,7 @@ const messages = {
   "notFound.title": "页面不存在",
   "notFound.subtitle": "你访问的地址不存在，可能已被移动或删除。",
   "unavailable.title": "页面注册缺失",
-  "unavailable.subtitle": "当前后端菜单指向了一个尚未被已加载模块注册的组件键。",
+  "unavailable.subtitle": "当前后端菜单指向了一个尚未被已加载模块注册的页面键。",
   "iframe.invalid": "无效的内嵌页面地址",
   "iframe.title": "内嵌外部页面",
   "errorBoundary.title": "页面发生异常",

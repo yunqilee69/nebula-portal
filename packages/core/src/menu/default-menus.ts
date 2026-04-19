@@ -1,11 +1,11 @@
 import { translateNebulaMessage, type LocaleCode } from "../i18n/index";
 import type { MenuItem } from "../types";
 
-const NEBULA_HOME_MENU_ID = "nebula-home";
+const NEBULA_DASHBOARD_MENU_ID = "nebula-dashboard";
 
 function normalizeMenuPath(path: string | undefined) {
   if (!path || path === "/") {
-    return "/";
+    return "/dashboard";
   }
   return path.replace(/\/+$/, "") || "/";
 }
@@ -13,10 +13,10 @@ function normalizeMenuPath(path: string | undefined) {
 export function buildDefaultNebulaMenus(locale: LocaleCode = "zh-CN"): MenuItem[] {
   return [
     {
-      id: NEBULA_HOME_MENU_ID,
+      id: NEBULA_DASHBOARD_MENU_ID,
       name: translateNebulaMessage(locale, "nav.home", "首页"),
       type: 2,
-      path: "/",
+      path: "/dashboard",
       component: "nebula/DashboardPage",
       linkType: 1,
       icon: "HomeOutlined",

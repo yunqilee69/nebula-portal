@@ -699,12 +699,12 @@ export interface PlatformEvents {
   [key: `business:${string}`]: unknown;
 }
 
-export type ComponentLoader = () => Promise<{ default: ComponentType<object> }>;
-export type ComponentLoaderMap = Record<string, ComponentLoader>;
+export type RouteComponentLoader = () => Promise<{ default: ComponentType<object> }>;
+export type RouteComponentLoaderMap = Record<string, RouteComponentLoader>;
 
 export interface PlatformRoute {
   path: string;
-  componentKey?: string;
+  routeComponentKey?: string;
   component?: LazyExoticComponent<ComponentType<object>>;
   title?: string;
 }
@@ -759,7 +759,7 @@ export interface PlatformModule {
   version: string;
   menus?: MenuItem[];
   routes?: PlatformRoute[];
-  components?: ComponentLoaderMap;
+  routeComponents?: RouteComponentLoaderMap;
   bootstrap?: (ctx: AppContextValue) => Promise<void>;
 }
 

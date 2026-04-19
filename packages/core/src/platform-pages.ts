@@ -7,7 +7,7 @@ export interface PlatformPageDefinition {
   path: string;
   menuName: string;
   menuNameKey?: string;
-  componentKey: string;
+  routeComponentKey: string;
   sort: number;
 }
 

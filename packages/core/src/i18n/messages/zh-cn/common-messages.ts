@@ -22,6 +22,7 @@ const messages = {
   "common.path": "路径",
   "common.icon": "图标",
   "common.component": "组件",
+  "common.page": "页面",
   "common.sort": "排序",
   "common.actions": "操作",
   "common.filters": "筛选条件",

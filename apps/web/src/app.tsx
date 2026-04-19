@@ -7,7 +7,6 @@ import {
   buildRoutesFromMenus,
   eventBus,
   hydrateFrontendPublicData,
-  registerNebulaComponents,
   reportPlatformValidation,
   useAuthStore,
   useDictStore,
@@ -46,8 +45,9 @@ import {
 import { preloadNebulaData } from "@nebula/core";
 import { NeExceptionResult } from "@nebula/ui-web";
 import { useI18nStore, translateNebulaMessage } from "@nebula/core";
+import { registerNebulaPages } from "./platform/register-nebula-pages";
 
-registerNebulaComponents();
+registerNebulaPages();
 
 function AppLoadingFallback() {
   return (
@@ -64,7 +64,7 @@ function PlatformValidationFallback({ issues }: { issues: ReturnType<typeof vali
       <NeExceptionResult
         status="error"
         title={translateNebulaMessage(locale, "layout.platformValidationFailed", "Platform startup validation failed")}
-        subtitle={translateNebulaMessage(locale, "layout.platformValidationSubtitle", "Nebula found conflicting modules, routes, or menu component bindings. Review the console logs and fix the reported metadata before continuing.")}
+        subtitle={translateNebulaMessage(locale, "layout.platformValidationSubtitle", "Nebula found conflicting modules, routes, or menu page bindings. Review the console logs and fix the reported metadata before continuing.")}
         actionText={translateNebulaMessage(locale, "layout.platformValidationReload", "Reload")}
         onAction={() => window.location.reload()}
       />
@@ -297,7 +297,7 @@ function AppRouter() {
   }, [platformValidation]);
 
   const routes = [
-    { path: "/login", element: session?.token ? <Navigate to="/" replace /> : <LoginPage /> },
+    { path: "/login", element: session?.token ? <Navigate to="/dashboard" replace /> : <LoginPage /> },
     { path: "/401", element: <UnauthorizedPage /> },
     { path: "/404", element: <NotFoundPage /> },
     {
@@ -308,7 +308,8 @@ function AppRouter() {
         </AuthGuard>
       ),
       children: [
-        { index: true, element: <DashboardPage /> },
+        { index: true, element: <Navigate to="/dashboard" replace /> },
+        { path: "dashboard", element: <DashboardPage /> },
         { path: "iframe", element: <IframePage /> },
         ...dynamicRoutes
           .filter((route) => route.path !== "/")
@@ -317,7 +318,8 @@ function AppRouter() {
         { path: "*", element: <Navigate to="/404" replace /> },
       ],
     },
-    { path: "*", element: <Navigate to={session?.token ? "/" : "/login"} replace /> },
+     { path: "*", element: <Navigate to={session?.token ? "/dashboard" : "/login"} replace /> },
+
   ];
   const routedElement = useRoutes(routes);
 

@@ -1,5 +1,5 @@
 import type { ComponentType } from "react";
-import { loadComponent } from "./component-registry";
+import { loadRouteComponent } from "./route-component-registry";
 import { getRegisteredModules } from "./module-registry";
 import type { MenuItem, RouteDefinition } from "./types";
 
@@ -12,8 +12,8 @@ export function buildRoutesFromMenus(
   const visit = (items: MenuItem[]) => {
     items.forEach((menu) => {
       if (menu.type === 2 && menu.linkType === 1 && menu.component && menu.path) {
-        const Component = loadComponent(menu.component, fallback);
-        routes.push({ path: menu.path, element: <Component /> });
+        const RouteComponent = loadRouteComponent(menu.component, fallback);
+        routes.push({ path: menu.path, element: <RouteComponent /> });
       }
       if (menu.children?.length) {
         visit(menu.children);
@@ -32,9 +32,9 @@ export function buildModuleRoutes() {
         const RouteComponent = route.component;
         return { path: route.path, element: <RouteComponent /> };
       }
-      if (route.componentKey) {
-        const Component = loadComponent(route.componentKey, DefaultMissingPage);
-        return { path: route.path, element: <Component /> };
+      if (route.routeComponentKey) {
+        const RouteComponent = loadRouteComponent(route.routeComponentKey, DefaultMissingPage);
+        return { path: route.path, element: <RouteComponent /> };
       }
       return { path: route.path, element: <DefaultMissingPage /> };
     }),

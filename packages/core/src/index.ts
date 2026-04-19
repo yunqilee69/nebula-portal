@@ -1,6 +1,6 @@
 export * from "./app-context";
 export * from "./auth";
-export * from "./component-registry";
+export * from "./route-component-registry";
 export * from "./event-bus";
 export * from "./i18n/index";
 export * from "./mobile-app-context";

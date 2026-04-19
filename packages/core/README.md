@@ -6,7 +6,7 @@ Nebula 中台基座的共享核心契约包。
 
 - `AppContextProvider` / `useAppContext`：业务模块访问基座能力的统一入口
 - 模块注册：`registerModule`、`getRegisteredModules`、`bootstrapRegisteredModules`
-- 组件注册：`registerComponents`、`loadComponent`
+- 路由组件注册：`registryRouteComponent`、`registryRouteComponents`、`loadRouteComponent`
 - 权限：`NePermission`、`usePermission`
 - 国际化：`I18nProvider`、`useI18n`
 - 事件总线：`eventBus`
@@ -23,8 +23,8 @@ const module: PlatformModule = {
   id: "@business/demo",
   name: "Demo CRM",
   version: "0.1.0",
-  components: {
-    "crm/CustomerList": async () => ({ default: (await import("./pages/customer-list-page")).CustomerListPage }),
+  routeComponents: {
+    "crm/CustomerListPage": async () => ({ default: (await import("./pages/customer-list-page")).CustomerListPage }),
   },
   menus: [
     {
@@ -38,14 +38,14 @@ const module: PlatformModule = {
           name: "客户列表",
           type: 2,
           path: "/crm/list",
-          component: "crm/CustomerList",
+          component: "crm/CustomerListPage",
           linkType: 1,
           visible: 1,
         },
       ],
     },
   ],
-  routes: [{ path: "/crm/list", componentKey: "crm/CustomerList" }],
+  routes: [{ path: "/crm/list", routeComponentKey: "crm/CustomerListPage" }],
   bootstrap: async (ctx) => {
     ctx.bus.emit("business:module-ready", { module: "crm" });
   },
@@ -113,6 +113,6 @@ export default module;
 
 ## 接入建议
 
-- 业务模块只维护本模块的页面、菜单、组件映射和初始化逻辑
+- 业务模块只维护本模块的页面、菜单、路由组件映射和初始化逻辑
 - 认证、权限、请求、主题、通知、字典、配置、存储地址解析等平台级能力优先复用基座提供的上下文
 - 公共界面组件优先从 `@nebula/ui-web` 获取，不在业务模块重复封装

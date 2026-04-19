@@ -8,7 +8,7 @@ const messages = {
   "app.language.en-US": "English",
   "layout.remoteModulesFailed": "部分远程模块加载失败",
   "layout.platformValidationFailed": "平台启动校验失败",
-  "layout.platformValidationSubtitle": "基座检测到模块、路由或菜单组件绑定存在冲突，请先查看控制台日志并修复对应元数据后再继续。",
+  "layout.platformValidationSubtitle": "平台检测到模块、路由或菜单页面绑定存在冲突，请先查看控制台日志并修复对应元数据后再继续。",
   "layout.platformValidationIssues": "校验问题",
   "layout.platformValidationReload": "重新加载",
   "layout.tab.rename": "重命名",
