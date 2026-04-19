@@ -63,13 +63,11 @@ function enhanceTableContent(children: ReactNode, rowSelection?: boolean | NeTab
   }
 
   const tableClassName = ["ne-table-panel__table", children.props.className].filter(Boolean).join(" ");
-  const scroll = children.props.scroll?.y == null ? { ...children.props.scroll, y: "100%" } : children.props.scroll;
   const resolvedRowSelection = resolveRowSelection(rowSelection);
 
   return cloneElement(children, {
     className: tableClassName,
     rowSelection: resolvedRowSelection,
-    scroll,
   });
 }
 

@@ -331,7 +331,6 @@ export function StorageCenterPage() {
           dataSource={rows}
           columns={columns}
           pagination={false}
-          scroll={{ x: 1380 }}
         />
       </NeTablePanel>
     </NePage>
