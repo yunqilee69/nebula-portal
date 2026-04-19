@@ -562,7 +562,7 @@ export function OperationsPermissionPage({ embedded = false }: PermissionAssignm
   }
 
   const content = (
-    <div className="shell-split-grid permission-assignment-layout">
+    <div className="nebula-split-grid permission-assignment-layout">
         <NePanel
           title={t("permissionAssignment.principalPanelTitle")}
           extra={

@@ -61,7 +61,7 @@ export function CachedOutlet() {
         }
 
         return (
-          <section key={path} className="shell-content-stack__item" style={{ display: path === currentPath ? "block" : "none" }}>
+          <section key={path} className="nebula-content-stack__item" style={{ display: path === currentPath ? "block" : "none" }}>
             {node}
           </section>
         );

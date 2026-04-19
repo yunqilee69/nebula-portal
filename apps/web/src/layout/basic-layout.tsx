@@ -92,7 +92,8 @@ export function BasicLayout({ remoteStatuses }: BasicLayoutProps) {
   }
 
   return (
-    <Layout className="shell-layout">
+      <Layout className="nebula-layout">
+
       <Sider
         width={250}
         collapsedWidth={76}
@@ -170,7 +171,7 @@ export function BasicLayout({ remoteStatuses }: BasicLayoutProps) {
                   showIcon
                   message={t("layout.remoteModulesFailed")}
                   description={failedModules.map((item) => `${item.id}: ${item.reason ?? t("layout.unknownReason")}`).join(" | ")}
-                  className="shell-content-alert"
+                  className="nebula-content-alert"
                 />
               ) : null}
               <CachedOutlet />

@@ -207,8 +207,8 @@ export function OperationsUserPage() {
 
   return (
     <NePage className="user-management-page">
-      <div className="shell-split-grid user-management-page__content">
-        <NePanel title={t("organization.tree")} className="shell-panel user-management-page__tree-panel">
+      <div className="nebula-split-grid user-management-page__content">
+        <NePanel title={t("organization.tree")} className="nebula-panel user-management-page__tree-panel">
           <OrganizationTree
             className="user-management-page__tree-surface"
             treeClassName="user-management-page__tree"

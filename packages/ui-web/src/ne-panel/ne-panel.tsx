@@ -33,7 +33,7 @@ export function NePanel({ title, extra, children, className }: NePanelProps) {
       title={title}
       extra={extra}
       variant="borderless"
-      style={{ boxShadow: "var(--shell-shadow, 0 10px 30px rgba(15, 23, 42, 0.06))" }}
+      style={{ boxShadow: "var(--nebula-shadow, 0 10px 30px rgba(15, 23, 42, 0.06))" }}
     >
       {children}
     </Card>

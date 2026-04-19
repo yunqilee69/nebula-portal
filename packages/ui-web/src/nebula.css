@@ -2,19 +2,19 @@
   display: flex;
   flex: 1;
   flex-direction: column;
-  gap: var(--shell-content-gap, 16px);
+  gap: var(--nebula-content-gap, 16px);
   min-height: 0;
   min-width: 0;
 }
 
 .ne-muted {
-  color: var(--shell-text-muted, #667085);
+  color: var(--nebula-text-muted, #667085);
 }
 
 .ne-card-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: var(--shell-content-gap, 16px);
+  gap: var(--nebula-content-gap, 16px);
 }
 
 .ne-nav-card {
@@ -22,9 +22,9 @@
   gap: 8px;
   padding: 18px;
   text-align: left;
-  border: 1px solid var(--shell-border-strong, #c7d2e0);
-  border-radius: calc(var(--shell-radius, 8px) - 1px);
-  background: var(--shell-surface-strong, #ffffff);
+  border: 1px solid var(--nebula-border-strong, #c7d2e0);
+  border-radius: calc(var(--nebula-radius, 8px) - 1px);
+  background: var(--nebula-surface-strong, #ffffff);
   cursor: pointer;
   position: relative;
   overflow: hidden;
@@ -35,11 +35,11 @@
   position: absolute;
   inset: 0 auto 0 0;
   width: 4px;
-  background: linear-gradient(180deg, var(--shell-primary, #1677ff) 0%, color-mix(in srgb, var(--shell-primary, #1677ff) 38%, transparent) 100%);
+  background: linear-gradient(180deg, var(--nebula-primary, #1677ff) 0%, color-mix(in srgb, var(--nebula-primary, #1677ff) 38%, transparent) 100%);
 }
 
 .ne-nav-card:hover {
-  border-color: color-mix(in srgb, var(--shell-primary, #1677ff) 36%, var(--shell-border-strong, #c7d2e0));
+  border-color: color-mix(in srgb, var(--nebula-primary, #1677ff) 36%, var(--nebula-border-strong, #c7d2e0));
   transform: translateY(-1px);
   box-shadow: 0 14px 28px rgba(15, 23, 42, 0.08);
 }
@@ -82,10 +82,10 @@
 
 .ne-search-panel,
 .ne-table-panel {
-  border: 1px solid var(--shell-border-strong, #c7d2e0);
-  border-radius: var(--shell-radius, 8px);
-  background: var(--shell-surface-strong, #ffffff);
-  box-shadow: var(--shell-shadow, 0 10px 30px rgba(15, 23, 42, 0.06));
+  border: 1px solid var(--nebula-border-strong, #c7d2e0);
+  border-radius: var(--nebula-radius, 8px);
+  background: var(--nebula-surface-strong, #ffffff);
+  box-shadow: var(--nebula-shadow, 0 10px 30px rgba(15, 23, 42, 0.06));
 }
 
 .ne-table-panel {
@@ -109,7 +109,7 @@
 
 .ne-search-panel__header,
 .ne-table-panel__toolbar:not(:empty) {
-  border-bottom: 1px solid var(--shell-border, #d0d5dd);
+  border-bottom: 1px solid var(--nebula-border, #d0d5dd);
 }
 
 .ne-table-panel__toolbar:empty {
@@ -118,7 +118,7 @@
 
 .ne-search-panel__title,
 .ne-table-panel__summary {
-  color: var(--shell-text-muted, #667085);
+  color: var(--nebula-text-muted, #667085);
   font-size: 13px;
 }
 
@@ -162,7 +162,7 @@
 }
 
 .ne-table-panel__footer {
-  border-top: 1px solid var(--shell-border, #d0d5dd);
+  border-top: 1px solid var(--nebula-border, #d0d5dd);
 }
 
 .ne-table-panel__pagination {
@@ -208,17 +208,17 @@
 
 .ne-modal__header {
   padding: 14px 20px;
-  border-bottom: 1px solid var(--shell-border, #d0d5dd);
+  border-bottom: 1px solid var(--nebula-border, #d0d5dd);
   background: linear-gradient(180deg, rgba(248, 250, 252, 0.96) 0%, rgba(255, 255, 255, 0.98) 100%);
 }
 
 .ne-modal__content {
   padding: 20px 24px;
-  background: var(--shell-surface-strong, #fff);
+  background: var(--nebula-surface-strong, #fff);
 }
 
 .ne-modal__content--with-footer {
-  border-bottom: 1px solid var(--shell-border, #d0d5dd);
+  border-bottom: 1px solid var(--nebula-border, #d0d5dd);
 }
 
 .ne-modal__body {
@@ -262,7 +262,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  color: var(--shell-primary, #1677ff);
+  color: var(--nebula-primary, #1677ff);
   font-size: 16px;
 }
 
@@ -282,9 +282,9 @@
   grid-template-columns: 72px minmax(0, 1fr) auto;
   gap: 12px;
   align-items: center;
-  border: 1px solid var(--shell-border, #d0d5dd);
+  border: 1px solid var(--nebula-border, #d0d5dd);
   border-radius: 8px;
-  background: var(--shell-surface-strong, #fff);
+  background: var(--nebula-surface-strong, #fff);
   padding: 12px;
   box-shadow: 0 10px 24px rgba(15, 23, 42, 0.05);
 }
@@ -307,7 +307,7 @@
 
 .ne-file-card__icon {
   font-size: 24px;
-  color: var(--shell-primary, #0b7285);
+  color: var(--nebula-primary, #0b7285);
 }
 
 .ne-file-card__meta {
@@ -336,7 +336,7 @@
 }
 
 .ne-tree__body .ant-tree {
-  border: 1px solid var(--shell-border, #d0d5dd);
+  border: 1px solid var(--nebula-border, #d0d5dd);
   border-radius: 8px;
   background: linear-gradient(180deg, rgba(248, 250, 252, 0.92) 0%, rgba(255, 255, 255, 0.98) 100%);
   padding: 8px;
@@ -355,14 +355,14 @@
 }
 
 .ne-tree__body .ant-tree-node-content-wrapper.ant-tree-node-selected {
-  background: color-mix(in srgb, var(--shell-primary, #1677ff) 12%, #ffffff);
+  background: color-mix(in srgb, var(--nebula-primary, #1677ff) 12%, #ffffff);
 }
 
 .ne-tree__empty {
   display: grid;
   place-items: center;
   min-height: 160px;
-  border: 1px dashed var(--shell-border, #d0d5dd);
+  border: 1px dashed var(--nebula-border, #d0d5dd);
   border-radius: 8px;
   background: rgba(248, 250, 252, 0.72);
 }

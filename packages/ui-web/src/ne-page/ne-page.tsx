@@ -43,7 +43,7 @@ export function NePage({ title, subtitle, extra, children, className }: NePagePr
         >
           <div>
             {title ? <h1 style={{ margin: 0, fontSize: 24 }}>{title}</h1> : null}
-            {subtitle ? <p style={{ margin: title ? "8px 0 0" : 0, color: "var(--shell-text-muted, #667085)" }}>{subtitle}</p> : null}
+            {subtitle ? <p style={{ margin: title ? "8px 0 0" : 0, color: "var(--nebula-text-muted, #667085)" }}>{subtitle}</p> : null}
           </div>
           {extra}
         </header>

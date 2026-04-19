@@ -42,7 +42,7 @@ export function DashboardPage() {
 
   return (
     <NePage>
-      <Row className="shell-metric-grid" gutter={[16, 16]}>
+      <Row className="nebula-metric-grid" gutter={[16, 16]}>
         <Col xs={24} md={8}>
           <NePanel title={t("dashboard.menuCount")}>
             <Statistic value={menus.length} suffix={t("dashboard.topLevel")} />
@@ -88,7 +88,7 @@ export function DashboardPage() {
           </NePanel>
         </Col>
         <Col span={24}>
-          <NePanel title={t("dashboard.shellParams")}>
+          <NePanel title={t("dashboard.nebulaParams")}>
             <List
               dataSource={[
                 t("dashboard.uploadLimit", undefined, { value: String(uploadSize) }),

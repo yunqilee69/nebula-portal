@@ -228,7 +228,7 @@ export function AdvancedDictPage() {
         )}
       </NePanel>
 
-      <div className="shell-split-grid">
+      <div className="nebula-split-grid">
         <div>
           <NeSearchPanel
             title={t("dict.typeFilter")}

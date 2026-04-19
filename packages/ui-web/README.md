@@ -33,7 +33,7 @@ import { NePage, NePanel, NeStatusTag } from "@nebula/ui-web";
 
 - 组件包内部会自动引入 `nebula.css`
 - 共享样式由 `@nebula/ui-web` 自己提供，不再依赖 Shell 私有样式文件
-- 组件样式会优先使用 Nebula 平台定义的 CSS 变量，例如 `--shell-primary`、`--shell-border`、`--shell-radius`
+- 组件样式会优先使用 Nebula 平台定义的 CSS 变量，例如 `--nebula-primary`、`--nebula-border`、`--nebula-radius`
 
 ## 推荐使用规范
 
