@@ -1,7 +1,7 @@
 import type { ErrorInfo, ReactNode } from "react";
 import { Component } from "react";
 import { NeExceptionResult } from "@nebula/ui-web";
-import { useI18nStore, translateNebulaMessage } from "@nebula/core";
+import { translateNebulaMessage, useI18nStore } from "@nebula/core/i18n";
 
 interface AppErrorBoundaryProps {
   children: ReactNode;
