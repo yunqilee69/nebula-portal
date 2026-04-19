@@ -1,7 +1,7 @@
 import { DeleteOutlined, EditOutlined, PlusOutlined, SearchOutlined } from "@ant-design/icons";
 import { Button, Descriptions, Form, Input, Pagination, Popconfirm, Select, Space, Table, Tag, Typography } from "antd";
-import type { OrganizationItem, OrganizationTreeItem, RoleItem, UserDetail, UserItem, UserMutationPayload, UserPageQuery } from "@nebula/core";
-import { useI18n } from "@nebula/core";
+import type { OrganizationItem, OrganizationTreeItem, RoleItem, UserDetail, UserItem, UserMutationPayload, UserPageQuery } from "@nebula/core/types";
+import { useI18n } from "@nebula/core/i18n";
 import { useEffect, useMemo, useState } from "react";
 import { fetchOrganizationList, fetchOrganizationTree } from "../../../api/organization-api";
 import { fetchRoleList } from "../../../api/role-api";
