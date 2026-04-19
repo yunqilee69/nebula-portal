@@ -2,7 +2,7 @@ import { DeleteOutlined, EditOutlined, PlusOutlined, SearchOutlined } from "@ant
 import { Button, Form, Input, InputNumber, Pagination, Popconfirm, Select, Space, Table, Tag, Typography } from "antd";
 import { useI18n } from "@nebula/core";
 import { NePermission } from "@nebula/core";
-import { getRegisteredRouteComponentSource, getRegisteredModules, listRegisteredRouteComponents } from "@nebula/core";
+import { getRegisteredRouteComponentSource, listRegisteredRouteComponents } from "@nebula/core";
 import type { MenuItem, MenuMutationPayload, MenuPageQuery } from "@nebula/core";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { createMenu, deleteMenu, fetchMenuPage, fetchMenuTree, updateMenu } from "../../../api/menu-admin-api";
@@ -132,12 +132,6 @@ function collectSuggestedPaths(menuTree: MenuItem[]) {
 
   visitMenus(menuTree);
 
-  getRegisteredModules().forEach((module) => {
-    module.routes?.forEach((route) => {
-      registerPath(route.routeComponentKey, route.path);
-    });
-  });
-
   return suggestions;
 }
 
@@ -149,14 +143,6 @@ function collectRouteComponentSources() {
     if (source) {
       sources.set(componentKey, source);
     }
-  });
-
-  getRegisteredModules().forEach((module) => {
-    Object.keys(module.routeComponents ?? {}).forEach((componentKey) => {
-      if (!sources.has(componentKey)) {
-        sources.set(componentKey, module.name);
-      }
-    });
   });
 
   return sources;

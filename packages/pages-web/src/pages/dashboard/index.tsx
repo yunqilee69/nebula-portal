@@ -1,9 +1,12 @@
 import { Col, List, Row, Space, Statistic, Typography } from "antd";
-import { useI18n } from "@nebula/core";
-import { useMenuStore } from "@nebula/core";
-import { getRegisteredModules } from "@nebula/core";
-import { useAuthStore } from "@nebula/core";
-import { useConfigStore, useNotifyStore } from "@nebula/core";
+import {
+  listRegisteredRouteComponents,
+  useAuthStore,
+  useConfigStore,
+  useI18n,
+  useMenuStore,
+  useNotifyStore,
+} from "@nebula/core";
 import type { MenuItem } from "@nebula/core";
 import { NeNavCards, NePage, NePanel, NeStatusTag } from "@nebula/ui-web";
 import { useMemo } from "react";
@@ -35,7 +38,7 @@ export function DashboardPage() {
   const menus = useMenuStore((state) => state.menus);
   const configValues = useConfigStore((state) => state.values);
   const notifications = useNotifyStore((state) => state.items);
-  const modules = useMemo(() => getRegisteredModules(), []);
+  const routeComponents = useMemo(() => listRegisteredRouteComponents(), []);
   const navigate = useNavigate();
   const uploadSize = configValues.upload_max_size ?? "-";
   const menuCards = useMemo(() => collectMenuCards(menus), [menus]);
@@ -50,7 +53,7 @@ export function DashboardPage() {
         </Col>
         <Col xs={24} md={8}>
           <NePanel title={t("dashboard.moduleCount")}>
-            <Statistic value={modules.length} suffix={t("dashboard.registered")} />
+            <Statistic value={routeComponents.length} suffix={t("dashboard.registered")} />
           </NePanel>
         </Col>
         <Col xs={24} md={8}>
@@ -73,10 +76,10 @@ export function DashboardPage() {
         <Col xs={24} xl={12}>
           <NePanel title={t("dashboard.registeredModules")}>
             <List
-              dataSource={modules}
+              dataSource={routeComponents}
               renderItem={(item) => (
                 <List.Item>
-                  <Typography.Text>{`${item.name} (${item.id}) v${item.version}`}</Typography.Text>
+                  <Typography.Text>{item}</Typography.Text>
                 </List.Item>
               )}
             />
