@@ -1,23 +1,13 @@
-import {
-  AppContextProvider,
-  AuthGuard,
-  bootstrapRegisteredModules,
-  buildAppContext,
-  buildModuleRoutes,
-  buildRoutesFromMenus,
-  eventBus,
-  hydrateFrontendPublicData,
-  reportPlatformValidation,
-  useAuthStore,
-  useDictStore,
-  useFrontendStore,
-  useMenuStore,
-  useNotifyStore,
-  useResourceStore,
-  validatePlatformConsistency,
-} from "@nebula/core";
+import { AuthGuard, useAuthStore } from "@nebula/core/auth";
 import { resolveRefreshDelay, restoreSessionOnStartup } from "@nebula/auth";
-import type { AppContextValue, ModuleLoadResult } from "@nebula/core";
+import { AppContextProvider } from "@nebula/core/context";
+import { eventBus } from "@nebula/core/event-bus";
+import { translateNebulaMessage, useI18nStore } from "@nebula/core/i18n";
+import { useMenuStore } from "@nebula/core/menu";
+import { buildModuleRoutes, buildRoutesFromMenus, bootstrapRegisteredModules } from "@nebula/core/routing";
+import { buildAppContext, preloadNebulaData, reportPlatformValidation, validatePlatformConsistency } from "@nebula/core/runtime";
+import { hydrateFrontendPublicData, useDictStore, useFrontendStore, useNotifyStore, useResourceStore } from "@nebula/core/stores";
+import type { AppContextValue, ModuleLoadResult } from "@nebula/core/types";
 import { Alert, Spin, Typography } from "antd";
 import { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { BrowserRouter, Navigate, useNavigate, useRoutes } from "react-router-dom";
@@ -42,9 +32,7 @@ import {
   apiClient,
   webEnv,
 } from "@nebula/pages-web";
-import { preloadNebulaData } from "@nebula/core";
 import { NeExceptionResult } from "@nebula/ui-web";
-import { useI18nStore, translateNebulaMessage } from "@nebula/core";
 import { registerNebulaPages } from "./platform/register-nebula-pages";
 
 registerNebulaPages();

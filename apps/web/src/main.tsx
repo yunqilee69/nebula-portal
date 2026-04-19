@@ -1,7 +1,7 @@
 import { ConfigProvider } from "antd";
 import enUS from "antd/locale/en_US";
 import zhCN from "antd/locale/zh_CN";
-import { useI18n, NebulaI18nProvider } from "@nebula/core";
+import { NebulaI18nProvider, useI18n } from "@nebula/core/i18n";
 import { useMemo } from "react";
 import { createRoot } from "react-dom/client";
 import App from "./app";
