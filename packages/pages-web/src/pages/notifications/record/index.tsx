@@ -1,7 +1,7 @@
 import { SearchOutlined } from "@ant-design/icons";
 import { Button, Descriptions, Form, Input, Pagination, Select, Table, Tag, Typography } from "antd";
-import type { NotifyRecordDetail, NotifyRecordItem, NotifyRecordPageQuery } from "@nebula/core";
-import { useI18n } from "@nebula/core";
+import type { NotifyRecordDetail, NotifyRecordItem, NotifyRecordPageQuery } from "@nebula/core/types";
+import { useI18n } from "@nebula/core/i18n";
 import { useEffect, useMemo, useState } from "react";
 import { fetchNotifyRecordDetail, fetchNotifyRecordPage } from "../../../api/notify-record-api";
 import { NeDetailDrawer, NePage, NeSearchPanel, NeTablePanel } from "@nebula/ui-web";

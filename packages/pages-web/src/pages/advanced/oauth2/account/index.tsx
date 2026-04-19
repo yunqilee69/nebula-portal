@@ -1,7 +1,7 @@
 import { DeleteOutlined, EditOutlined, PlusOutlined, SearchOutlined } from "@ant-design/icons";
 import { Button, Descriptions, Form, Input, Pagination, Popconfirm, Select, Space, Table, Tag, Typography } from "antd";
-import type { OAuth2AccountDetail, OAuth2AccountItem, OAuth2AccountMutationPayload, OAuth2AccountPageQuery } from "@nebula/core";
-import { useI18n } from "@nebula/core";
+import type { OAuth2AccountDetail, OAuth2AccountItem, OAuth2AccountMutationPayload, OAuth2AccountPageQuery } from "@nebula/core/types";
+import { useI18n } from "@nebula/core/i18n";
 import { useEffect, useMemo, useState } from "react";
 import { createOAuth2Account, deleteOAuth2Account, fetchOAuth2AccountDetail, fetchOAuth2AccountPage, updateOAuth2Account } from "../../../../api/oauth2-account-api";
 import { NeDetailDrawer, NeModal, NePage, NeSearchPanel, NeTablePanel } from "@nebula/ui-web";
