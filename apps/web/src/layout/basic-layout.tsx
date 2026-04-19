@@ -1,20 +1,17 @@
 import { Alert, Layout } from "antd";
-import { useI18n } from "@nebula/core";
-import type { ModuleLoadResult } from "@nebula/core";
+import { useI18n } from "@nebula/core/i18n";
+import type { ModuleLoadResult } from "@nebula/core/types";
 import { NeWorkspaceTabs } from "@nebula/ui-web";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useMemo, useState } from "react";
+import { useAuthStore } from "@nebula/core/auth";
+import { useMenuStore } from "@nebula/core/menu";
+import { buildBreadcrumbItems, resolveRouteLabel, useNavigationStore } from "@nebula/core/navigation";
+import { useConfigStore, useDictStore, useNotifyStore } from "@nebula/core/stores";
 import { AppHeader } from "./app-header";
 import { AppSidebar } from "./app-sidebar";
 import { CachedOutlet } from "./cached-outlet";
 import { logoutSession } from "@nebula/pages-web";
-import { useMenuStore } from "@nebula/core";
-import { useAuthStore } from "@nebula/core";
-import { useConfigStore } from "@nebula/core";
-import { useDictStore } from "@nebula/core";
-import { buildBreadcrumbItems, resolveRouteLabel } from "@nebula/core";
-import { useNavigationStore } from "@nebula/core";
-import { useNotifyStore } from "@nebula/core";
 
 const { Sider, Header, Content } = Layout;
 

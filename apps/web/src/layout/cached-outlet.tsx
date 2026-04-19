@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import type { ReactNode } from "react";
 import { useLocation, useOutlet } from "react-router-dom";
-import { useNavigationStore } from "@nebula/core";
+import { useNavigationStore } from "@nebula/core/navigation";
 
 function buildRouteKey(pathname: string, search: string, hash: string) {
   return `${pathname}${search}${hash}`;

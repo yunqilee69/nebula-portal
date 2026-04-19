@@ -1,6 +1,8 @@
 import { LogoutOutlined } from "@ant-design/icons";
 import { Avatar, Dropdown, Space, Typography } from "antd";
-import { type NeBreadcrumbItem, useAuthStore, useI18n } from "@nebula/core";
+import type { NeBreadcrumbItem } from "@nebula/core/navigation";
+import { useAuthStore } from "@nebula/core/auth";
+import { useI18n } from "@nebula/core/i18n";
 import { NeBreadcrumbs, NotificationPanel } from "@nebula/ui-web";
 import { useMemo } from "react";
 import { ThemeConfigDrawer } from "../components/theme-config-drawer";

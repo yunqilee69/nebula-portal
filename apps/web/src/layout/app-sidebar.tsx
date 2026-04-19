@@ -1,11 +1,11 @@
 import { LeftOutlined, RightOutlined } from "@ant-design/icons";
 import type { MenuProps } from "antd";
 import { Button, Menu } from "antd";
-import type { MenuItem } from "@nebula/core";
-import { useI18n } from "@nebula/core";
+import type { MenuItem } from "@nebula/core/types";
+import { useI18n } from "@nebula/core/i18n";
 import { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useFrontendStore } from "@nebula/core";
+import { useFrontendStore } from "@nebula/core/stores";
 import { getMenuIcon } from "./icon-map";
 
 interface AppSidebarProps {
