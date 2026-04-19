@@ -2,9 +2,9 @@ import { message } from "antd";
 import type { AxiosRequestConfig } from "axios";
 import { attachAuthToRequestClient } from "@nebula/auth";
 import { PlatformApiClientError, createPlatformRequestClient, getArray, getRecord, getString, normalizePlatformApiError, unwrapEnvelope } from "@nebula/request";
+import { getToken, useAuthStore } from "@nebula/core/auth";
+import { useI18nStore } from "@nebula/core/i18n";
 import { webEnv } from "../config/env";
-import { getToken, useAuthStore } from "@nebula/core";
-import { useI18nStore } from "@nebula/core";
 
 export class ApiClientError extends PlatformApiClientError {}
 

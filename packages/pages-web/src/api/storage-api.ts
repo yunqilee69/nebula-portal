@@ -1,4 +1,4 @@
-import type { StorageFileItem, StorageListQuery, StorageListResult, StorageUploadPayload } from "@nebula/core";
+import type { StorageFileItem, StorageListQuery, StorageListResult, StorageUploadPayload } from "@nebula/core/types";
 import { webEnv } from "../config/env";
 import { getArray, getRecord, requestDelete, requestGet, requestPost, requestUpload } from "./client";
 

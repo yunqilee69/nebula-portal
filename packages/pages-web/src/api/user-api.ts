@@ -1,4 +1,4 @@
-import type { UserDetail, UserItem, UserMutationPayload, UserOrganizationRef, UserPageQuery, UserPageResult, UserRoleRef } from "@nebula/core";
+import type { UserDetail, UserItem, UserMutationPayload, UserOrganizationRef, UserPageQuery, UserPageResult, UserRoleRef } from "@nebula/core/types";
 import { getArray, getRecord, getString, requestDelete, requestGet, requestPost, requestPut } from "./client";
 
 function mapRoleRef(item: unknown): UserRoleRef | null {

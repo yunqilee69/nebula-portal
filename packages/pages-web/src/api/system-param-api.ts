@@ -1,4 +1,4 @@
-import type { SystemParamDataType, SystemParamItem, SystemParamMutationPayload, SystemParamPageQuery, SystemParamPageResult } from "@nebula/core";
+import type { SystemParamDataType, SystemParamItem, SystemParamMutationPayload, SystemParamPageQuery, SystemParamPageResult } from "@nebula/core/types";
 import { webEnv } from "../config/env";
 import { apiClient, getArray, getRecord, getString, unwrapEnvelope } from "./client";
 
