@@ -1,4 +1,4 @@
-import { useI18n } from "@nebula/core/i18n";
+import { useI18n } from "@nebula/core";
 import { NeExceptionResult } from "@nebula/ui-web";
 import { useNavigate } from "react-router-dom";
 

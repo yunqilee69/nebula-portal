@@ -1,8 +1,6 @@
 import { BellOutlined } from "@ant-design/icons";
 import { Badge, Button, Empty, Flex, List, Space, Tabs, Tag, Typography } from "antd";
-import type { NotificationItem } from "@nebula/core/types";
-import { useI18n } from "@nebula/core/i18n";
-import { useNotifyStore, useResourceStore } from "@nebula/core/stores";
+import { type NotificationItem, useI18n, useNotifyStore, useResourceStore } from "@nebula/core";
 import { NeModal } from "@nebula/ui-web";
 import { useMemo, useState } from "react";
 

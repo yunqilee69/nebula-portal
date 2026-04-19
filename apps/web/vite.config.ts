@@ -4,6 +4,7 @@ import { defineConfig, loadEnv } from "vite";
 import react from "@vitejs/plugin-react";
 
 const projectDir = path.dirname(fileURLToPath(import.meta.url));
+const workspaceRoot = path.resolve(projectDir, "../..");
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, projectDir, "");
@@ -11,15 +12,16 @@ export default defineConfig(({ mode }) => {
 
   return {
     resolve: {
-      alias: {
-        "@": path.resolve(projectDir, "src"),
-        "@nebula/auth": path.resolve(projectDir, "../../packages/auth/src/index.ts"),
-        "@nebula/request": path.resolve(projectDir, "../../packages/request/src/index.ts"),
-        "@nebula/core": path.resolve(projectDir, "../../packages/core/src/index.ts"),
-        "@nebula/tokens": path.resolve(projectDir, "../../packages/tokens/src/index.ts"),
-        "@nebula/ui-web": path.resolve(projectDir, "../../packages/ui-web/src/index.ts"),
-        "@nebula/pages-web": path.resolve(projectDir, "../../packages/pages-web/src/index.ts"),
-      },
+      alias: [
+        { find: "@", replacement: path.resolve(projectDir, "src") },
+        { find: "@nebula/auth", replacement: path.resolve(workspaceRoot, "packages/auth/src/index.ts") },
+        { find: "@nebula/request", replacement: path.resolve(workspaceRoot, "packages/request/src/index.ts") },
+        { find: "@nebula/core/", replacement: path.resolve(workspaceRoot, "packages/core/src/") },
+        { find: "@nebula/core", replacement: path.resolve(workspaceRoot, "packages/core/src/index.ts") },
+        { find: "@nebula/tokens", replacement: path.resolve(workspaceRoot, "packages/tokens/src/index.ts") },
+        { find: "@nebula/ui-web", replacement: path.resolve(workspaceRoot, "packages/ui-web/src/index.ts") },
+        { find: "@nebula/pages-web", replacement: path.resolve(workspaceRoot, "packages/pages-web/src/index.ts") },
+      ],
     },
     plugins: [react()],
     build: {

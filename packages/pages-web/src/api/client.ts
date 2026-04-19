@@ -1,9 +1,8 @@
 import { message } from "antd";
 import type { AxiosRequestConfig } from "axios";
 import { attachAuthToRequestClient } from "@nebula/auth";
+import { getToken, useAuthStore, useI18nStore } from "@nebula/core";
 import { PlatformApiClientError, createPlatformRequestClient, getArray, getRecord, getString, normalizePlatformApiError, unwrapEnvelope } from "@nebula/request";
-import { getToken, useAuthStore } from "@nebula/core/auth";
-import { useI18nStore } from "@nebula/core/i18n";
 import { webEnv } from "../config/env";
 
 export class ApiClientError extends PlatformApiClientError {}
@@ -26,7 +25,17 @@ function shouldShowErrorMessage(config?: AxiosRequestConfig) {
 
 function isAuthLifecycleRequest(config?: AxiosRequestConfig) {
   const url = config?.url ?? "";
-  return [webEnv.loginPath, webEnv.refreshPath, webEnv.logoutPath, webEnv.currentUserPath].some((path) => url.includes(path));
+  return [
+    webEnv.loginPath,
+    webEnv.refreshPath,
+    webEnv.logoutPath,
+    webEnv.currentUserPath,
+    webEnv.wechatWebRedirectPreparePath,
+    webEnv.wechatWebRedirectCallbackPath,
+    webEnv.wechatWebQrCodePath,
+    webEnv.wechatWebStatusPath,
+    webEnv.wechatWebCallbackPath,
+  ].some((path) => url.includes(path));
 }
 
 const requestClient = createPlatformRequestClient({

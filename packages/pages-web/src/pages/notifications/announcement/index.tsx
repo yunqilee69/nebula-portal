@@ -1,9 +1,9 @@
 import { CheckOutlined } from "@ant-design/icons";
 import { Button, Descriptions, Table, Tag, Typography } from "antd";
-import { useI18n } from "@nebula/core/i18n";
-import { NePermission } from "@nebula/core/permissions";
-import { useNotifyStore, useResourceStore } from "@nebula/core/stores";
-import type { NotificationItem } from "@nebula/core/types";
+import { useI18n } from "@nebula/core";
+import { NePermission } from "@nebula/core";
+import { useNotifyStore, useResourceStore } from "@nebula/core";
+import type { NotificationItem } from "@nebula/core";
 import { useEffect, useState } from "react";
 import { fetchCurrentNotifications, markNotificationRead } from "../../../api/notify-api";
 import { NeDetailDrawer, NePage, NeTablePanel } from "@nebula/ui-web";

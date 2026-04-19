@@ -1,5 +1,6 @@
 import { useI18nStore, type LocaleCode } from "../i18n/index";
 import { builtinThemeCatalog, useThemeStore } from "@nebula/tokens";
+import type { FrontendLoginConfigDto } from "@nebula/request";
 import { useFrontendStore } from "./frontend-store";
 
 function resolveBuiltinThemes(themeCodes?: string[]) {
@@ -24,6 +25,7 @@ function readStoredLocale(): LocaleCode | null {
 export function hydrateFrontendPublicData(payload: {
   frontendConfig: { projectName: string; defaultLocale: string };
   defaultPreference: { localeTag?: string; themeCode?: string };
+  loginConfig?: FrontendLoginConfigDto;
 }) {
   try {
     useFrontendStore.getState().setInit({
@@ -40,7 +42,7 @@ export function hydrateFrontendPublicData(payload: {
         navigationLayoutCode: "classic",
         sidebarLayoutCode: "classic",
       },
-      loginConfig: {},
+      loginConfig: payload.loginConfig ?? {},
     });
     const preferredLocale = (readStoredLocale() ?? payload.defaultPreference.localeTag ?? payload.frontendConfig.defaultLocale) as LocaleCode;
     useI18nStore.getState().hydrate(preferredLocale);

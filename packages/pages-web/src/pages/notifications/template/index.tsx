@@ -1,7 +1,7 @@
 import { DeleteOutlined, EditOutlined, PlusOutlined, SearchOutlined, SendOutlined } from "@ant-design/icons";
 import { Button, Descriptions, Form, Input, Pagination, Popconfirm, Select, Space, Table, Tag, Typography, message } from "antd";
-import type { NotifyTemplateDetail, NotifyTemplateItem, NotifyTemplateMutationPayload, NotifyTemplatePageQuery, SendNotifyPayload } from "@nebula/core/types";
-import { useI18n } from "@nebula/core/i18n";
+import type { NotifyTemplateDetail, NotifyTemplateItem, NotifyTemplateMutationPayload, NotifyTemplatePageQuery, SendNotifyPayload } from "@nebula/core";
+import { useI18n } from "@nebula/core";
 import { useEffect, useMemo, useState } from "react";
 import { createNotifyTemplate, deleteNotifyTemplate, fetchNotifyTemplateDetail, fetchNotifyTemplatePage, sendNotification, updateNotifyTemplate } from "../../../api/notify-template-api";
 import { NeDetailDrawer, NeModal, NePage, NeSearchPanel, NeTablePanel } from "@nebula/ui-web";

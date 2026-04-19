@@ -1,5 +1,5 @@
 import { Breadcrumb } from "antd";
-import type { NeBreadcrumbItem } from "@nebula/core/navigation";
+import type { NeBreadcrumbItem } from "@nebula/core";
 
 export interface NeBreadcrumbsProps {
   items: NeBreadcrumbItem[];

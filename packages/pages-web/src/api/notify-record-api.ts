@@ -1,4 +1,4 @@
-import type { NotifyRecordDetail, NotifyRecordItem, NotifyRecordPageQuery, NotifyRecordPageResult } from "@nebula/core/types";
+import type { NotifyRecordDetail, NotifyRecordItem, NotifyRecordPageQuery, NotifyRecordPageResult } from "@nebula/core";
 import { getArray, getRecord, getString, requestGet, requestPost } from "./client";
 
 function mapRecord(item: unknown): NotifyRecordDetail | null {

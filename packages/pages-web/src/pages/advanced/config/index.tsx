@@ -1,7 +1,7 @@
 import { ReloadOutlined, SaveOutlined } from "@ant-design/icons";
 import { Button, Card, Form, Input, Select, Space, Tag, Typography } from "antd";
-import { useI18n } from "@nebula/core/i18n";
-import { hydrateFrontendThemeCatalog, useFrontendStore } from "@nebula/core/stores";
+import { useI18n } from "@nebula/core";
+import { hydrateFrontendThemeCatalog, useFrontendStore } from "@nebula/core";
 import { useEffect, useMemo, useState } from "react";
 import type { SaveFrontendConfigPayload } from "../../../api/frontend-api";
 import { fetchFrontendConfig, fetchFrontendThemes, saveFrontendConfig } from "../../../api/frontend-api";

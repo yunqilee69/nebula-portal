@@ -19,7 +19,17 @@ export { NotificationsRecordPage, NotificationsRecordPage as NotificationRecordP
 export { NotificationsTemplatePage, NotificationsTemplatePage as NotificationTemplatePage } from "./pages/notifications/template";
 export { NotificationsAnnouncementPage, NotificationsAnnouncementPage as AnnouncementPage } from "./pages/notifications/announcement";
 export { createNebulaRoutes, type NebulaRoutesOptions } from "./routes";
-export { fetchCurrentUser, loginWithPassword, logoutSession, refreshSession } from "./api/auth-api";
+export {
+  acknowledgeWechatWebCallback,
+  createWechatWebQrCode,
+  fetchCurrentUser,
+  fetchWechatWebLoginStatus,
+  loginWithPassword,
+  loginWithWechatWebRedirectCallback,
+  logoutSession,
+  prepareWechatWebRedirectLogin,
+  refreshSession,
+} from "./api/auth-api";
 export {
   deleteFrontendCacheEntry,
   fetchFrontendCaches,

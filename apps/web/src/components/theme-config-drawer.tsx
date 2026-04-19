@@ -1,7 +1,6 @@
 import { BgColorsOutlined, GlobalOutlined, LayoutOutlined, MenuOutlined, SettingOutlined } from "@ant-design/icons";
 import { Button, Drawer, Select, Space, Typography, message } from "antd";
-import { applyNebulaLocale, useI18n } from "@nebula/core/i18n";
-import { hydrateFrontendThemeCatalog, useFrontendStore } from "@nebula/core/stores";
+import { applyNebulaLocale, hydrateFrontendThemeCatalog, useFrontendStore, useI18n } from "@nebula/core";
 import { useThemeStore } from "@nebula/tokens";
 import { useEffect, useMemo, useState } from "react";
 import { normalizeApiError, switchFrontendLayout, switchFrontendTheme, fetchFrontendThemes } from "@nebula/pages-web";

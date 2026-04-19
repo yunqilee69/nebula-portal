@@ -1,4 +1,4 @@
-import type { StorageAdapter } from "@nebula/core/storage"
+import type { StorageAdapter } from "@nebula/core"
 import Taro from "@tarojs/taro"
 
 export const taroStorageAdapter: StorageAdapter = {

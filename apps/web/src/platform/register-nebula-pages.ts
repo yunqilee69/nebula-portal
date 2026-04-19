@@ -1,5 +1,4 @@
-import type { PlatformModule, RouteComponentLoaderMap } from "@nebula/core/types";
-import { registerModule } from "@nebula/core/routing";
+import { registerModule, type PlatformModule, type RouteComponentLoaderMap } from "@nebula/core";
 import {
   AdvancedCachePage,
   AdvancedConfigPage,

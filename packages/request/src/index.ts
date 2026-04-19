@@ -26,6 +26,10 @@ export interface FrontendLoginConfigDto {
   oauth2RegisterAllowed?: boolean;
   qqOauth2Enabled?: boolean;
   wechatOauth2Enabled?: boolean;
+  wechatWebEnabled?: boolean;
+  wechatWebRedirectEnabled?: boolean;
+  wechatWebQrEnabled?: boolean;
+  wechatWebMode?: "redirect" | "qr";
   alipayOauth2Enabled?: boolean;
 }
 

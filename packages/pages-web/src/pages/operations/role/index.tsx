@@ -1,8 +1,8 @@
 import { DeleteOutlined, EditOutlined, PlusOutlined, SearchOutlined } from "@ant-design/icons";
 import { Button, Descriptions, Form, Input, List, Pagination, Popconfirm, Select, Space, Table, Tag, Typography } from "antd";
-import { useI18n } from "@nebula/core/i18n";
-import { NePermission } from "@nebula/core/permissions";
-import type { RoleDetail, RoleItem, RoleMutationPayload, RolePageQuery } from "@nebula/core/types";
+import { useI18n } from "@nebula/core";
+import { NePermission } from "@nebula/core";
+import type { RoleDetail, RoleItem, RoleMutationPayload, RolePageQuery } from "@nebula/core";
 import { useEffect, useMemo, useState } from "react";
 import { createRole, deleteRole, fetchRoleDetail, fetchRoleList, fetchRolePage, updateRole } from "../../../api/role-api";
 import { NeDetailDrawer, NeModal, NePage, NeSearchPanel, NeTablePanel } from "@nebula/ui-web";

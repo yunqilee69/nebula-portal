@@ -1,13 +1,19 @@
 import { Alert, Layout } from "antd";
-import { useI18n } from "@nebula/core/i18n";
-import type { ModuleLoadResult } from "@nebula/core/types";
+import {
+  buildBreadcrumbItems,
+  resolveRouteLabel,
+  type ModuleLoadResult,
+  useAuthStore,
+  useConfigStore,
+  useDictStore,
+  useI18n,
+  useMenuStore,
+  useNavigationStore,
+  useNotifyStore,
+} from "@nebula/core";
 import { NeWorkspaceTabs } from "@nebula/ui-web";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useMemo, useState } from "react";
-import { useAuthStore } from "@nebula/core/auth";
-import { useMenuStore } from "@nebula/core/menu";
-import { buildBreadcrumbItems, resolveRouteLabel, useNavigationStore } from "@nebula/core/navigation";
-import { useConfigStore, useDictStore, useNotifyStore } from "@nebula/core/stores";
 import { AppHeader } from "./app-header";
 import { AppSidebar } from "./app-sidebar";
 import { CachedOutlet } from "./cached-outlet";

@@ -1,4 +1,4 @@
-import type { MobileEnvironment } from "@nebula/core/types"
+import type { MobileEnvironment } from "@nebula/core"
 
 export const miniProgramEnv: MobileEnvironment = {
   apiBaseUrl: process.env.TARO_APP_API_BASE_URL ?? "",

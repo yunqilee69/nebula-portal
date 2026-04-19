@@ -19,10 +19,10 @@ import type {
   SystemParamItem,
   SystemParamMutationPayload,
   SystemParamPageQuery,
-} from "@nebula/core/types";
-import { useI18n } from "@nebula/core/i18n";
-import { NePermission } from "@nebula/core/permissions";
-import { useResourceStore } from "@nebula/core/stores";
+} from "@nebula/core";
+import { useI18n } from "@nebula/core";
+import { NePermission } from "@nebula/core";
+import { useResourceStore } from "@nebula/core";
 import { useEffect, useMemo, useState } from "react";
 import {
   createSystemParam,

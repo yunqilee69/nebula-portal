@@ -1,5 +1,5 @@
 import { Alert } from "antd";
-import { useI18n } from "@nebula/core/i18n";
+import { useI18n } from "@nebula/core";
 
 export function UnavailablePage() {
   const { t } = useI18n();

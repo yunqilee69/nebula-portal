@@ -1,4 +1,4 @@
-import type { MenuItem } from "@nebula/core/types";
+import type { MenuItem } from "@nebula/core";
 import { webEnv } from "../config/env";
 import { apiClient, getRecord, getString, unwrapEnvelope } from "./client";
 

@@ -9,9 +9,9 @@ import type {
   PermissionSubjectType,
   RoleItem,
   UserItem,
-} from "@nebula/core/types";
-import { useI18n } from "@nebula/core/i18n";
-import { NePermission } from "@nebula/core/permissions";
+} from "@nebula/core";
+import { useI18n } from "@nebula/core";
+import { NePermission } from "@nebula/core";
 import { OrganizationTree } from "@nebula/ui-web";
 import { NePage, NePanel, NeSearchPanel, NeTablePanel } from "@nebula/ui-web";
 import { useEffect, useMemo, useState } from "react";

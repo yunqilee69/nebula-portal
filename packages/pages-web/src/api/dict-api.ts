@@ -1,4 +1,4 @@
-import type { DictRecord } from "@nebula/core/types";
+import type { DictRecord } from "@nebula/core";
 import { webEnv } from "../config/env";
 import { apiClient, getArray, getRecord, getString, unwrapEnvelope } from "./client";
 

@@ -1,13 +1,27 @@
-import { AuthGuard, useAuthStore } from "@nebula/core/auth";
+import {
+  AppContextProvider,
+  AuthGuard,
+  eventBus,
+  hydrateFrontendPublicData,
+  translateNebulaMessage,
+  useAuthStore,
+  useDictStore,
+  useFrontendStore,
+  useI18nStore,
+  useNotifyStore,
+  useResourceStore,
+  useMenuStore,
+  buildModuleRoutes,
+  buildRoutesFromMenus,
+  bootstrapRegisteredModules,
+  buildAppContext,
+  preloadNebulaData,
+  reportPlatformValidation,
+  validatePlatformConsistency,
+  type AppContextValue,
+  type ModuleLoadResult,
+} from "@nebula/core";
 import { resolveRefreshDelay, restoreSessionOnStartup } from "@nebula/auth";
-import { AppContextProvider } from "@nebula/core/context";
-import { eventBus } from "@nebula/core/event-bus";
-import { translateNebulaMessage, useI18nStore } from "@nebula/core/i18n";
-import { useMenuStore } from "@nebula/core/menu";
-import { buildModuleRoutes, buildRoutesFromMenus, bootstrapRegisteredModules } from "@nebula/core/routing";
-import { buildAppContext, preloadNebulaData, reportPlatformValidation, validatePlatformConsistency } from "@nebula/core/runtime";
-import { hydrateFrontendPublicData, useDictStore, useFrontendStore, useNotifyStore, useResourceStore } from "@nebula/core/stores";
-import type { AppContextValue, ModuleLoadResult } from "@nebula/core/types";
 import { Alert, Spin, Typography } from "antd";
 import { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { BrowserRouter, Navigate, useNavigate, useRoutes } from "react-router-dom";
@@ -112,12 +126,14 @@ function AppRouter() {
         hydrateFrontendPublicData({
           frontendConfig: initData.frontendConfig,
           defaultPreference: initData.defaultPreference,
+          loginConfig: initData.loginConfig,
         });
       })
       .catch(() => {
         hydrateFrontendPublicData({
           frontendConfig: { projectName: "Nebula", defaultLocale: "zh-CN" },
           defaultPreference: { localeTag: "zh-CN", themeCode: "nebula-light" },
+          loginConfig: {},
         });
       });
   }, [frontendHydrated]);

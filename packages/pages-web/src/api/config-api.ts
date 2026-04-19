@@ -1,4 +1,4 @@
-import type { ConfigMap } from "@nebula/core/types";
+import type { ConfigMap } from "@nebula/core";
 import { webEnv } from "../config/env";
 import { apiClient, unwrapEnvelope } from "./client";
 
