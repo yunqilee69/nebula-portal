@@ -28,14 +28,14 @@ export function hasStorageAdapter(): boolean {
  *
  * @example Web usage:
  * ```ts
- * import { configureStorage, createBrowserStorageAdapter } from "@nebula/core";
+ * import { configureStorage, createBrowserStorageAdapter } from "@nebula/core/storage";
  * configureStorage(createBrowserStorageAdapter());
  * ```
  *
  * @example React Native usage:
  * ```ts
  * import AsyncStorage from '@react-native-async-storage/async-storage';
- * import { configureStorage } from "@nebula/core";
+ * import { configureStorage } from "@nebula/core/storage";
  * configureStorage({
  *   get: (k) => AsyncStorage.getItem(k),
  *   set: (k, v) => AsyncStorage.setItem(k, v),
