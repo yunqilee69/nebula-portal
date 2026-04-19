@@ -1,5 +1,5 @@
 import axios from "axios";
-import type { AxiosInstance, AxiosRequestConfig } from "axios";
+import type { AxiosInstance, AxiosRequestConfig, AxiosHeaderValue, InternalAxiosRequestConfig } from "axios";
 import type { AuthSession } from "./session-utils";
 
 export interface AttachAuthRequestOptions {
@@ -22,21 +22,37 @@ async function resolveOptional<T>(value: Promise<T> | T) {
   return value;
 }
 
+function normalizeHeaders(headers?: AxiosRequestConfig["headers"] | InternalAxiosRequestConfig["headers"]) {
+  const normalizedHeaders = axios.AxiosHeaders.from({});
+
+  if (!headers) {
+    return normalizedHeaders;
+  }
+
+  const headerEntries = Object.entries(headers as Record<string, AxiosHeaderValue>);
+
+  for (const [key, value] of headerEntries) {
+    if (value != null) {
+      normalizedHeaders.set(key, value);
+    }
+  }
+
+  return normalizedHeaders;
+}
+
 export function attachAuthToRequestClient(options: AttachAuthRequestOptions) {
   let refreshPromise: Promise<AuthSession> | null = null;
 
   options.client.interceptors.request.use(async (config) => {
     const token = options.getAccessToken ? await resolveOptional(options.getAccessToken()) : null;
-    const nextHeaders: Record<string, string> = {
-      ...(config.headers ? Object.fromEntries(Object.entries(config.headers).map(([key, value]) => [key, String(value)])) : {}),
-    };
+    const nextHeaders = normalizeHeaders(config.headers);
 
-    const shouldAttachAuthorization = token && !nextHeaders.Authorization && (options.shouldAttachAuthorization?.(config) ?? true);
+    const shouldAttachAuthorization = token && !nextHeaders.has("Authorization") && (options.shouldAttachAuthorization?.(config) ?? true);
     if (shouldAttachAuthorization) {
-      nextHeaders.Authorization = `Bearer ${token}`;
+      nextHeaders.set("Authorization", `Bearer ${token}`);
     }
 
-    config.headers = axios.AxiosHeaders.from(nextHeaders);
+    config.headers = nextHeaders;
     return config;
   });
 
@@ -76,10 +92,9 @@ export function attachAuthToRequestClient(options: AttachAuthRequestOptions) {
 
       try {
         const session = await ensureRefreshedSession();
-        originalRequest.headers = {
-          ...(originalRequest.headers ? Object.fromEntries(Object.entries(originalRequest.headers).map(([key, value]) => [key, String(value)])) : {}),
-          Authorization: `Bearer ${session.token}`,
-        };
+        const nextHeaders = normalizeHeaders(originalRequest.headers);
+        nextHeaders.set("Authorization", `Bearer ${session.token}`);
+        originalRequest.headers = nextHeaders;
         return options.client.request(originalRequest);
       } catch (refreshError) {
         await options.onUnauthorized?.();

@@ -1,5 +1,5 @@
 import axios from "axios";
-import type { AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig } from "axios";
+import type { AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig, AxiosHeaderValue } from "axios";
 
 export type LocaleCode = "zh-CN" | "en-US";
 
@@ -146,6 +146,23 @@ async function resolveOptional<T>(value: Promise<T> | T) {
   return value;
 }
 
+function normalizeHeaders(headers?: InternalAxiosRequestConfig["headers"]) {
+  if (!headers) {
+    return axios.AxiosHeaders.from({});
+  }
+
+  const normalizedHeaders = new axios.AxiosHeaders(headers);
+  const headerEntries = normalizedHeaders.toJSON(true) as Record<string, AxiosHeaderValue>;
+
+  for (const [key, value] of Object.entries(headerEntries)) {
+    if (value == null) {
+      normalizedHeaders.delete(key);
+    }
+  }
+
+  return normalizedHeaders;
+}
+
 export function createPlatformRequestClient(options: CreatePlatformRequestClientOptions): PlatformRequestClient {
   const raw = axios.create({
     baseURL: options.baseURL,
@@ -155,15 +172,13 @@ export function createPlatformRequestClient(options: CreatePlatformRequestClient
 
   raw.interceptors.request.use(async (config: InternalAxiosRequestConfig) => {
     const locale = options.getLocale ? await resolveOptional(options.getLocale()) : null;
-    const nextHeaders: Record<string, string> = {
-      ...(config.headers ? Object.fromEntries(Object.entries(config.headers).map(([key, value]) => [key, String(value)])) : {}),
-    };
+    const nextHeaders = normalizeHeaders(config.headers);
 
-    if (locale && !nextHeaders["Accept-Language"]) {
-      nextHeaders["Accept-Language"] = locale;
+    if (locale && !nextHeaders.has("Accept-Language")) {
+      nextHeaders.set("Accept-Language", locale);
     }
 
-    config.headers = axios.AxiosHeaders.from(nextHeaders);
+    config.headers = nextHeaders;
     return config;
   });
 
