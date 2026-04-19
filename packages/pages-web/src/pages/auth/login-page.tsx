@@ -1,6 +1,6 @@
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import { Alert, Button, Card, Form, Input, Typography } from "antd";
-import { eventBus, preloadShellData, useAuthStore, useFrontendStore, useI18n } from "@nebula/core";
+import { eventBus, preloadNebulaData, useAuthStore, useFrontendStore, useI18n } from "@nebula/core";
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { loginWithPassword } from "../../api/auth-api";
@@ -35,7 +35,7 @@ export function LoginPage() {
       const session = await loginWithPassword(values);
       setSession(session);
       eventBus.emit("auth:login", session);
-      await preloadShellData({
+      await preloadNebulaData({
         fetchMenus: fetchCurrentMenus,
         fetchDictCodes: fetchDictCodes,
         fetchDictByCode: fetchDictByCode,

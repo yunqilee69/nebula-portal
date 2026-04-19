@@ -7,7 +7,7 @@ import {
   buildRoutesFromMenus,
   eventBus,
   hydrateFrontendPublicData,
-  registerShellComponents,
+  registerNebulaComponents,
   reportPlatformValidation,
   useAuthStore,
   useDictStore,
@@ -43,11 +43,11 @@ import {
   apiClient,
   webEnv,
 } from "@nebula/pages-web";
-import { preloadShellData } from "@nebula/core";
+import { preloadNebulaData } from "@nebula/core";
 import { NeExceptionResult } from "@nebula/ui-web";
-import { useI18nStore, translateShellMessage } from "@nebula/i18n";
+import { useI18nStore, translateNebulaMessage } from "@nebula/core";
 
-registerShellComponents();
+registerNebulaComponents();
 
 function AppLoadingFallback() {
   return (
@@ -63,15 +63,15 @@ function PlatformValidationFallback({ issues }: { issues: ReturnType<typeof vali
     <div style={{ minHeight: "100vh", padding: 24, display: "grid", alignContent: "center", gap: 24 }}>
       <NeExceptionResult
         status="error"
-        title={translateShellMessage(locale, "layout.platformValidationFailed", "Platform startup validation failed")}
-        subtitle={translateShellMessage(locale, "layout.platformValidationSubtitle", "The shell found conflicting modules, routes, or menu component bindings. Review the console logs and fix the reported metadata before continuing.")}
-        actionText={translateShellMessage(locale, "layout.platformValidationReload", "Reload")}
+        title={translateNebulaMessage(locale, "layout.platformValidationFailed", "Platform startup validation failed")}
+        subtitle={translateNebulaMessage(locale, "layout.platformValidationSubtitle", "Nebula found conflicting modules, routes, or menu component bindings. Review the console logs and fix the reported metadata before continuing.")}
+        actionText={translateNebulaMessage(locale, "layout.platformValidationReload", "Reload")}
         onAction={() => window.location.reload()}
       />
       <Alert
         type="error"
         showIcon
-        message={translateShellMessage(locale, "layout.platformValidationIssues", "Validation issues")}
+        message={translateNebulaMessage(locale, "layout.platformValidationIssues", "Validation issues")}
         description={
           <div>
             {issues.map((issue) => (
@@ -182,7 +182,8 @@ function AppRouter() {
     if (!authReady || !session?.token) {
       return;
     }
-    preloadShellData({
+      preloadNebulaData({
+
       fetchMenus: fetchCurrentMenus,
       fetchDictCodes: fetchDictCodes,
       fetchDictByCode: fetchDictByCode,

@@ -3,7 +3,7 @@ import { registerComponents } from "../component-registry";
 
 let registered = false;
 
-export function registerShellComponents() {
+export function registerNebulaComponents() {
   if (registered) {
     return;
   }
@@ -14,7 +14,7 @@ export function registerShellComponents() {
   registered = true;
 }
 
-export function registerShellComponentsInternal(components: ComponentLoaderMap, source: string) {
+export function registerNebulaComponentsInternal(components: ComponentLoaderMap, source: string) {
   if (registered) {
     return;
   }

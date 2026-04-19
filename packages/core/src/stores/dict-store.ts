@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import type { DictMap } from "../types";
 
-const STORAGE_KEY = "nebula-shell-dicts";
+const STORAGE_KEY = "nebula-dicts";
 
 function readStoredRecords(): DictMap {
   const raw = localStorage.getItem(STORAGE_KEY);

@@ -1,7 +1,7 @@
 import { BgColorsOutlined, GlobalOutlined, LayoutOutlined, MenuOutlined, SettingOutlined } from "@ant-design/icons";
 import { Button, Drawer, Select, Space, Typography, message } from "antd";
 import { hydrateFrontendThemeCatalog, useFrontendStore, useI18n } from "@nebula/core";
-import { applyShellLocale } from "@nebula/i18n";
+import { applyNebulaLocale } from "@nebula/core";
 import { useThemeStore } from "@nebula/tokens";
 import { useEffect, useMemo, useState } from "react";
 import { normalizeApiError, switchFrontendLayout, switchFrontendTheme, fetchFrontendThemes } from "@nebula/pages-web";
@@ -111,7 +111,7 @@ export function ThemeConfigDrawer() {
                 onChange={async (value) => {
                   setSwitchingLocale(true);
                   try {
-                    await applyShellLocale(value);
+                    await applyNebulaLocale(value);
                   } catch (error) {
                     message.warning(t("theme.localeSwitchFallback", undefined, { reason: normalizeApiError(error).message }));
                   } finally {

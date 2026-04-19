@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-export type ShellResourceName =
+export type NebulaResourceName =
   | "menus"
   | "dicts"
   | "config"
@@ -15,10 +15,10 @@ interface ResourceStatus {
 }
 
 interface ResourceState {
-  resources: Record<ShellResourceName, ResourceStatus>;
-  start: (name: ShellResourceName) => void;
-  succeed: (name: ShellResourceName) => void;
-  fail: (name: ShellResourceName, error: string) => void;
+  resources: Record<NebulaResourceName, ResourceStatus>;
+  start: (name: NebulaResourceName) => void;
+  succeed: (name: NebulaResourceName) => void;
+  fail: (name: NebulaResourceName, error: string) => void;
   resetAll: () => void;
 }
 
@@ -28,7 +28,7 @@ const createStatus = (): ResourceStatus => ({
   lastLoadedAt: null,
 });
 
-const initialResources: Record<ShellResourceName, ResourceStatus> = {
+const initialResources: Record<NebulaResourceName, ResourceStatus> = {
   menus: createStatus(),
   dicts: createStatus(),
   config: createStatus(),

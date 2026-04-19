@@ -1,6 +1,6 @@
-import { applyShellLocale, translateShellMessage, useI18nStore } from "@nebula/i18n";
+import { applyNebulaLocale, translateNebulaMessage, useI18nStore } from "../i18n/index";
 import { eventBus } from "../event-bus";
-import { withDefaultShellMenus, useMenuStore } from "../menu";
+import { withDefaultNebulaMenus, useMenuStore } from "../menu";
 import { useConfigStore } from "../stores/config-store";
 import { useDictStore } from "../stores/dict-store";
 import { useNotifyStore } from "../stores/notify-store";
@@ -8,9 +8,9 @@ import { useResourceStore } from "../stores/resource-store";
 import type { AppContextValue, AuthSession, ConfigMap, DictRecord, MenuItem, NotificationItem } from "../types";
 import { hasPermissionCode, hasAnyPermissionCode, hasAllPermissionCode, hasRoleCode, hasAnyRoleCode, hasAllRoleCode } from "./permission-utils";
 
-export { applyShellLocale, translateShellMessage };
+export { applyNebulaLocale, translateNebulaMessage };
 
-export async function preloadShellData(apis: {
+export async function preloadNebulaData(apis: {
   fetchMenus: () => Promise<MenuItem[]>;
   fetchDictCodes: () => Promise<Array<{ code: string }>>;
   fetchDictByCode: (code: string) => Promise<DictRecord[]>;
@@ -27,11 +27,11 @@ export async function preloadShellData(apis: {
   await Promise.all([
     apis.fetchMenus()
       .then((menus) => {
-        useMenuStore.getState().setMenus(withDefaultShellMenus(menus, locale));
+        useMenuStore.getState().setMenus(withDefaultNebulaMenus(menus, locale));
         useResourceStore.getState().succeed("menus");
       })
       .catch((error: unknown) => {
-        useMenuStore.getState().setMenus(withDefaultShellMenus([], locale));
+        useMenuStore.getState().setMenus(withDefaultNebulaMenus([], locale));
         useResourceStore.getState().fail("menus", error instanceof Error ? error.message : "Failed to load menus");
       }),
     apis.fetchDictCodes()
@@ -120,8 +120,8 @@ export function buildAppContext(
     },
     i18n: {
       getLocale: () => useI18nStore.getState().locale,
-      setLocale: (locale) => applyShellLocale(locale),
-      t: (key, fallback, variables) => translateShellMessage(useI18nStore.getState().locale, key, fallback, variables),
+      setLocale: (locale) => applyNebulaLocale(locale),
+      t: (key, fallback, variables) => translateNebulaMessage(useI18nStore.getState().locale, key, fallback, variables),
     },
     bus: eventBus,
   };

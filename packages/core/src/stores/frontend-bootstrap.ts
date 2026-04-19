@@ -1,4 +1,4 @@
-import { useI18nStore, type LocaleCode } from "@nebula/i18n";
+import { useI18nStore, type LocaleCode } from "../i18n/index";
 import { builtinThemeCatalog, useThemeStore } from "@nebula/tokens";
 import { useFrontendStore } from "./frontend-store";
 
@@ -11,13 +11,13 @@ function resolveBuiltinThemes(themeCodes?: string[]) {
   return builtins.length ? builtins : builtinThemeCatalog.themes;
 }
 
-const SHELL_LOCALE_STORAGE_KEY = "nebula-shell-preferred-locale";
+const NEBULA_LOCALE_STORAGE_KEY = "nebula-preferred-locale";
 
 function readStoredLocale(): LocaleCode | null {
   if (typeof window === "undefined") {
     return null;
   }
-  const stored = window.localStorage.getItem(SHELL_LOCALE_STORAGE_KEY);
+  const stored = window.localStorage.getItem(NEBULA_LOCALE_STORAGE_KEY);
   return stored === "en-US" || stored === "zh-CN" ? stored : null;
 }
 

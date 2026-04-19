@@ -1,13 +1,12 @@
 import { ConfigProvider } from "antd";
 import enUS from "antd/locale/en_US";
 import zhCN from "antd/locale/zh_CN";
-import { useI18n } from "@nebula/core";
+import { useI18n, NebulaI18nProvider } from "@nebula/core";
 import { useMemo } from "react";
 import { createRoot } from "react-dom/client";
 import App from "./app";
 import "antd/dist/reset.css";
 import "./styles.css";
-import { ShellI18nProvider } from "@nebula/i18n";
 import { buildAntdTheme, useThemeBootstrap } from "@nebula/tokens";
 import { builtinThemeCatalog, useThemeStore } from "@nebula/tokens";
 
@@ -27,7 +26,7 @@ function RootApp() {
 useThemeStore.getState().hydrate("nebula-light", builtinThemeCatalog.themes);
 
 createRoot(document.getElementById("root")!).render(
-  <ShellI18nProvider>
+  <NebulaI18nProvider>
     <RootApp />
-  </ShellI18nProvider>,
+  </NebulaI18nProvider>,
 );

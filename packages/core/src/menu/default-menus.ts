@@ -1,7 +1,7 @@
-import { translateShellMessage, type LocaleCode } from "@nebula/i18n";
+import { translateNebulaMessage, type LocaleCode } from "../i18n/index";
 import type { MenuItem } from "../types";
 
-const SHELL_HOME_MENU_ID = "shell-home";
+const NEBULA_HOME_MENU_ID = "nebula-home";
 
 function normalizeMenuPath(path: string | undefined) {
   if (!path || path === "/") {
@@ -10,14 +10,14 @@ function normalizeMenuPath(path: string | undefined) {
   return path.replace(/\/+$/, "") || "/";
 }
 
-export function buildDefaultShellMenus(locale: LocaleCode = "zh-CN"): MenuItem[] {
+export function buildDefaultNebulaMenus(locale: LocaleCode = "zh-CN"): MenuItem[] {
   return [
     {
-      id: SHELL_HOME_MENU_ID,
-      name: translateShellMessage(locale, "nav.home", "首页"),
+      id: NEBULA_HOME_MENU_ID,
+      name: translateNebulaMessage(locale, "nav.home", "首页"),
       type: 2,
       path: "/",
-      component: "shell/DashboardPage",
+      component: "nebula/DashboardPage",
       linkType: 1,
       icon: "HomeOutlined",
       visible: 1,
@@ -27,16 +27,16 @@ export function buildDefaultShellMenus(locale: LocaleCode = "zh-CN"): MenuItem[]
   ];
 }
 
-export function withDefaultShellMenus(menus: MenuItem[], locale: LocaleCode = "zh-CN"): MenuItem[] {
-  const defaults = buildDefaultShellMenus(locale);
+export function withDefaultNebulaMenus(menus: MenuItem[], locale: LocaleCode = "zh-CN"): MenuItem[] {
+  const defaults = buildDefaultNebulaMenus(locale);
   const defaultMenusToInject = defaults.filter(
     (defaultMenu) => !menus.some((item) => normalizeMenuPath(item.path) === normalizeMenuPath(defaultMenu.path) || item.id === defaultMenu.id),
   );
   return defaultMenusToInject.length ? [...defaultMenusToInject, ...menus] : menus;
 }
 
-export function patchDefaultShellMenus(menus: MenuItem[], locale: LocaleCode = "zh-CN"): MenuItem[] {
-  const defaultMenus = buildDefaultShellMenus(locale);
+export function patchDefaultNebulaMenus(menus: MenuItem[], locale: LocaleCode = "zh-CN"): MenuItem[] {
+  const defaultMenus = buildDefaultNebulaMenus(locale);
   return menus.map((item) => {
     const defaultMenu = defaultMenus.find((candidate) => candidate.id === item.id || normalizeMenuPath(candidate.path) === normalizeMenuPath(item.path));
     return defaultMenu ?? item;

@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { builtinThemeCatalog } from "@nebula/tokens";
-import type { LocaleCode } from "../i18n";
+import type { LocaleCode } from "../i18n/index";
 import type { FrontendConfigDto, FrontendInitDto, FrontendLoginConfigDto, FrontendPreferenceDto, FrontendThemeCatalogDto } from "@nebula/request";
 
 const defaultConfig: FrontendConfigDto = {

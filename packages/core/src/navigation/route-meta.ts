@@ -1,4 +1,4 @@
-import { translateShellMessage, useI18nStore } from "@nebula/i18n";
+import { translateNebulaMessage, useI18nStore } from "../i18n/index";
 import type { MenuItem } from "../types";
 import type { NeBreadcrumbItem } from "./navigation-types";
 
@@ -26,12 +26,12 @@ export function buildBreadcrumbItems(menus: MenuItem[], pathname: string): NeBre
 
   if (pathname === "/") {
     const locale = useI18nStore.getState().locale;
-    return [{ key: "home", title: translateShellMessage(locale, "nav.home", "首页"), href: "/" }];
+    return [{ key: "home", title: translateNebulaMessage(locale, "nav.home", "首页"), href: "/" }];
   }
 
   if (pathname === "/401" || pathname === "/404") {
     const locale = useI18nStore.getState().locale;
-    return [{ key: pathname, title: translateShellMessage(locale, pathname === "/401" ? "unauthorized.title" : "notFound.title", pathname === "/401" ? "无权访问" : "页面不存在"), href: pathname }];
+    return [{ key: pathname, title: translateNebulaMessage(locale, pathname === "/401" ? "unauthorized.title" : "notFound.title", pathname === "/401" ? "无权访问" : "页面不存在"), href: pathname }];
   }
 
   return [{ key: pathname, title: pathname }];
@@ -44,9 +44,9 @@ export function resolveRouteLabel(menus: MenuItem[], pathname: string) {
   }
 
   if (pathname === "/401" || pathname === "/404") {
-    return translateShellMessage(useI18nStore.getState().locale, pathname === "/401" ? "unauthorized.title" : "notFound.title", pathname === "/401" ? "无权访问" : "页面不存在");
+    return translateNebulaMessage(useI18nStore.getState().locale, pathname === "/401" ? "unauthorized.title" : "notFound.title", pathname === "/401" ? "无权访问" : "页面不存在");
   }
 
   const breadcrumbs = buildBreadcrumbItems(menus, pathname);
-  return breadcrumbs.at(-1)?.title ?? translateShellMessage(useI18nStore.getState().locale, "nav.untitled", "未命名页面");
+  return breadcrumbs.at(-1)?.title ?? translateNebulaMessage(useI18nStore.getState().locale, "nav.untitled", "未命名页面");
 }

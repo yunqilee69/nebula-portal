@@ -1,7 +1,7 @@
 import type { ErrorInfo, ReactNode } from "react";
 import { Component } from "react";
 import { NeExceptionResult } from "@nebula/ui-web";
-import { useI18nStore, translateShellMessage } from "@nebula/i18n";
+import { useI18nStore, translateNebulaMessage } from "@nebula/core";
 
 interface AppErrorBoundaryProps {
   children: ReactNode;
@@ -27,7 +27,7 @@ export class AppErrorBoundary extends Component<AppErrorBoundaryProps, AppErrorB
   render() {
     if (this.state.hasError) {
       const locale = useI18nStore.getState().locale;
-      return <NeExceptionResult status="error" title={translateShellMessage(locale, "errorBoundary.title")} subtitle={translateShellMessage(locale, "errorBoundary.subtitle")} actionText={translateShellMessage(locale, "errorBoundary.action")} onAction={() => window.location.reload()} />;
+      return <NeExceptionResult status="error" title={translateNebulaMessage(locale, "errorBoundary.title")} subtitle={translateNebulaMessage(locale, "errorBoundary.subtitle")} actionText={translateNebulaMessage(locale, "errorBoundary.action")} onAction={() => window.location.reload()} />;
     }
 
     return this.props.children;

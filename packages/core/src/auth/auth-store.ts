@@ -3,7 +3,7 @@ import { hasPermissionCode } from "../permission-utils";
 import { hasSessionToken, normalizeSessionExpiry, normalizeSessionExpiryFields, parseStoredSession, stringifyStoredSession } from "./session-helpers";
 import type { AuthSession } from "../types";
 
-const STORAGE_KEY = "nebula-shell-session";
+const STORAGE_KEY = "nebula-session";
 const ACCESS_TOKEN_COOKIE_KEY = "nebula_access_token";
 const REFRESH_TOKEN_COOKIE_KEY = "nebula_refresh_token";
 
