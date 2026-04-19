@@ -9,7 +9,7 @@ const messages = {
   "dashboard.currentSession": "Current Session",
   "dashboard.registeredModules": "Registered Modules",
   "dashboard.platformNavigation": "Platform Navigation",
-  "dashboard.shellParams": "Shell Parameters",
+  "dashboard.nebulaParams": "Nebula Parameters",
   "dashboard.recentNotifications": "Recent Notifications",
   "dashboard.topLevel": "top-level",
   "dashboard.registered": "registered",

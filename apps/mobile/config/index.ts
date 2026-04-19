@@ -29,7 +29,6 @@ export default defineConfig({
     "@nebula/auth": path.resolve(workspaceRoot, "packages/auth/src/index.ts"),
     "@nebula/request": path.resolve(workspaceRoot, "packages/request/src/index.ts"),
     "@nebula/core": path.resolve(workspaceRoot, "packages/core/src/index.ts"),
-    "@nebula/i18n": path.resolve(workspaceRoot, "packages/i18n/src/index.ts"),
     "@nebula/tokens": path.resolve(workspaceRoot, "packages/tokens/src/index.ts"),
   },
   mini: {
@@ -38,7 +37,6 @@ export default defineConfig({
         path.resolve(workspaceRoot, "packages/auth"),
         path.resolve(workspaceRoot, "packages/request"),
         path.resolve(workspaceRoot, "packages/core"),
-        path.resolve(workspaceRoot, "packages/i18n"),
         path.resolve(workspaceRoot, "packages/tokens"),
       ],
     },

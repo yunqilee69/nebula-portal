@@ -22,7 +22,6 @@
     "@nebula/core": "workspace:*",
     "@nebula/ui-web": "workspace:*",
     "@nebula/tokens": "workspace:*",
-    "@nebula/i18n": "workspace:*",
     "@nebula/auth": "workspace:*",
     "@nebula/request": "workspace:*",
     "axios": "^1.7.9"

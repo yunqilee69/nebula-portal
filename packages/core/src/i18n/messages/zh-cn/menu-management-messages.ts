@@ -11,7 +11,7 @@ const messages = {
   "menuManagement.componentDisabledHint": "只有菜单类型需要绑定前端页面组件。",
   "menuManagement.componentPlaceholder": "请选择前端页面组件",
   "menuManagement.noComponentOptions": "当前没有可选组件，请先确认 shell 与业务模块已完成组件注册。",
-  "menuManagement.shellComponentSource": "平台 Shell",
+  "menuManagement.nebulaComponentSource": "Nebula 平台",
   "menuManagement.unknownComponentSource": "未知来源",
   "menuManagement.pathPlaceholder": "选择组件后将优先带出已声明的路由路径，也可以按需调整。",
   "menuManagement.pathSuggestionHint": "推荐路径来自前端已声明的路由绑定：{paths}",

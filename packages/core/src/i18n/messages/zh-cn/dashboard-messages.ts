@@ -9,7 +9,7 @@ const messages = {
   "dashboard.currentSession": "当前会话",
   "dashboard.registeredModules": "已注册模块",
   "dashboard.platformNavigation": "平台导航",
-  "dashboard.shellParams": "基座参数",
+  "dashboard.nebulaParams": "Nebula 参数",
   "dashboard.recentNotifications": "最近通知",
   "dashboard.topLevel": "顶级",
   "dashboard.registered": "已注册",

@@ -1,5 +1,5 @@
 const messages = {
-  "login.title": "Nebula Shell",
+  "login.title": "Nebula",
   "login.subtitle": "Sign in to load platform capabilities, dynamic menus, and registered business modules.",
   "login.username": "Username",
   "login.password": "Password",

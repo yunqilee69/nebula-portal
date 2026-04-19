@@ -16,7 +16,6 @@ export default defineConfig(({ mode }) => {
         "@nebula/auth": path.resolve(projectDir, "../../packages/auth/src/index.ts"),
         "@nebula/request": path.resolve(projectDir, "../../packages/request/src/index.ts"),
         "@nebula/core": path.resolve(projectDir, "../../packages/core/src/index.ts"),
-        "@nebula/i18n": path.resolve(projectDir, "../../packages/i18n/src/index.ts"),
         "@nebula/tokens": path.resolve(projectDir, "../../packages/tokens/src/index.ts"),
         "@nebula/ui-web": path.resolve(projectDir, "../../packages/ui-web/src/index.ts"),
         "@nebula/pages-web": path.resolve(projectDir, "../../packages/pages-web/src/index.ts"),

@@ -1,5 +1,5 @@
 import type { LocaleCode } from "@nebula/request";
-import m0 from "./messages/zh-cn/app-shell-messages";
+import m0 from "./messages/zh-cn/app-nebula-messages";
 import m1 from "./messages/zh-cn/auth-messages";
 import m2 from "./messages/zh-cn/common-messages";
 import m3 from "./messages/zh-cn/dashboard-messages";
@@ -16,7 +16,7 @@ import m13 from "./messages/zh-cn/storage-messages";
 import m14 from "./messages/zh-cn/system-params-messages";
 import m15 from "./messages/zh-cn/user-management-messages";
 import m16 from "./messages/zh-cn/frontend-messages";
-import e0 from "./messages/en-us/app-shell-messages";
+import e0 from "./messages/en-us/app-nebula-messages";
 import e1 from "./messages/en-us/auth-messages";
 import e2 from "./messages/en-us/common-messages";
 import e3 from "./messages/en-us/dashboard-messages";
@@ -37,7 +37,7 @@ import e16 from "./messages/en-us/frontend-messages";
 export type LocaleMessages = Record<string, string>;
 export type LocaleBundle = Record<LocaleCode, LocaleMessages>;
 
-export const shellMessages: LocaleBundle = {
+export const nebulaMessages: LocaleBundle = {
   "zh-CN": {
     ...m0,
     ...m1,

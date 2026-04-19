@@ -11,7 +11,7 @@ const messages = {
   "menuManagement.componentDisabledHint": "Only menu items need a bound frontend page component.",
   "menuManagement.componentPlaceholder": "Select a frontend page component",
   "menuManagement.noComponentOptions": "No registered components are available yet. Confirm that the shell and business modules have finished registering components.",
-  "menuManagement.shellComponentSource": "platform shell",
+  "menuManagement.nebulaComponentSource": "Nebula platform",
   "menuManagement.unknownComponentSource": "unknown source",
   "menuManagement.pathPlaceholder": "Selecting a component will prefer a declared route path here, but you can still adjust it.",
   "menuManagement.pathSuggestionHint": "Suggested paths from declared frontend route bindings: {paths}",

@@ -1,5 +1,5 @@
 import type { ComponentType, LazyExoticComponent, ReactNode } from "react";
-import type { LocaleCode, LocaleBundle } from "./i18n";
+import type { LocaleCode, LocaleBundle } from "./i18n/index";
 
 export type MenuType = 1 | 2 | 3;
 export type LinkType = 1 | 2 | 3;

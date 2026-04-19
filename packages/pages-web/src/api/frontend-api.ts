@@ -1,4 +1,4 @@
-import type { LocaleCode } from "@nebula/i18n";
+import type { LocaleCode } from "@nebula/core";
 import { requestDelete, requestGet, requestPut } from "./client";
 
 export interface FrontendConfigDto {

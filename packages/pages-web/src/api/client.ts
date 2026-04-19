@@ -4,7 +4,7 @@ import { attachAuthToRequestClient } from "@nebula/auth";
 import { PlatformApiClientError, createPlatformRequestClient, getArray, getRecord, getString, normalizePlatformApiError, unwrapEnvelope } from "@nebula/request";
 import { webEnv } from "../config/env";
 import { getToken, useAuthStore } from "@nebula/core";
-import { useI18nStore } from "@nebula/i18n";
+import { useI18nStore } from "@nebula/core";
 
 export class ApiClientError extends PlatformApiClientError {}
 

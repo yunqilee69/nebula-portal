@@ -12,7 +12,6 @@
     "paths": {
       "@nebula/auth": ["../auth/dist/src/index.d.ts"],
       "@nebula/request": ["../request/dist/src/index.d.ts"],
-      "@nebula/i18n": ["../i18n/dist/index.d.ts"],
       "@nebula/tokens": ["../tokens/dist/src/index.d.ts"]
     }
   },

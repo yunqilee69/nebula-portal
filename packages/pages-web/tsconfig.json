@@ -8,7 +8,6 @@
     "paths": {
       "@nebula/auth": ["../auth/src/index.ts"],
       "@nebula/core": ["../core/src/index.ts"],
-      "@nebula/i18n": ["../i18n/src/index.ts"],
       "@nebula/request": ["../request/src/index.ts"],
       "@nebula/tokens": ["../tokens/src/index.ts"],
       "@nebula/ui-web": ["../ui-web/src/index.ts"]
