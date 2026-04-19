@@ -1,7 +1,9 @@
 import { DeleteOutlined, EditOutlined, PlusOutlined, SearchOutlined } from "@ant-design/icons";
 import { Button, Form, Input, InputNumber, Pagination, Popconfirm, Select, Space, Table, Tag, Typography } from "antd";
-import type { MenuItem, MenuMutationPayload, MenuPageQuery } from "@nebula/core";
-import { NePermission, getRegisteredRouteComponentSource, getRegisteredModules, listRegisteredRouteComponents, useI18n } from "@nebula/core";
+import { useI18n } from "@nebula/core/i18n";
+import { NePermission } from "@nebula/core/permissions";
+import { getRegisteredRouteComponentSource, getRegisteredModules, listRegisteredRouteComponents } from "@nebula/core/routing";
+import type { MenuItem, MenuMutationPayload, MenuPageQuery } from "@nebula/core/types";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { createMenu, deleteMenu, fetchMenuPage, fetchMenuTree, updateMenu } from "../../../api/menu-admin-api";
 import { NeModal, NePage, NeSearchPanel, NeTablePanel } from "@nebula/ui-web";
