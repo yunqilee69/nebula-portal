@@ -128,11 +128,11 @@ export function MiniProgramRootProvider({ children }: React.PropsWithChildren) {
         requestClient,
         {
           createTaskPath: miniProgramEnv.storageUploadTaskPath,
-          uploadPathTemplate: miniProgramEnv.storageUploadSimplePathTemplate,
+          uploadPath: miniProgramEnv.storageUploadPath,
           completePathTemplate: miniProgramEnv.storageUploadCompletePathTemplate,
           bindPathTemplate: miniProgramEnv.storageUploadBindPathTemplate,
           detailPathTemplate: miniProgramEnv.storageFileDetailPathTemplate,
-          contentPathTemplate: miniProgramEnv.storageFileContentPathTemplate,
+          downloadPath: miniProgramEnv.storageDownloadPath,
         },
         {
           createFormData: () => createUploadFormData(),
