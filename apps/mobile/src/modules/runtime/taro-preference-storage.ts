@@ -1,4 +1,4 @@
-import type { KeyValueStorageDriver } from "@nebula/core"
+import type { KeyValueStorageDriver } from "@nebula/core/storage"
 import Taro from "@tarojs/taro"
 
 export const taroPreferenceStorage: KeyValueStorageDriver = {
