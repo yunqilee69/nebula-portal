@@ -4,54 +4,48 @@ Nebula 中台基座的共享核心契约包。
 
 ## 提供的核心能力
 
-- `AppContextProvider` / `useAppContext`：业务模块访问基座能力的统一入口
-- 模块注册：`registerModule`、`getRegisteredModules`、`bootstrapRegisteredModules`
-- 路由组件注册：`registryRouteComponent`、`registryRouteComponents`、`loadRouteComponent`
+- `AppContextProvider` / `useAppContext`：业务页面访问基座能力的统一入口
+- 路由组件注册：`registryRouteComponent`、`registryRouteComponents`、`listRegisteredRouteComponents`、`loadRouteComponent`
+- 平台路由构建能力：`buildRoutesFromMenus`
 - 权限：`NePermission`、`usePermission`
 - 国际化：`I18nProvider`、`useI18n`
 - 事件总线：`eventBus`
-- 平台路由构建能力：`buildRoutesFromMenus`、`buildModuleRoutes`
 
-## PlatformModule 接入约定
+## 路由组件接入约定
 
-业务模块通过 `PlatformModule` 向基座声明自己提供的能力：
+当前基座不再通过 `PlatformModule` 做模块注册，而是直接维护 **菜单配置 + 路由组件注册表**：
+
+1. 后端菜单中的 `component` 字段声明页面组件 key，例如 `crm/CustomerListPage`
+2. 前端通过 `registryRouteComponent(...)` 或 `registryRouteComponents(...)` 注册该 key 对应的组件加载器
+3. 运行时通过 `buildRoutesFromMenus(...)` 和 `loadRouteComponent(...)` 将菜单项解析为实际页面组件
+
+示例：
 
 ```ts
-import type { PlatformModule } from "@nebula/core";
+import { registryRouteComponents, type RouteComponentLoaderMap } from "@nebula/core";
 
-const module: PlatformModule = {
-  id: "@business/demo",
-  name: "Demo CRM",
-  version: "0.1.0",
-  routeComponents: {
-    "crm/CustomerListPage": async () => ({ default: (await import("./pages/customer-list-page")).CustomerListPage }),
-  },
-  menus: [
-    {
-      id: "crm-root",
-      name: "客户管理",
-      type: 1,
-      visible: 1,
-      children: [
-        {
-          id: "crm-list",
-          name: "客户列表",
-          type: 2,
-          path: "/crm/list",
-          component: "crm/CustomerListPage",
-          linkType: 1,
-          visible: 1,
-        },
-      ],
-    },
-  ],
-  routes: [{ path: "/crm/list", routeComponentKey: "crm/CustomerListPage" }],
-  bootstrap: async (ctx) => {
-    ctx.bus.emit("business:module-ready", { module: "crm" });
-  },
+const crmRouteComponents: RouteComponentLoaderMap = {
+  "crm/CustomerListPage": async () => ({
+    default: (await import("./pages/customer-list-page")).CustomerListPage,
+  }),
+  "crm/CustomerDetailPage": async () => ({
+    default: (await import("./pages/customer-detail-page")).CustomerDetailPage,
+  }),
 };
 
-export default module;
+registryRouteComponents(crmRouteComponents, "CRM Pages");
+```
+
+如果只注册单个页面，也可以直接调用：
+
+```ts
+import { registryRouteComponent } from "@nebula/core";
+
+registryRouteComponent(
+  "crm/CustomerListPage",
+  async () => ({ default: (await import("./pages/customer-list-page")).CustomerListPage }),
+  "CRM Pages",
+);
 ```
 
 ## AppContext 当前提供的能力
@@ -97,22 +91,24 @@ export default module;
 - `setLocale(locale)`：切换当前语言
 - `t(key, fallback?, variables?)`：获取翻译文案
 
+### bus
+
+- `on` / `emit` / `off`：通过事件总线与基座或其他页面通讯
+
 ## 存储能力对接说明
 
-- 基座当前按 `nebula-storage` 的真实两阶段流程接入普通文件上传
-- 实际顺序为：创建上传任务 -> 上传普通文件 -> 完成上传任务 -> 绑定上传任务 -> 查询正式文件详情
+- 基座当前按 `nebula-storage` 的最新 simple upload 流程接入普通文件上传
+- 普通文件的实际顺序为：直接上传文件 -> 绑定上传任务 -> 查询正式文件详情
 - 业务保存文件时，应至少提供：
   - `sourceEntity`
   - `sourceId`
   - 可选 `sourceType`，默认 `default`
 - 前端共享类型 `StorageUploadPayload` 和 `StorageFileItem` 已按该流程调整
-
-### bus
-
-- `on` / `emit` / `off`：通过事件总线与基座或其他模块通讯
+- 如果是大文件或分片上传场景，仍应改走 upload task / part / complete 的 chunk 流程
 
 ## 接入建议
 
-- 业务模块只维护本模块的页面、菜单、路由组件映射和初始化逻辑
+- 业务页面只维护本域页面组件与组件 key 的映射关系
+- 菜单里的 `component` 字段应与前端注册过的 route component key 保持一致
 - 认证、权限、请求、主题、通知、字典、配置、存储地址解析等平台级能力优先复用基座提供的上下文
-- 公共界面组件优先从 `@nebula/ui-web` 获取，不在业务模块重复封装
+- 公共界面组件优先从 `@nebula/ui-web` 获取，不在业务页面重复封装

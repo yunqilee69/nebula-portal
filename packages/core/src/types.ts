@@ -661,6 +661,7 @@ export interface StorageFileItem {
   status?: string | number;
   uploadTaskId?: string;
   uploadUserId?: string;
+  uploadUserName?: string;
   uploadedBy?: string;
   createdAt?: string;
   updatedAt?: string;
@@ -688,6 +689,56 @@ export interface StorageUploadPayload {
   sourceEntity: string;
   sourceId: string;
   sourceType?: string;
+}
+
+export interface StorageSignedUrlPayload {
+  fileId: string;
+  fileName?: string;
+  expireSeconds?: number;
+  maxDownloadCount?: number;
+}
+
+export interface StorageSignedUrlResult {
+  url: string;
+  expireAt?: string;
+  maxDownloadCount?: number;
+}
+
+export interface StorageUploadTaskItem {
+  id: string;
+  fileName?: string;
+  fileHash?: string;
+  contentType?: string;
+  extension?: string;
+  size?: number;
+  taskMode?: string;
+  uploadMode?: string;
+  status?: string | number;
+  partCount?: number;
+  uploadedPartCount?: number;
+  uploadedSize?: number;
+  lastPartTime?: string;
+  resultFileId?: string;
+  uploadUserId?: string;
+  uploadUserName?: string;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface StorageUploadTaskPageQuery {
+  pageNum: number;
+  pageSize: number;
+  orderName?: string;
+  orderType?: string;
+  taskMode?: string;
+  fileName?: string;
+  status?: string;
+  uploadUserId?: string;
+}
+
+export interface StorageUploadTaskPageResult {
+  data: StorageUploadTaskItem[];
+  total: number;
 }
 
 export interface PlatformEvents {
@@ -753,22 +804,6 @@ export interface AppContextValue {
   bus: PlatformEventBus;
 }
 
-export interface PlatformModule {
-  id: string;
-  name: string;
-  version: string;
-  menus?: MenuItem[];
-  routes?: PlatformRoute[];
-  routeComponents?: RouteComponentLoaderMap;
-  bootstrap?: (ctx: AppContextValue) => Promise<void>;
-}
-
-export interface ModuleLoadResult {
-  id: string;
-  status: "loaded" | "failed";
-  reason?: string;
-}
-
 export interface ApiEnvelope<T> {
   code?: number | string;
   message?: string;
@@ -795,11 +830,11 @@ export interface MobileEnvironment {
   logoutPath: string;
   currentUserPath: string;
   storageUploadTaskPath: string;
-  storageUploadSimplePathTemplate: string;
+  storageUploadPath: string;
   storageUploadCompletePathTemplate: string;
   storageUploadBindPathTemplate: string;
   storageFileDetailPathTemplate: string;
-  storageFileContentPathTemplate: string;
+  storageDownloadPath: string;
 }
 
 export interface MobileAssetDescriptor {
@@ -818,11 +853,11 @@ export interface MobileStorageUploadPayload {
 
 export interface MobileStorageUploadEndpoints {
   createTaskPath: string;
-  uploadPathTemplate: string;
+  uploadPath: string;
   completePathTemplate: string;
   bindPathTemplate: string;
   detailPathTemplate: string;
-  contentPathTemplate: string;
+  downloadPath: string;
 }
 
 export interface MobileStorageUploadRequestFactory {
