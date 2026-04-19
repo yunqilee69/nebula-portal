@@ -16,7 +16,7 @@ export function CachedOutlet() {
 
   const currentPath = useMemo(() => buildRouteKey(location.pathname, location.search, location.hash), [location.hash, location.pathname, location.search]);
   const currentRefreshKey = refreshKeys[currentPath] ?? 0;
-  const currentNode = useMemo(() => <div key={`${currentPath}:${currentRefreshKey}`} className="shell-content-route">{outlet}</div>, [currentPath, currentRefreshKey, outlet]);
+  const currentNode = useMemo(() => <div key={`${currentPath}:${currentRefreshKey}`} className="nebula-content-route">{outlet}</div>, [currentPath, currentRefreshKey, outlet]);
 
   useEffect(() => {
     setCache((previous) => {
@@ -52,7 +52,7 @@ export function CachedOutlet() {
   }, [currentPath, tabs]);
 
   return (
-    <div className="shell-content-stack">
+    <div className="nebula-content-stack">
       {orderedPaths.map((path) => {
         const node = cache[path] ?? (path === currentPath ? currentNode : null);
 

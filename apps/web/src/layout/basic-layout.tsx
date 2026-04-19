@@ -100,7 +100,7 @@ export function BasicLayout({ remoteStatuses }: BasicLayoutProps) {
         collapsed={sidebarCollapsed}
         trigger={null}
         theme="light"
-        className="shell-sider"
+        className="nebula-sider"
       >
         <AppSidebar
           menus={menus}
@@ -109,12 +109,12 @@ export function BasicLayout({ remoteStatuses }: BasicLayoutProps) {
         />
       </Sider>
       <Layout>
-        <Header className="shell-header">
+        <Header className="nebula-header">
           <AppHeader breadcrumbItems={breadcrumbItems} onLogout={handleLogout} />
         </Header>
-        <Content className="shell-content">
-          <div className="shell-workspace-panel">
-            <div className="shell-tabs-surface">
+        <Content className="nebula-content">
+          <div className="nebula-workspace-panel">
+            <div className="nebula-tabs-surface">
               <NeWorkspaceTabs
                 activeKey={activeKey}
                 items={tabs}
@@ -164,7 +164,7 @@ export function BasicLayout({ remoteStatuses }: BasicLayoutProps) {
                 }}
               />
             </div>
-            <div className="shell-content-body">
+            <div className="nebula-content-body">
               {failedModules.length > 0 ? (
                 <Alert
                   type="warning"
