@@ -1,12 +1,12 @@
 import { applyNebulaLocale, translateNebulaMessage, useI18nStore } from "../i18n/index";
 import { eventBus } from "../event-bus";
 import { withDefaultNebulaMenus, useMenuStore } from "../menu";
+import { hasPermissionCode, hasAnyPermissionCode, hasAllPermissionCode, hasRoleCode, hasAnyRoleCode, hasAllRoleCode } from "../permissions/permission-utils";
 import { useConfigStore } from "../stores/config-store";
 import { useDictStore } from "../stores/dict-store";
 import { useNotifyStore } from "../stores/notify-store";
 import { useResourceStore } from "../stores/resource-store";
 import type { AppContextValue, AuthSession, ConfigMap, DictRecord, MenuItem, NotificationItem } from "../types";
-import { hasPermissionCode, hasAnyPermissionCode, hasAllPermissionCode, hasRoleCode, hasAnyRoleCode, hasAllRoleCode } from "./permission-utils";
 
 export { applyNebulaLocale, translateNebulaMessage };
 

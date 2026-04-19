@@ -1,5 +1,5 @@
-import { getModuleRegistrationConflicts, getRegisteredModules } from "../module-registry";
-import { getRegisteredRouteComponentSource, getRouteComponentRegistrationConflicts, hasRouteComponent } from "../route-component-registry";
+import { getModuleRegistrationConflicts, getRegisteredModules } from "../routing/module-registry";
+import { getRegisteredRouteComponentSource, getRouteComponentRegistrationConflicts, hasRouteComponent } from "../routing/route-component-registry";
 import type { MenuItem } from "../types";
 
 export type PlatformValidationIssueCode =
