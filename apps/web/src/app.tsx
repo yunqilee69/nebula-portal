@@ -11,20 +11,17 @@ import {
   useNotifyStore,
   useResourceStore,
   useMenuStore,
-  buildModuleRoutes,
   buildRoutesFromMenus,
-  bootstrapRegisteredModules,
   buildAppContext,
   preloadNebulaData,
   reportPlatformValidation,
   validatePlatformConsistency,
   type AppContextValue,
-  type ModuleLoadResult,
 } from "@nebula/core";
 import { resolveRefreshDelay, restoreSessionOnStartup } from "@nebula/auth";
-import { Alert, Spin, Typography } from "antd";
+import { Alert, Modal, Spin, Typography } from "antd";
 import { Suspense, useEffect, useMemo, useRef, useState } from "react";
-import { BrowserRouter, Navigate, useNavigate, useRoutes } from "react-router-dom";
+import { BrowserRouter, Navigate, useLocation, useNavigate, useRoutes } from "react-router-dom";
 import { AppErrorBoundary } from "./components/app-error-boundary";
 import { BasicLayout } from "./layout/basic-layout";
 import {
@@ -44,6 +41,8 @@ import {
   UnauthorizedPage,
   UnavailablePage,
   apiClient,
+  registerUnauthorizedHandler,
+  resetUnauthorizedHandling,
   webEnv,
 } from "@nebula/pages-web";
 import { NeExceptionResult } from "@nebula/ui-web";
@@ -97,6 +96,7 @@ function PlatformValidationFallback({ issues }: { issues: ReturnType<typeof vali
 
 function AppRouter() {
   const navigate = useNavigate();
+  const location = useLocation();
   const hydrate = useAuthStore((state) => state.hydrate);
   const hydrated = useAuthStore((state) => state.hydrated);
   const session = useAuthStore((state) => state.session);
@@ -106,12 +106,17 @@ function AppRouter() {
   const menus = useMenuStore((state) => state.menus);
   const menuResource = useResourceStore((state) => state.resources.menus);
   const dictRecords = useDictStore((state) => state.records);
-  const [remoteStatuses, setRemoteStatuses] = useState<ModuleLoadResult[]>([]);
-  const [remotesLoaded] = useState(true);
+  const [sessionExpiredModalOpen, setSessionExpiredModalOpen] = useState(false);
+  const [sessionExpiredRedirectTo, setSessionExpiredRedirectTo] = useState<string | null>(null);
   const [authReady, setAuthReady] = useState(false);
   const frontendHydrated = useFrontendStore((state) => state.hydrated);
   const refreshTimerRef = useRef<number | null>(null);
   const lastValidationSignatureRef = useRef<string | null>(null);
+
+  const openSessionExpiredModal = () => {
+    setSessionExpiredRedirectTo(`${window.location.pathname}${window.location.search}${window.location.hash}`);
+    setSessionExpiredModalOpen(true);
+  };
 
   useEffect(() => {
     hydrate();
@@ -155,6 +160,7 @@ function AppRouter() {
           refreshSession,
         });
         if (active) {
+          resetUnauthorizedHandling();
           if (nextSession) {
             setSession(nextSession);
           } else {
@@ -164,6 +170,7 @@ function AppRouter() {
       } catch {
         if (active) {
           clearSession();
+          openSessionExpiredModal();
         }
       } finally {
         if (active) {
@@ -214,10 +221,11 @@ function AppRouter() {
     refreshTimerRef.current = window.setTimeout(async () => {
       try {
         const nextSession = await refreshSession(session.refreshToken!);
+        resetUnauthorizedHandling();
         patchSession(nextSession);
       } catch {
         clearSession();
-        navigate("/login");
+        openSessionExpiredModal();
       }
     }, timeoutMs);
 
@@ -246,13 +254,13 @@ function AppRouter() {
           requestDelete: <T,>(url: string) => apiClient.delete<T>(url).then((r) => r.data),
           buildStoragePreviewUrl: (file) => {
             if (file.previewUrl) return file.previewUrl;
-            if (file.id) return `${webEnv.apiBaseUrl}${webEnv.storageFileContentPathTemplate.replace("{id}", file.id)}`;
             if (file.fileUrl) return file.fileUrl;
+            if (file.id) return `${webEnv.apiBaseUrl}${webEnv.storageDownloadPath}?fileId=${encodeURIComponent(file.id)}`;
             return "";
           },
           buildStorageDownloadUrl: (file) => {
-            if (file.id) return `${webEnv.apiBaseUrl}${webEnv.storageFileDetailPathTemplate.replace("{id}", file.id)}`;
             if (file.fileUrl) return file.fileUrl;
+            if (file.id) return `${webEnv.apiBaseUrl}${webEnv.storageDownloadPath}?fileId=${encodeURIComponent(file.id)}`;
             return "";
           },
         },
@@ -261,28 +269,34 @@ function AppRouter() {
   );
 
   useEffect(() => {
-    if (!authReady || !session?.token || !remotesLoaded) {
-      return;
-    }
-    bootstrapRegisteredModules(appContext).then((results) => {
-      if (results.some((result) => result.status === "failed")) {
-        setRemoteStatuses((current) => [...current, ...results.filter((result) => result.status === "failed")]);
-      }
-    });
-  }, [appContext, authReady, remotesLoaded, session?.token]);
-
-  useEffect(() => {
     const unsubscribe = eventBus.on("notify:new", (payload) => {
       useNotifyStore.getState().addItem(payload);
     });
     return unsubscribe;
   }, []);
 
+  useEffect(() => {
+    registerUnauthorizedHandler(() => {
+      openSessionExpiredModal();
+    });
+
+    return () => {
+      registerUnauthorizedHandler(null);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (session?.token) {
+      setSessionExpiredModalOpen(false);
+      setSessionExpiredRedirectTo(null);
+      resetUnauthorizedHandling();
+    }
+  }, [session?.token]);
+
   const dynamicRoutes = useMemo(() => buildRoutesFromMenus(menus, UnavailablePage), [menus]);
-  const moduleRoutes = useMemo(() => buildModuleRoutes(), [remotesLoaded]);
   const platformValidation = useMemo(
-    () => (authReady && session?.token && remotesLoaded ? validatePlatformConsistency(menus) : { issues: [], hasErrors: false }),
-    [authReady, menus, remotesLoaded, session?.token],
+    () => (authReady && session?.token ? validatePlatformConsistency(menus) : { issues: [], hasErrors: false }),
+    [authReady, menus, session?.token],
   );
 
   useEffect(() => {
@@ -308,7 +322,7 @@ function AppRouter() {
       path: "/",
       element: (
         <AuthGuard>
-          <BasicLayout remoteStatuses={remoteStatuses} />
+          <BasicLayout />
         </AuthGuard>
       ),
       children: [
@@ -318,7 +332,6 @@ function AppRouter() {
         ...dynamicRoutes
           .filter((route) => route.path !== "/")
           .map((route) => ({ path: route.path.replace(/^\//, ""), element: route.element })),
-        ...moduleRoutes.map((route) => ({ path: route.path.replace(/^\//, ""), element: route.element })),
         { path: "*", element: <Navigate to="/404" replace /> },
       ],
     },
@@ -335,6 +348,16 @@ function AppRouter() {
       && !menuResource.error,
   );
 
+  const handleSessionExpiredStay = () => {
+    setSessionExpiredModalOpen(false);
+  };
+
+  const handleSessionExpiredLogin = () => {
+    const nextLocation = sessionExpiredRedirectTo ?? `${window.location.pathname}${window.location.search}${window.location.hash}`;
+    setSessionExpiredModalOpen(false);
+    navigate("/login", { replace: true, state: { from: nextLocation } });
+  };
+
   if (!hydrated || !authReady || !frontendHydrated || waitingForProtectedRoutes) {
     return <AppLoadingFallback />;
   }
@@ -348,6 +371,24 @@ function AppRouter() {
       <Suspense fallback={<AppLoadingFallback />}>
         {routedElement}
       </Suspense>
+      <Modal
+        open={sessionExpiredModalOpen}
+        title={translateNebulaMessage(useI18nStore.getState().locale, "common.sessionExpiredTitle", "登录已失效")}
+        okText={translateNebulaMessage(useI18nStore.getState().locale, "common.goToLogin", "去登录")}
+        cancelText={translateNebulaMessage(useI18nStore.getState().locale, "common.stayOnPage", "留在当前页")}
+        onOk={handleSessionExpiredLogin}
+        onCancel={handleSessionExpiredStay}
+        closable
+        maskClosable
+      >
+        <Typography.Paragraph style={{ marginBottom: 0 }}>
+          {translateNebulaMessage(
+            useI18nStore.getState().locale,
+            "common.sessionExpiredMessage",
+            "当前登录状态已失效。你可以前往登录页重新登录，或者先关闭弹窗继续停留在当前页面。",
+          )}
+        </Typography.Paragraph>
+      </Modal>
     </AppContextProvider>
   );
 }

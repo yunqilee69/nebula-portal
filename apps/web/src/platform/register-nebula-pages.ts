@@ -1,4 +1,4 @@
-import { registerModule, type PlatformModule, type RouteComponentLoaderMap } from "@nebula/core";
+import { registryRouteComponents, type RouteComponentLoaderMap } from "@nebula/core";
 import {
   AdvancedCachePage,
   AdvancedConfigPage,
@@ -15,6 +15,8 @@ import {
   OperationsPermissionPage,
   OperationsRolePage,
   OperationsUserPage,
+  StorageCenterPage,
+  StorageUploadTaskPage,
 } from "@nebula/pages-web";
 
 const nebulaRouteComponents: RouteComponentLoaderMap = {
@@ -33,22 +35,24 @@ const nebulaRouteComponents: RouteComponentLoaderMap = {
   "nebula/AdvancedOAuth2ClientPage": async () => ({ default: AdvancedOAuth2ClientPage }),
   "nebula/AdvancedOAuth2AccountPage": async () => ({ default: AdvancedOAuth2AccountPage }),
   "nebula/AdvancedCachePage": async () => ({ default: AdvancedCachePage }),
+  "nebula/StorageCenter": async () => ({ default: StorageCenterPage }),
+  "nebula/StorageUploadTaskPage": async () => ({ default: StorageUploadTaskPage }),
 };
 
-const nebulaPlatformModule: PlatformModule = {
-  id: "@nebula/platform-pages",
-  name: "Nebula Platform Pages",
-  version: "1.0.0",
-  routeComponents: nebulaRouteComponents,
-};
+const nebulaPagesRegistrationFlag = "__nebulaPlatformPagesRegistered__";
+const nebulaPagesRegistrationSource = "Nebula Platform Pages";
 
-let registered = false;
+type GlobalRegistrationState = typeof globalThis & {
+  [nebulaPagesRegistrationFlag]?: boolean;
+};
 
 export function registerNebulaPages() {
-  if (registered) {
+  const globalRegistrationState = globalThis as GlobalRegistrationState;
+
+  if (globalRegistrationState[nebulaPagesRegistrationFlag]) {
     return;
   }
 
-  registerModule(nebulaPlatformModule);
-  registered = true;
+  registryRouteComponents(nebulaRouteComponents, nebulaPagesRegistrationSource);
+  globalRegistrationState[nebulaPagesRegistrationFlag] = true;
 }

@@ -1,8 +1,7 @@
-import { Alert, Layout } from "antd";
+import { Layout } from "antd";
 import {
   buildBreadcrumbItems,
   resolveRouteLabel,
-  type ModuleLoadResult,
   useAuthStore,
   useConfigStore,
   useDictStore,
@@ -35,11 +34,7 @@ function resolveNextTabPath(tabs: { key: string; path: string }[], key: string) 
   return tabs[currentIndex + 1]?.path ?? tabs[currentIndex - 1]?.path ?? "/";
 }
 
-interface BasicLayoutProps {
-  remoteStatuses: ModuleLoadResult[];
-}
-
-export function BasicLayout({ remoteStatuses }: BasicLayoutProps) {
+export function BasicLayout() {
   const { t } = useI18n();
   const menus = useMenuStore((state) => state.menus);
   const location = useLocation();
@@ -59,11 +54,6 @@ export function BasicLayout({ remoteStatuses }: BasicLayoutProps) {
   const clearNavigation = useNavigationStore((state) => state.clear);
   const setActiveKey = useNavigationStore((state) => state.setActiveKey);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-
-  const failedModules = useMemo(
-    () => remoteStatuses.filter((item) => item.status === "failed"),
-    [remoteStatuses],
-  );
   const routeKey = useMemo(() => buildRouteKey(location.pathname, location.search, location.hash), [location.hash, location.pathname, location.search]);
   const breadcrumbItems = useMemo(() => buildBreadcrumbItems(menus, location.pathname), [location.pathname, menus]);
   const currentLabel = useMemo(() => resolveRouteLabel(menus, location.pathname), [location.pathname, menus]);
@@ -168,15 +158,6 @@ export function BasicLayout({ remoteStatuses }: BasicLayoutProps) {
               />
             </div>
             <div className="nebula-content-body">
-              {failedModules.length > 0 ? (
-                <Alert
-                  type="warning"
-                  showIcon
-                  message={t("layout.remoteModulesFailed")}
-                  description={failedModules.map((item) => `${item.id}: ${item.reason ?? t("layout.unknownReason")}`).join(" | ")}
-                  className="nebula-content-alert"
-                />
-              ) : null}
               <CachedOutlet />
             </div>
           </div>
