@@ -1,11 +1,10 @@
 import { BellOutlined } from "@ant-design/icons";
 import { Badge, Button, Empty, Flex, List, Space, Tabs, Tag, Typography } from "antd";
-import type { NotificationItem } from "@nebula/core";
-import { useI18n } from "@nebula/core";
+import type { NotificationItem } from "@nebula/core/types";
+import { useI18n } from "@nebula/core/i18n";
+import { useNotifyStore, useResourceStore } from "@nebula/core/stores";
 import { NeModal } from "@nebula/ui-web";
 import { useMemo, useState } from "react";
-import { useNotifyStore } from "@nebula/core";
-import { useResourceStore } from "@nebula/core";
 
 const PANEL_WIDTH = 760;
 

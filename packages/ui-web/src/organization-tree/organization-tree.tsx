@@ -1,7 +1,7 @@
 import { ApartmentOutlined, BankOutlined, TeamOutlined } from "@ant-design/icons";
 import { Space, Typography } from "antd";
-import type { OrganizationTreeItem } from "@nebula/core";
-import { useI18n } from "@nebula/core";
+import type { OrganizationTreeItem } from "@nebula/core/types";
+import { useI18n } from "@nebula/core/i18n";
 import { NeTree } from "@nebula/ui-web";
 import { useEffect, useMemo, useState } from "react";
 import type { Key } from "react";
