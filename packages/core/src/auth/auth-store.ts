@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { hasPermissionCode } from "../permission-utils";
+import { hasPermissionCode } from "../permissions/permission-utils";
 import { hasSessionToken, normalizeSessionExpiry, normalizeSessionExpiryFields, parseStoredSession, stringifyStoredSession } from "./session-helpers";
 import type { AuthSession } from "../types";
 
