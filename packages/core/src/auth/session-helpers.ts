@@ -1,4 +1,4 @@
-import type { AxiosInstance, AxiosRequestConfig, AxiosHeaderValue, InternalAxiosRequestConfig } from "axios";
+import type { AxiosHeaders, AxiosInstance, AxiosRequestConfig, AxiosHeaderValue, InternalAxiosRequestConfig } from "axios";
 import axios from "axios";
 import type { AuthSession } from "../types";
 
@@ -23,6 +23,8 @@ interface RetryableAxiosRequestConfig extends AxiosRequestConfig {
   headers?: Record<string, string>;
 }
 
+type AxiosHeadersInput = Record<string, AxiosHeaderValue> | AxiosHeaders;
+
 function normalizeExpiryTimestamp(expiresAt?: number) {
   if (typeof expiresAt !== "number" || !Number.isFinite(expiresAt) || expiresAt <= 0) {
     return undefined;
@@ -44,17 +46,16 @@ async function resolveOptional<T>(value: Promise<T> | T) {
 }
 
 function normalizeHeaders(headers?: AxiosRequestConfig["headers"] | InternalAxiosRequestConfig["headers"]) {
-  const normalizedHeaders = axios.AxiosHeaders.from({});
-
   if (!headers) {
-    return normalizedHeaders;
+    return axios.AxiosHeaders.from({});
   }
 
-  const headerEntries = Object.entries(headers as Record<string, AxiosHeaderValue>);
+  const normalizedHeaders = new axios.AxiosHeaders(headers as AxiosHeadersInput);
+  const headerEntries = normalizedHeaders.toJSON(true) as Record<string, AxiosHeaderValue>;
 
-  for (const [key, value] of headerEntries) {
-    if (value != null) {
-      normalizedHeaders.set(key, value);
+  for (const [key, value] of Object.entries(headerEntries)) {
+    if (value == null) {
+      normalizedHeaders.delete(key);
     }
   }
 
