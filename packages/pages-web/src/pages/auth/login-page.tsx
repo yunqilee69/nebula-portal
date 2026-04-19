@@ -1,6 +1,10 @@
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import { Alert, Button, Card, Form, Input, Typography } from "antd";
-import { eventBus, preloadNebulaData, useAuthStore, useFrontendStore, useI18n } from "@nebula/core";
+import { useAuthStore } from "@nebula/core/auth";
+import { eventBus } from "@nebula/core/event-bus";
+import { useI18n } from "@nebula/core/i18n";
+import { preloadNebulaData } from "@nebula/core/runtime";
+import { useFrontendStore } from "@nebula/core/stores";
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { loginWithPassword } from "../../api/auth-api";
