@@ -16,11 +16,12 @@ export interface ApiRequestOptions {
 
 interface ApiClientRequestConfig extends AxiosRequestConfig {
   feedbackOptions?: Pick<ApiRequestOptions, "errorMessage" | "silent">;
+  skipUnauthorizedFeedback?: boolean;
 }
 
 function shouldShowErrorMessage(config?: AxiosRequestConfig) {
   const typedConfig = config as ApiClientRequestConfig | undefined;
-  return !typedConfig?.feedbackOptions?.silent && !isAuthLifecycleRequest(config);
+  return !typedConfig?.feedbackOptions?.silent && !isAuthLifecycleRequest(config) && !typedConfig?.skipUnauthorizedFeedback;
 }
 
 function isAuthLifecycleRequest(config?: AxiosRequestConfig) {
@@ -38,11 +39,35 @@ function isAuthLifecycleRequest(config?: AxiosRequestConfig) {
   ].some((path) => url.includes(path));
 }
 
+let unauthorizedHandler: (() => void) | null = null;
+let unauthorizedHandled = false;
+
+function runUnauthorizedHandler() {
+  if (unauthorizedHandled) {
+    return;
+  }
+
+  unauthorizedHandled = true;
+  unauthorizedHandler?.();
+}
+
+export function registerUnauthorizedHandler(handler: (() => void) | null) {
+  unauthorizedHandler = handler;
+}
+
+export function resetUnauthorizedHandling() {
+  unauthorizedHandled = false;
+}
+
 const requestClient = createPlatformRequestClient({
   baseURL: webEnv.apiBaseUrl,
   withCredentials: true,
   getLocale: () => useI18nStore.getState().locale,
   onResolvedError: (error, config) => {
+    if (error.status === 401) {
+      return;
+    }
+
     if (!shouldShowErrorMessage(config)) {
       return;
     }
@@ -63,10 +88,16 @@ attachAuthToRequestClient({
   getRefreshToken: () => useAuthStore.getState().session?.refreshToken ?? null,
   refreshSession: (refreshToken) => import("./auth-api").then(({ refreshSession }) => refreshSession(refreshToken)),
   onSessionRefreshed: (session) => {
+    resetUnauthorizedHandling();
     useAuthStore.getState().setSession(session);
   },
   onUnauthorized: () => {
+    if (!useAuthStore.getState().session?.token) {
+      return;
+    }
+
     useAuthStore.getState().clearSession();
+    runUnauthorizedHandler();
   },
 });
 

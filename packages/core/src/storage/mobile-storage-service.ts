@@ -1,10 +1,8 @@
 import type {
-  MobileAssetDescriptor,
   MobileRequestClient,
   MobileStorageService,
   MobileStorageUploadEndpoints,
   MobileStorageUploadPayload,
-  MobileStorageUploadRequestFactory,
   StorageFileItem,
 } from "../types";
 
@@ -17,6 +15,20 @@ function fillTemplate(template: string, id: string) {
   return template.replace("{id}", encodeURIComponent(id));
 }
 
+function buildQuery(params: Record<string, string | undefined>) {
+  const searchParams = new URLSearchParams();
+
+  Object.entries(params).forEach(([key, value]) => {
+    if (!value) {
+      return;
+    }
+    searchParams.set(key, value);
+  });
+
+  const queryString = searchParams.toString();
+  return queryString ? `?${queryString}` : "";
+}
+
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null;
 }
@@ -27,6 +39,16 @@ function getRecord(value: unknown) {
 
 function formatDate(value: unknown) {
   return typeof value === "string" ? value : undefined;
+}
+
+function getStringValue(record: Record<string, unknown>, keys: string[]) {
+  for (const key of keys) {
+    const value = record[key];
+    if (typeof value === "string" && value.trim()) {
+      return value;
+    }
+  }
+  return undefined;
 }
 
 function toStorageFileItem(payload: unknown, fallbackIndex: number): StorageFileItem {
@@ -67,9 +89,12 @@ function toStorageFileItem(payload: unknown, fallbackIndex: number): StorageFile
     sourceId: typeof record.sourceId === "string" ? record.sourceId : undefined,
     sourceType: typeof record.sourceType === "string" ? record.sourceType : undefined,
     status: typeof record.status === "string" || typeof record.status === "number" ? record.status : undefined,
-    uploadTaskId: typeof record.uploadTaskId === "string" ? record.uploadTaskId : undefined,
-    uploadUserId: typeof record.uploadUserId === "string" ? record.uploadUserId : undefined,
-    uploadedBy: typeof record.uploadUserId === "string" ? record.uploadUserId : typeof record.uploadedBy === "string" ? record.uploadedBy : undefined,
+    uploadTaskId: getStringValue(record, ["uploadTaskId", "taskId"]),
+    uploadUserId: getStringValue(record, ["uploadUserId", "createUserId", "createdBy"]),
+    uploadUserName: getStringValue(record, ["uploadUserName", "uploadUserNickname", "createUserName", "createdByName"]),
+    uploadedBy:
+      getStringValue(record, ["uploadUserName", "uploadUserNickname", "createUserName", "createdByName"])
+      ?? getStringValue(record, ["uploadUserId", "createUserId", "createdBy"]),
     createdAt: formatDate(record.createTime ?? record.createdAt),
     updatedAt: formatDate(record.updateTime ?? record.updatedAt),
   };
@@ -77,43 +102,33 @@ function toStorageFileItem(payload: unknown, fallbackIndex: number): StorageFile
 
 function toUploadTaskDetail(payload: unknown): StorageUploadTaskDetail {
   const record = getRecord(payload) ?? {};
+  const data = getRecord(record.data) ?? getRecord(record.result) ?? record;
   return {
-    id: String(record.id ?? ""),
-    resultFileId: typeof record.resultFileId === "string" ? record.resultFileId : undefined,
+    id: String(data.id ?? data.taskId ?? ""),
+    resultFileId: typeof data.resultFileId === "string" ? data.resultFileId : undefined,
   };
 }
 
-async function createUploadTask(client: MobileRequestClient, endpoints: MobileStorageUploadEndpoints, asset: MobileAssetDescriptor) {
-  return client.post<string>(endpoints.createTaskPath, {
-    uploadMode: "simple",
-    fileName: asset.name,
-    fileExtension: asset.name.includes(".") ? asset.name.split(".").pop() : undefined,
-    fileMimeType: asset.mimeType || "application/octet-stream",
-    fileSize: asset.size,
-  });
-}
-
-async function uploadSimpleFile(
-  client: MobileRequestClient,
-  endpoints: MobileStorageUploadEndpoints,
-  requestFactory: MobileStorageUploadRequestFactory,
-  taskId: string,
-  asset: MobileAssetDescriptor,
-) {
-  return client.upload(fillTemplate(endpoints.uploadPathTemplate, taskId), requestFactory.createFormData(asset));
-}
-
-async function completeUploadTask(client: MobileRequestClient, endpoints: MobileStorageUploadEndpoints, taskId: string) {
-  const payload = await client.post<unknown>(fillTemplate(endpoints.completePathTemplate, taskId));
+async function uploadSimpleFile(client: MobileRequestClient, endpoints: MobileStorageUploadEndpoints, formData: FormData) {
+  const payload = await client.upload<unknown>(endpoints.uploadPath, formData);
   return toUploadTaskDetail(payload);
 }
 
 async function bindUploadTask(client: MobileRequestClient, endpoints: MobileStorageUploadEndpoints, taskId: string, payload: MobileStorageUploadPayload) {
-  return client.post<string>(fillTemplate(endpoints.bindPathTemplate, taskId), {
+  const result = await client.post<unknown>(fillTemplate(endpoints.bindPathTemplate, taskId), {
     sourceEntity: payload.sourceEntity,
     sourceId: payload.sourceId,
     sourceType: payload.sourceType ?? "default",
   });
+  const record = getRecord(result);
+  const data = getRecord(record?.data) ?? getRecord(record?.result) ?? record;
+  return typeof data?.fileId === "string"
+    ? data.fileId
+    : typeof data?.id === "string"
+      ? data.id
+      : typeof result === "string"
+        ? result
+        : "";
 }
 
 async function fetchStorageFileDetail(client: MobileRequestClient, endpoints: MobileStorageUploadEndpoints, fileId: string) {
@@ -121,28 +136,23 @@ async function fetchStorageFileDetail(client: MobileRequestClient, endpoints: Mo
   return toStorageFileItem(payload, 0);
 }
 
-/**
- * Create a mobile storage service for file uploads in React Native.
- * This handles the two-phase upload process: create task -> upload -> complete -> bind -> get file detail.
- */
 export function createMobileStorageService(
   client: MobileRequestClient,
   endpoints: MobileStorageUploadEndpoints,
-  requestFactory: MobileStorageUploadRequestFactory,
+  requestFactory: { createFormData: (payload: MobileStorageUploadPayload["asset"]) => FormData },
 ): MobileStorageService {
   return {
     async uploadFile(payload) {
-      const taskId = await createUploadTask(client, endpoints, payload.asset);
-      await uploadSimpleFile(client, endpoints, requestFactory, taskId, payload.asset);
-      const completed = await completeUploadTask(client, endpoints, taskId);
+      const uploadTask = await uploadSimpleFile(client, endpoints, requestFactory.createFormData(payload.asset));
+      const taskId = uploadTask.id;
       const fileId = await bindUploadTask(client, endpoints, taskId, payload);
-      return fetchStorageFileDetail(client, endpoints, fileId || completed.resultFileId || taskId);
+      return fetchStorageFileDetail(client, endpoints, fileId || uploadTask.resultFileId || taskId);
     },
     previewUrl(file) {
-      return file.previewUrl ?? file.fileUrl ?? fillTemplate(endpoints.contentPathTemplate, file.id);
+      return file.previewUrl ?? file.fileUrl ?? `${endpoints.downloadPath}${buildQuery({ fileId: file.id })}`;
     },
     downloadUrl(file) {
-      return file.fileUrl ?? fillTemplate(endpoints.contentPathTemplate, file.id);
+      return file.fileUrl ?? `${endpoints.downloadPath}${buildQuery({ fileId: file.id })}`;
     },
   };
 }

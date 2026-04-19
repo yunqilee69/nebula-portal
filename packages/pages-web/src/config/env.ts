@@ -28,18 +28,19 @@ export const webEnv = {
     import.meta.env.VITE_NOTIFY_READ_PATH_TEMPLATE ?? "/api/notify/site-messages/{id}/read",
   localeCurrentPath: import.meta.env.VITE_I18N_CURRENT_LOCALE_PATH ?? "",
   localeSwitchPath: import.meta.env.VITE_I18N_SWITCH_LOCALE_PATH ?? "",
-  storageUploadTaskPath: import.meta.env.VITE_STORAGE_UPLOAD_TASK_PATH ?? "/storage/upload-tasks",
-  storageUploadSimplePathTemplate:
-    import.meta.env.VITE_STORAGE_UPLOAD_SIMPLE_PATH_TEMPLATE ?? "/storage/upload-tasks/{id}/simple",
+  storageUploadTaskPath: import.meta.env.VITE_STORAGE_UPLOAD_TASK_PATH ?? "/api/storage/upload-tasks",
+  storageUploadTaskPagePath: import.meta.env.VITE_STORAGE_UPLOAD_TASK_PAGE_PATH ?? "/api/storage/upload-tasks/page",
+  storageUploadPath: import.meta.env.VITE_STORAGE_UPLOAD_PATH ?? "/api/storage/upload",
   storageUploadCompletePathTemplate:
-    import.meta.env.VITE_STORAGE_UPLOAD_COMPLETE_PATH_TEMPLATE ?? "/storage/upload-tasks/{id}/complete",
+    import.meta.env.VITE_STORAGE_UPLOAD_COMPLETE_PATH_TEMPLATE ?? "/api/storage/upload-tasks/{id}/complete",
   storageUploadBindPathTemplate:
-    import.meta.env.VITE_STORAGE_UPLOAD_BIND_PATH_TEMPLATE ?? "/storage/upload-tasks/{id}/bind",
-  storageFilePagePath: import.meta.env.VITE_STORAGE_FILE_PAGE_PATH ?? "/storage/files/page",
+    import.meta.env.VITE_STORAGE_UPLOAD_BIND_PATH_TEMPLATE ?? "/api/storage/upload-tasks/{id}/bind",
+  storageFilePagePath: import.meta.env.VITE_STORAGE_FILE_PAGE_PATH ?? "/api/storage/files/page",
   storageFileDetailPathTemplate:
-    import.meta.env.VITE_STORAGE_FILE_DETAIL_PATH_TEMPLATE ?? "/storage/files/{id}",
-  storageFileContentPathTemplate:
-    import.meta.env.VITE_STORAGE_FILE_CONTENT_PATH_TEMPLATE ?? "/storage/files/{id}/content",
+    import.meta.env.VITE_STORAGE_FILE_DETAIL_PATH_TEMPLATE ?? "/api/storage/files/{id}",
+  storageDownloadPath: import.meta.env.VITE_STORAGE_DOWNLOAD_PATH ?? "/api/storage/download",
+  storageSignedDownloadPath: import.meta.env.VITE_STORAGE_SIGNED_DOWNLOAD_PATH ?? "/api/storage/download-signed",
+  storageGenerateSignedUrlPath: import.meta.env.VITE_STORAGE_GENERATE_SIGNED_URL_PATH ?? "/api/storage/generate-signed-url",
   storageFileDeletePathTemplate:
-    import.meta.env.VITE_STORAGE_FILE_DELETE_PATH_TEMPLATE ?? "/storage/files/{id}",
+    import.meta.env.VITE_STORAGE_FILE_DELETE_PATH_TEMPLATE ?? "/api/storage/files/{id}",
 };

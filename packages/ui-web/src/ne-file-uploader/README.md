@@ -38,5 +38,6 @@ export function DemoUploader() {
 
 ## Nebula Storage 接入提示
 
-- 如果使用 Nebula Storage，建议在 `onUpload` 中串联：创建上传任务、上传普通文件、完成上传、绑定业务、查询正式文件详情
+- 如果使用 Nebula Storage，建议在 `onUpload` 中串联：直接上传文件、绑定业务、查询正式文件详情
 - 绑定业务时至少要传入 `sourceEntity` 和 `sourceId`
+- 如果是大文件场景，再切换到 upload task / part / complete 的 chunk 上传流程

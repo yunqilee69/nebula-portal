@@ -1,4 +1,14 @@
-import type { StorageFileItem, StorageListQuery, StorageListResult, StorageUploadPayload } from "@nebula/core";
+import type {
+  StorageFileItem,
+  StorageListQuery,
+  StorageListResult,
+  StorageSignedUrlPayload,
+  StorageSignedUrlResult,
+  StorageUploadPayload,
+  StorageUploadTaskItem,
+  StorageUploadTaskPageQuery,
+  StorageUploadTaskPageResult,
+} from "@nebula/core";
 import { webEnv } from "../config/env";
 import { getArray, getRecord, requestDelete, requestGet, requestPost, requestUpload } from "./client";
 
@@ -11,9 +21,33 @@ function fillTemplate(template: string, id: string) {
   return template.replace("{id}", encodeURIComponent(id));
 }
 
+function buildQuery(params: Record<string, string | undefined>) {
+  const searchParams = new URLSearchParams();
+
+  Object.entries(params).forEach(([key, value]) => {
+    if (!value) {
+      return;
+    }
+    searchParams.set(key, value);
+  });
+
+  const queryString = searchParams.toString();
+  return queryString ? `?${queryString}` : "";
+}
+
 function formatDate(value: unknown) {
   if (typeof value === "string") {
     return value;
+  }
+  return undefined;
+}
+
+function getStringValue(record: Record<string, unknown>, keys: string[]) {
+  for (const key of keys) {
+    const value = record[key];
+    if (typeof value === "string" && value.trim()) {
+      return value;
+    }
   }
   return undefined;
 }
@@ -58,53 +92,78 @@ function toStorageFileItem(payload: unknown, fallbackIndex: number): StorageFile
     sourceId: typeof record.sourceId === "string" ? record.sourceId : undefined,
     sourceType: typeof record.sourceType === "string" ? record.sourceType : undefined,
     status: typeof record.status === "string" || typeof record.status === "number" ? record.status : undefined,
-    uploadTaskId: typeof record.uploadTaskId === "string" ? record.uploadTaskId : undefined,
-    uploadUserId: typeof record.uploadUserId === "string" ? record.uploadUserId : undefined,
-    uploadedBy: typeof record.uploadUserId === "string" ? record.uploadUserId : typeof record.uploadedBy === "string" ? record.uploadedBy : undefined,
+    uploadTaskId: getStringValue(record, ["uploadTaskId", "taskId"]),
+    uploadUserId: getStringValue(record, ["uploadUserId", "createUserId", "createdBy"]),
+    uploadUserName: getStringValue(record, ["uploadUserName", "uploadUserNickname", "createUserName", "createdByName"]),
+    uploadedBy:
+      getStringValue(record, ["uploadUserName", "uploadUserNickname", "createUserName", "createdByName"])
+      ?? getStringValue(record, ["uploadUserId", "createUserId", "createdBy"]),
     createdAt: formatDate(record.createTime ?? record.createdAt),
     updatedAt: formatDate(record.updateTime ?? record.updatedAt),
   };
 }
 
-function toUploadTaskDetail(payload: unknown): StorageUploadTaskDetail {
+function toUploadTaskItem(payload: unknown): StorageUploadTaskItem {
   const record = getRecord(payload) ?? {};
+  const data = getRecord(record.data) ?? getRecord(record.result) ?? record;
+
   return {
-    id: String(record.id ?? ""),
-    resultFileId: typeof record.resultFileId === "string" ? record.resultFileId : undefined,
+    id: String(data.id ?? data.taskId ?? ""),
+    fileName: getStringValue(data, ["fileName", "name", "originalFilename"]),
+    fileHash: getStringValue(data, ["fileHash"]),
+    contentType: getStringValue(data, ["fileMimeType", "contentType", "mimeType"]),
+    extension: getStringValue(data, ["fileExtension", "extension"]),
+    size: typeof data.fileSize === "number" ? data.fileSize : typeof data.size === "number" ? data.size : undefined,
+    taskMode: getStringValue(data, ["taskMode", "uploadMode"]),
+    uploadMode: getStringValue(data, ["uploadMode", "taskMode"]),
+    status: typeof data.status === "string" || typeof data.status === "number" ? data.status : undefined,
+    partCount: typeof data.partCount === "number" ? data.partCount : typeof data.totalPartCount === "number" ? data.totalPartCount : undefined,
+    uploadedPartCount:
+      typeof data.uploadedPartCount === "number"
+        ? data.uploadedPartCount
+        : typeof data.uploadedParts === "number"
+          ? data.uploadedParts
+          : undefined,
+    uploadedSize: typeof data.uploadedSize === "number" ? data.uploadedSize : undefined,
+    lastPartTime: formatDate(data.lastPartTime ?? data.lastUploadPartTime),
+    resultFileId: getStringValue(data, ["resultFileId"]),
+    uploadUserId: getStringValue(data, ["uploadUserId", "createUserId", "createdBy"]),
+    uploadUserName: getStringValue(data, ["uploadUserName", "uploadUserNickname", "createUserName", "createdByName"]),
+    createdAt: formatDate(data.createTime ?? data.createdAt),
+    updatedAt: formatDate(data.updateTime ?? data.updatedAt),
   };
 }
 
-async function createUploadTask(file: File) {
-  return requestPost<string>(
-    webEnv.storageUploadTaskPath,
-    {
-      uploadMode: "simple",
-      fileName: file.name,
-      fileExtension: file.name.includes(".") ? file.name.split(".").pop() : undefined,
-      fileMimeType: file.type || "application/octet-stream",
-      fileSize: file.size,
-    },
-    { silent: true },
-  );
+function toUploadTaskDetail(payload: unknown): StorageUploadTaskDetail {
+  const task = toUploadTaskItem(payload);
+  return {
+    id: task.id,
+    resultFileId: task.resultFileId,
+  };
 }
 
-async function uploadSimpleFile(taskId: string, file: File) {
+async function uploadSimpleFile(file: File) {
   const formData = new FormData();
   formData.append("file", file);
-  return requestUpload<unknown>(fillTemplate(webEnv.storageUploadSimplePathTemplate, taskId), formData, { silent: true });
-}
-
-async function completeUploadTask(taskId: string) {
-  const payload = await requestPost<unknown>(fillTemplate(webEnv.storageUploadCompletePathTemplate, taskId), undefined, { silent: true });
+  const payload = await requestUpload<unknown>(webEnv.storageUploadPath, formData, { silent: true });
   return toUploadTaskDetail(payload);
 }
 
 async function bindUploadTask(taskId: string, payload: Pick<StorageUploadPayload, "sourceEntity" | "sourceId" | "sourceType">) {
-  return requestPost<string>(fillTemplate(webEnv.storageUploadBindPathTemplate, taskId), {
+  const result = await requestPost<unknown>(fillTemplate(webEnv.storageUploadBindPathTemplate, taskId), {
     sourceEntity: payload.sourceEntity,
     sourceId: payload.sourceId,
     sourceType: payload.sourceType ?? "default",
   }, { silent: true });
+  const record = getRecord(result);
+  const data = getRecord(record?.data) ?? getRecord(record?.result) ?? record;
+  return typeof data?.fileId === "string"
+    ? data.fileId
+    : typeof data?.id === "string"
+      ? data.id
+      : typeof result === "string"
+        ? result
+        : "";
 }
 
 export async function fetchStoragePage(query: StorageListQuery): Promise<StorageListResult> {
@@ -122,17 +181,36 @@ export async function fetchStoragePage(query: StorageListQuery): Promise<Storage
   };
 }
 
+export async function fetchStorageUploadTaskPage(query: StorageUploadTaskPageQuery): Promise<StorageUploadTaskPageResult> {
+  const payload = await requestPost<unknown>(webEnv.storageUploadTaskPagePath, query, { silent: true, unwrap: false });
+  const record = getRecord(payload);
+  const envelopeData = getRecord(record?.data) ?? getRecord(record?.result) ?? record;
+  const pageData = getRecord(envelopeData?.data) ?? envelopeData;
+  const rows = getArray<unknown>(pageData?.data ?? pageData?.rows ?? pageData?.list ?? envelopeData?.rows ?? envelopeData?.list);
+  const totalCandidate = pageData?.total ?? envelopeData?.total ?? record?.total;
+  const total = typeof totalCandidate === "number" ? totalCandidate : rows.length;
+
+  return {
+    data: rows.map((item) => toUploadTaskItem(item)),
+    total,
+  };
+}
+
+export async function fetchStorageUploadTaskDetail(taskId: string): Promise<StorageUploadTaskItem> {
+  const payload = await requestGet<unknown>(fillTemplate(`${webEnv.storageUploadTaskPath}/{id}`, taskId), undefined, { silent: true });
+  return toUploadTaskItem(payload);
+}
+
 export async function fetchStorageFileDetail(fileId: string): Promise<StorageFileItem> {
   const payload = await requestGet<unknown>(fillTemplate(webEnv.storageFileDetailPathTemplate, fileId), undefined, { silent: true });
   return toStorageFileItem(payload, 0);
 }
 
 export async function uploadStorageFile(payload: StorageUploadPayload): Promise<StorageFileItem> {
-  const taskId = await createUploadTask(payload.file);
-  await uploadSimpleFile(taskId, payload.file);
-  const completed = await completeUploadTask(taskId);
+  const uploadTask = await uploadSimpleFile(payload.file);
+  const taskId = uploadTask.id;
   const fileId = await bindUploadTask(taskId, payload);
-  return fetchStorageFileDetail(fileId || completed.resultFileId || taskId);
+  return fetchStorageFileDetail(fileId || uploadTask.resultFileId || taskId);
 }
 
 export async function deleteStorageFile(fileId: string) {
@@ -141,10 +219,37 @@ export async function deleteStorageFile(fileId: string) {
   });
 }
 
-export function buildStoragePreviewUrl(file: Pick<StorageFileItem, "id" | "fileUrl" | "previewUrl">) {
-  return file.previewUrl ?? file.fileUrl ?? fillTemplate(webEnv.storageFileContentPathTemplate, file.id);
+export async function generateStorageSignedUrl(payload: StorageSignedUrlPayload): Promise<StorageSignedUrlResult> {
+  const result = await requestPost<unknown>(webEnv.storageGenerateSignedUrlPath, payload, { silent: true, unwrap: false });
+  const record = getRecord(result);
+  const data = getRecord(record?.data) ?? getRecord(record?.result) ?? record;
+  return {
+    url: String(data?.url ?? ""),
+    expireAt: typeof data?.expireAt === "string" ? data.expireAt : undefined,
+    maxDownloadCount: typeof data?.maxDownloadCount === "number" ? data.maxDownloadCount : undefined,
+  };
 }
 
-export function buildStorageDownloadUrl(file: Pick<StorageFileItem, "id" | "fileUrl">) {
-  return file.fileUrl ?? fillTemplate(webEnv.storageFileContentPathTemplate, file.id);
+export function buildStoragePreviewUrl(file: Pick<StorageFileItem, "id" | "fileUrl" | "previewUrl">) {
+  return file.previewUrl ?? file.fileUrl ?? `${webEnv.storageDownloadPath}${buildQuery({ fileId: file.id })}`;
+}
+
+export function buildStorageDownloadUrl(file: Pick<StorageFileItem, "id" | "fileUrl">, fileName?: string) {
+  return file.fileUrl ?? `${webEnv.storageDownloadPath}${buildQuery({ fileId: file.id, fileName })}`;
+}
+
+export function buildStorageSignedDownloadUrl(params: {
+  fileId: string;
+  fileName?: string;
+  expireAt: string;
+  maxDownloadCount?: number;
+  signature: string;
+}) {
+  return `${webEnv.storageSignedDownloadPath}${buildQuery({
+    fileId: params.fileId,
+    fileName: params.fileName,
+    expireAt: params.expireAt,
+    maxDownloadCount: params.maxDownloadCount ? String(params.maxDownloadCount) : undefined,
+    signature: params.signature,
+  })}`;
 }

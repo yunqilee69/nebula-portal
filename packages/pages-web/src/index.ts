@@ -18,6 +18,8 @@ export { AdvancedCachePage, AdvancedCachePage as CachePage } from "./pages/advan
 export { NotificationsRecordPage, NotificationsRecordPage as NotificationRecordPage } from "./pages/notifications/record";
 export { NotificationsTemplatePage, NotificationsTemplatePage as NotificationTemplatePage } from "./pages/notifications/template";
 export { NotificationsAnnouncementPage, NotificationsAnnouncementPage as AnnouncementPage } from "./pages/notifications/announcement";
+export { StorageCenterPage } from "./pages/storage/center";
+export { StorageUploadTaskPage } from "./pages/storage/upload-task";
 export { createNebulaRoutes, type NebulaRoutesOptions } from "./routes";
 export {
   acknowledgeWechatWebCallback,
@@ -54,7 +56,7 @@ export type {
   SaveFrontendConfigPayload,
   SwitchFrontendLayoutPayload,
 } from "./api/frontend-api";
-export { ApiClientError, apiClient, normalizeApiError } from "./api/client";
+export { ApiClientError, apiClient, normalizeApiError, registerUnauthorizedHandler, resetUnauthorizedHandling } from "./api/client";
 export { fetchCurrentMenus } from "./api/menu-api";
 export { fetchDictCodes, fetchDictByCode } from "./api/dict-api";
 export { fetchCurrentConfig } from "./api/config-api";

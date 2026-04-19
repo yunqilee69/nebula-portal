@@ -35,10 +35,12 @@ The web app reads backend settings from Vite env vars. Copy values into `.env.lo
 
 - `VITE_API_BASE_URL`: request base URL used by the browser client; defaults to empty so local development uses relative paths and the Vite dev proxy
 - `VITE_BACKEND_PROXY_TARGET`: web dev proxy target, defaults to `http://127.0.0.1:8080`
-- `VITE_STORAGE_UPLOAD_TASK_PATH`: create storage upload task path, defaults to `/storage/upload-tasks`
-- `VITE_STORAGE_UPLOAD_SIMPLE_PATH_TEMPLATE`: simple upload path template, defaults to `/storage/upload-tasks/{id}/simple`
-- `VITE_STORAGE_UPLOAD_COMPLETE_PATH_TEMPLATE`: upload complete path template, defaults to `/storage/upload-tasks/{id}/complete`
-- `VITE_STORAGE_UPLOAD_BIND_PATH_TEMPLATE`: bind uploaded file path template, defaults to `/storage/upload-tasks/{id}/bind`
-- `VITE_STORAGE_FILE_PAGE_PATH`: storage file page path, defaults to `/storage/files/page`
-- `VITE_STORAGE_FILE_DETAIL_PATH_TEMPLATE`: storage file detail path template, defaults to `/storage/files/{id}`
-- `VITE_STORAGE_FILE_CONTENT_PATH_TEMPLATE`: storage file content path template, defaults to `/storage/files/{id}/content`
+- `VITE_STORAGE_UPLOAD_TASK_PATH`: create chunk upload task path, defaults to `/api/storage/upload-tasks`
+- `VITE_STORAGE_UPLOAD_PATH`: simple upload path, defaults to `/api/storage/upload`
+- `VITE_STORAGE_UPLOAD_COMPLETE_PATH_TEMPLATE`: chunk upload complete path template, defaults to `/api/storage/upload-tasks/{id}/complete`
+- `VITE_STORAGE_UPLOAD_BIND_PATH_TEMPLATE`: bind uploaded file path template, defaults to `/api/storage/upload-tasks/{id}/bind`
+- `VITE_STORAGE_FILE_PAGE_PATH`: storage file page path, defaults to `/api/storage/files/page`
+- `VITE_STORAGE_FILE_DETAIL_PATH_TEMPLATE`: storage file detail path template, defaults to `/api/storage/files/{id}`
+- `VITE_STORAGE_DOWNLOAD_PATH`: storage download path, defaults to `/api/storage/download`
+- `VITE_STORAGE_SIGNED_DOWNLOAD_PATH`: signed storage download path, defaults to `/api/storage/download-signed`
+- `VITE_STORAGE_GENERATE_SIGNED_URL_PATH`: signed download generation path, defaults to `/api/storage/generate-signed-url`
