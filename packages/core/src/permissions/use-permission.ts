@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { useAppContext } from "./app-context";
+import { useAppContext } from "../context/app-context";
 
 export function usePermission() {
   const ctx = useAppContext();

@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { useAppContext } from "./app-context";
+import { useAppContext } from "../context/app-context";
 
 export interface NePermissionProps {
   code?: string;
