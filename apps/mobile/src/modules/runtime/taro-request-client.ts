@@ -1,6 +1,7 @@
 import { createAuthHeaders, normalizeCurrentUser, resolveSessionFromTokenPayload } from "@nebula/auth"
 import type { AuthSession as AuthPackageSession } from "@nebula/auth"
-import type { AuthSession, LocaleCode, MenuItem, MobileRequestClient } from "@nebula/core"
+import type { AuthSession, MenuItem, MobileRequestClient } from "@nebula/core/types"
+import type { LocaleCode } from "@nebula/core/i18n"
 import { getRecord, getString, normalizePlatformApiError, unwrapEnvelope } from "@nebula/request"
 import Taro from "@tarojs/taro"
 import { miniProgramEnv } from "@/modules/runtime/mini-program-env"
