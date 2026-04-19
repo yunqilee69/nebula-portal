@@ -1,5 +1,5 @@
 import { Alert } from "antd";
-import { useI18n } from "@nebula/core";
+import { useI18n } from "@nebula/core/i18n";
 import { useSearchParams } from "react-router-dom";
 
 export function IframePage() {

@@ -1,13 +1,13 @@
 import { Col, List, Row, Space, Statistic, Typography } from "antd";
-import { getRegisteredModules, useI18n } from "@nebula/core";
-import type { MenuItem } from "@nebula/core";
+import { useI18n } from "@nebula/core/i18n";
+import { useMenuStore } from "@nebula/core/menu";
+import { getRegisteredModules } from "@nebula/core/routing";
+import { useAuthStore } from "@nebula/core/auth";
+import { useConfigStore, useNotifyStore } from "@nebula/core/stores";
+import type { MenuItem } from "@nebula/core/types";
 import { NeNavCards, NePage, NePanel, NeStatusTag } from "@nebula/ui-web";
 import { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuthStore } from "@nebula/core";
-import { useConfigStore } from "@nebula/core";
-import { useMenuStore } from "@nebula/core";
-import { useNotifyStore } from "@nebula/core";
 
 interface MenuCardItem {
   key: string;
