@@ -1,6 +1,6 @@
 import { DeleteOutlined, ReloadOutlined, SearchOutlined } from "@ant-design/icons";
 import { Badge, Button, Descriptions, Input, Popconfirm, Space, Table, Tag, Typography, message } from "antd";
-import { useI18n } from "@nebula/core";
+import { useI18n } from "@nebula/core/i18n";
 import { NeEmptyState, NePage, NePanel } from "@nebula/ui-web";
 import { useEffect, useMemo, useState } from "react";
 import type { FrontendCacheEntry, FrontendCacheGroup } from "../../../api/frontend-api";
