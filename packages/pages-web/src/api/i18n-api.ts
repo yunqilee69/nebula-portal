@@ -1,4 +1,4 @@
-import type { LocaleCode } from "@nebula/core";
+import type { LocaleCode } from "@nebula/core/i18n";
 import { webEnv } from "../config/env";
 import { requestGet, requestPost } from "./client";
 
