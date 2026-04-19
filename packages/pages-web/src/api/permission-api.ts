@@ -1,4 +1,4 @@
-import type { PermissionItem, PermissionMutationPayload, PermissionPageQuery, PermissionPageResult } from "@nebula/core";
+import type { PermissionItem, PermissionMutationPayload, PermissionPageQuery, PermissionPageResult } from "@nebula/core/types";
 import { apiClient, getArray, getRecord, getString, unwrapEnvelope } from "./client";
 
 function mapPermission(item: unknown): PermissionItem | null {
