@@ -1,7 +1,7 @@
 import type { ComponentType } from "react";
 import { loadRouteComponent } from "./route-component-registry";
 import { getRegisteredModules } from "./module-registry";
-import type { MenuItem, RouteDefinition } from "./types";
+import type { MenuItem, RouteDefinition } from "../types";
 
 export function buildRoutesFromMenus(
   menus: MenuItem[],
