@@ -184,7 +184,7 @@ export function OperationsMenuPage() {
   const componentSources = useMemo(() => collectComponentSources(), [drawerOpen]);
   const componentOptions = useMemo(() => {
     const registeredOptions = listRegisteredComponents().map((componentKey) => ({
-      label: `${componentKey} · ${componentSources.get(componentKey) ?? (componentKey.startsWith("shell/") ? t("menuManagement.shellComponentSource") : t("menuManagement.unknownComponentSource"))}`,
+      label: `${componentKey} · ${componentSources.get(componentKey) ?? (componentKey.startsWith("nebula/") ? t("menuManagement.nebulaComponentSource") : t("menuManagement.unknownComponentSource"))}`,
       value: componentKey,
     }));
 
