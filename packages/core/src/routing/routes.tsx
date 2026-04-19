@@ -1,6 +1,5 @@
 import type { ComponentType } from "react";
 import { loadRouteComponent } from "./route-component-registry";
-import { getRegisteredModules } from "./module-registry";
 import type { MenuItem, RouteDefinition } from "../types";
 
 export function buildRoutesFromMenus(
@@ -23,24 +22,4 @@ export function buildRoutesFromMenus(
 
   visit(menus);
   return routes;
-}
-
-export function buildModuleRoutes() {
-  return getRegisteredModules().flatMap((module) =>
-    (module.routes ?? []).map((route) => {
-      if (route.component) {
-        const RouteComponent = route.component;
-        return { path: route.path, element: <RouteComponent /> };
-      }
-      if (route.routeComponentKey) {
-        const RouteComponent = loadRouteComponent(route.routeComponentKey, DefaultMissingPage);
-        return { path: route.path, element: <RouteComponent /> };
-      }
-      return { path: route.path, element: <DefaultMissingPage /> };
-    }),
-  );
-}
-
-function DefaultMissingPage() {
-  return <div>Page is not registered.</div>;
 }
