@@ -3,7 +3,9 @@ import {
   AdvancedCachePage,
   AdvancedConfigPage,
   AdvancedDictPage,
+  AdvancedDictItemsPage,
   AdvancedOAuth2AccountPage,
+
   AdvancedOAuth2ClientPage,
   AdvancedParamPage,
   DashboardPage,
@@ -30,6 +32,7 @@ const nebulaRouteComponents: RouteComponentLoaderMap = {
   "nebula/NotificationsTemplatePage": async () => ({ default: NotificationsTemplatePage }),
   "nebula/NotificationsAnnouncementPage": async () => ({ default: NotificationsAnnouncementPage }),
   "nebula/AdvancedDictPage": async () => ({ default: AdvancedDictPage }),
+  "nebula/AdvancedDictItemsPage": async () => ({ default: AdvancedDictItemsPage }),
   "nebula/AdvancedParamPage": async () => ({ default: AdvancedParamPage }),
   "nebula/AdvancedConfigPage": async () => ({ default: AdvancedConfigPage }),
   "nebula/AdvancedOAuth2ClientPage": async () => ({ default: AdvancedOAuth2ClientPage }),

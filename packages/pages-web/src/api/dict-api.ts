@@ -19,15 +19,18 @@ function pickRecordExtras(record: Record<string, unknown>) {
   return Object.keys(extras).length > 0 ? extras : undefined;
 }
 
+function normalizeDictRecord(item: unknown): DictRecord {
+  const record = getRecord(item) ?? {};
+  return {
+    label: getString(record.itemLabel) ?? getString(record.label) ?? "",
+    value: getString(record.itemValue) ?? getString(record.value) ?? "",
+    children: getArray<unknown>(record.children).map(normalizeDictRecord),
+    extra: pickRecordExtras(record),
+  };
+}
+
 function normalizeDictPayload(payload: unknown) {
-  return getArray<unknown>(payload).map<DictRecord>((item) => {
-    const record = getRecord(item) ?? {};
-    return {
-      label: getString(record.itemLabel) ?? getString(record.label) ?? "",
-      value: getString(record.itemValue) ?? getString(record.value) ?? "",
-      extra: pickRecordExtras(record),
-    };
-  });
+  return getArray<unknown>(payload).map<DictRecord>(normalizeDictRecord);
 }
 
 export async function fetchDictCodes(): Promise<Array<{ code: string }>> {

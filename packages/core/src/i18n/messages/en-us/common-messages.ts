@@ -53,6 +53,7 @@ const messages = {
   "common.createTime": "Created At",
   "common.updateTime": "Updated At",
   "common.inbox": "Inbox",
+  "common.back": "Back",
   "common.backHome": "Back Home",
   "common.fileName": "File Name",
   "common.route": "Route",

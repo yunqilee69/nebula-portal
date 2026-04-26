@@ -5,6 +5,10 @@ function getNumber(value: unknown) {
   return typeof value === "number" ? value : undefined;
 }
 
+function getBoolean(value: unknown) {
+  return typeof value === "boolean" ? value : undefined;
+}
+
 function mapDictType(item: unknown): DictTypeDetail | null {
   const record = getRecord(item);
   if (!record) {
@@ -13,8 +17,8 @@ function mapDictType(item: unknown): DictTypeDetail | null {
 
   return {
     id: getString(record.id) ?? crypto.randomUUID(),
-    typeCode: getString(record.typeCode) ?? "",
-    typeName: getString(record.typeName) ?? "",
+    code: getString(record.code) ?? "",
+    name: getString(record.name) ?? "",
     status: getNumber(record.status),
     remark: getString(record.remark),
     createTime: getString(record.createTime),
@@ -30,27 +34,33 @@ function mapDictItem(item: unknown): DictItemDetail | null {
 
   return {
     id: getString(record.id) ?? crypto.randomUUID(),
-    typeCode: getString(record.typeCode) ?? "",
-    itemCode: getString(record.itemCode) ?? "",
-    itemLabel: getString(record.itemLabel) ?? "",
+    dictCode: getString(record.dictCode) ?? "",
+    parentId: getString(record.parentId),
+    path: getString(record.path),
+    name: getString(record.name) ?? "",
     itemValue: getString(record.itemValue) ?? "",
     sort: getNumber(record.sort),
     status: getNumber(record.status),
-    isDefault: getNumber(record.isDefault),
+    defaultFlag: getBoolean(record.defaultFlag),
     tagColor: getString(record.tagColor),
     extraJson: getString(record.extraJson),
     remark: getString(record.remark),
     createTime: getString(record.createTime),
     updateTime: getString(record.updateTime),
+    children: getArray<unknown>(record.children)
+      .map(mapDictItem)
+      .filter((value): value is DictItemDetail => value !== null),
   };
 }
 
 function parsePageResult<T>(payload: Record<string, unknown>, mapper: (value: unknown) => T | null) {
-  const pageData = getRecord(payload.data) ?? payload;
+  const firstLayer = getRecord(payload.data) ?? payload;
+  const nestedLayer = getRecord(firstLayer.data);
+  const pageData = nestedLayer ?? firstLayer;
   const rows = getArray<unknown>(pageData.data ?? pageData.records ?? pageData.rows ?? pageData.list)
     .map(mapper)
     .filter((value): value is T => value !== null);
-  const totalCandidate = pageData.total ?? payload.total ?? payload.count;
+  const totalCandidate = pageData.total ?? firstLayer.total ?? payload.total ?? payload.count;
   const total = typeof totalCandidate === "number" ? totalCandidate : rows.length;
   return { data: rows, total };
 }
@@ -71,7 +81,7 @@ export async function createDictType(payload: DictTypeMutationPayload) {
 
 export async function updateDictType(id: string, payload: DictTypeMutationPayload) {
   return requestPut<unknown>(`/api/dict/types/${id}`, {
-    typeName: payload.typeName,
+    name: payload.name,
     status: payload.status,
     remark: payload.remark,
   });
@@ -97,11 +107,12 @@ export async function createDictItem(payload: DictItemMutationPayload) {
 
 export async function updateDictItem(id: string, payload: DictItemMutationPayload) {
   return requestPut<unknown>(`/api/dict/items/${id}`, {
-    itemLabel: payload.itemLabel,
+    parentId: payload.parentId,
+    name: payload.name,
     itemValue: payload.itemValue,
     sort: payload.sort,
     status: payload.status,
-    isDefault: payload.isDefault,
+    defaultFlag: payload.defaultFlag,
     tagColor: payload.tagColor,
     extraJson: payload.extraJson,
     remark: payload.remark,
@@ -118,5 +129,5 @@ export async function fetchDictTypeList() {
 }
 
 export function toDictOptions(types: DictTypeItem[]) {
-  return types.map((item) => ({ label: `${item.typeName} (${item.typeCode})`, value: item.typeCode }));
+  return types.map((item) => ({ label: `${item.name} (${item.code})`, value: item.code }));
 }

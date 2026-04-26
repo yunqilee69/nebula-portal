@@ -355,15 +355,15 @@ export interface MenuItem {
 export interface DictRecord {
   label: string;
   value: string;
+  children?: DictRecord[];
   extra?: Record<string, string>;
 }
 
 export interface DictTypeItem {
   id: string;
-  typeCode: string;
-  typeName: string;
+  code: string;
+  name: string;
   status?: number;
-  cacheEnabled?: number;
   remark?: string;
   createTime?: string;
   updateTime?: string;
@@ -376,8 +376,8 @@ export interface DictTypePageQuery {
   pageSize: number;
   orderName?: string;
   orderType?: string;
-  typeCode?: string;
-  typeName?: string;
+  code?: string;
+  name?: string;
   status?: number;
 }
 
@@ -387,27 +387,28 @@ export interface DictTypePageResult {
 }
 
 export interface DictTypeMutationPayload {
-  typeCode: string;
-  typeName: string;
+  code: string;
+  name: string;
   status?: number;
-  cacheEnabled?: number;
   remark?: string;
 }
 
 export interface DictItemItem {
   id: string;
-  typeCode: string;
-  itemCode: string;
-  itemLabel: string;
+  dictCode: string;
+  parentId?: string;
+  path?: string;
+  name: string;
   itemValue: string;
   sort?: number;
   status?: number;
-  isDefault?: number;
+  defaultFlag?: boolean;
   tagColor?: string;
   extraJson?: string;
   remark?: string;
   createTime?: string;
   updateTime?: string;
+  children?: DictItemItem[];
 }
 
 export interface DictItemDetail extends DictItemItem {}
@@ -417,9 +418,8 @@ export interface DictItemPageQuery {
   pageSize: number;
   orderName?: string;
   orderType?: string;
-  typeCode?: string;
-  itemCode?: string;
-  itemLabel?: string;
+  dictCode?: string;
+  name?: string;
   status?: number;
 }
 
@@ -429,13 +429,13 @@ export interface DictItemPageResult {
 }
 
 export interface DictItemMutationPayload {
-  typeCode: string;
-  itemCode: string;
-  itemLabel: string;
+  dictCode: string;
+  parentId?: string;
+  name: string;
   itemValue: string;
   sort?: number;
   status?: number;
-  isDefault?: number;
+  defaultFlag?: boolean;
   tagColor?: string;
   extraJson?: string;
   remark?: string;

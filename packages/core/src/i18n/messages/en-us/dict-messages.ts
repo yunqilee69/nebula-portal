@@ -7,13 +7,30 @@ const messages = {
   "dict.noRemark": "No remark",
   "dict.typeFilter": "Dictionary Type Filters",
   "dict.itemFilter": "Dictionary Item Filters",
+  "dict.treeItemFilter": "Tree Dictionary Filters",
   "dict.isDefault": "Default",
   "dict.loadTypesFailed": "Failed to load dictionary types",
   "dict.loadItemsFailed": "Failed to load dictionary items",
   "dict.createType": "Create Dictionary Type",
   "dict.editType": "Edit Dictionary Type",
   "dict.createItem": "Create Dictionary Item",
-  "dict.editItem": "Edit Dictionary Item"
+  "dict.createTreeItem": "Create Tree Dictionary Item",
+  "dict.createRootItem": "Create Root Node",
+  "dict.editItem": "Edit Dictionary Item",
+  "dict.addChild": "Add Child",
+  "dict.deleteNodeConfirm": "Deleting this node may affect its children. Continue?",
+  "dict.structureMode": "Dictionary Structure",
+  "dict.flatMode": "Flat Dictionary",
+  "dict.treeMode": "Tree Dictionary",
+  "dict.treeModeHint": "Tree dictionaries load the full hierarchy and preserve parent-child context in filtered results.",
+  "dict.treeRecordCount": "Tree nodes: {count}",
+  "dict.rootItemHint": "Leave empty to create a root node",
+  "dict.cacheMode": "Cache Enabled",
+  "dict.manageItems": "Manage Items",
+  "dict.manageItemsPanelTitle": "Manage Items: {name}",
+  "dict.missingDictCode": "Missing dictionary code",
+  "dict.path": "Tree Path",
+  "dict.typeManagementTitle": "Dictionary Type Management"
 };
 
 export default messages;

@@ -8,7 +8,7 @@ const workspaceRoot = path.resolve(projectDir, "../..");
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, projectDir, "");
-  const backendTarget = env.VITE_BACKEND_PROXY_TARGET ?? "http://127.0.0.1:8080";
+  const backendTarget = env.VITE_BACKEND_PROXY_TARGET ?? "http://127.0.0.1:9999";
 
   return {
     resolve: {

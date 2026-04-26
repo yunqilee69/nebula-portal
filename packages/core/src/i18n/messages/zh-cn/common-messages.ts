@@ -53,6 +53,7 @@ const messages = {
   "common.createTime": "创建时间",
   "common.updateTime": "更新时间",
   "common.inbox": "收件箱",
+  "common.back": "返回",
   "common.backHome": "返回首页",
   "common.fileName": "文件名",
   "common.route": "路由",

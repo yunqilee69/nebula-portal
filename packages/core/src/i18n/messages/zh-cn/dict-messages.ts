@@ -7,13 +7,30 @@ const messages = {
   "dict.noRemark": "暂无备注",
   "dict.typeFilter": "字典类型筛选",
   "dict.itemFilter": "字典项筛选",
+  "dict.treeItemFilter": "树形字典筛选",
   "dict.isDefault": "默认项",
   "dict.loadTypesFailed": "字典类型加载失败",
   "dict.loadItemsFailed": "字典项加载失败",
   "dict.createType": "新建字典类型",
   "dict.editType": "编辑字典类型",
   "dict.createItem": "新建字典项",
-  "dict.editItem": "编辑字典项"
+  "dict.createTreeItem": "新建树形字典项",
+  "dict.createRootItem": "新建根节点",
+  "dict.editItem": "编辑字典项",
+  "dict.addChild": "新增子节点",
+  "dict.deleteNodeConfirm": "删除该节点会影响其子节点，确认继续吗？",
+  "dict.structureMode": "字典结构",
+  "dict.flatMode": "平铺字典",
+  "dict.treeMode": "树形字典",
+  "dict.treeModeHint": "树形字典会按层级完整加载，筛选结果会保留命中的父子关系。",
+  "dict.treeRecordCount": "树形节点数：{count}",
+  "dict.rootItemHint": "不选择则作为根节点",
+  "dict.cacheMode": "缓存开关",
+  "dict.manageItems": "管理字典项",
+  "dict.manageItemsPanelTitle": "管理字典项：{name}",
+  "dict.missingDictCode": "缺少字典编码",
+  "dict.path": "树路径",
+  "dict.typeManagementTitle": "字典类型管理"
 };
 
 export default messages;
