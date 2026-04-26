@@ -10,9 +10,7 @@ import {
   fetchDictTypePage,
   updateDictType,
 } from "../../../api/dict-admin-api";
-import { NeModal, NePage, NeTablePage } from "@nebula/ui-web";
-
-const initialTypeQuery: DictTypePageQuery = { pageNum: 1, pageSize: 10, orderName: "updateTime", orderType: "desc" };
+import { NeModal, NePage, NeSearch, NeTablePage } from "@nebula/ui-web";
 
 const initialTypeForm: DictTypeMutationPayload = {
   code: "",
@@ -87,15 +85,43 @@ export function AdvancedDictPage() {
 
   return (
     <NePage>
+      <NeSearch
+        title={t("dict.typeManagementTitle")}
+        labels={{ expand: t("common.expand"), collapse: t("common.collapse"), reset: t("common.reset") }}
+        onReset={() => typeFilterForm.resetFields()}
+      >
+        <Form
+          form={typeFilterForm}
+          layout="inline"
+          onFinish={() => setReloadSeed((current) => current + 1)}
+        >
+          <Form.Item name="code" label={t("common.code")}>
+            <Input allowClear />
+          </Form.Item>
+          <Form.Item name="name" label={t("common.name")}>
+            <Input allowClear />
+          </Form.Item>
+          <Form.Item name="status" label={t("common.status")}>
+            <Select
+              allowClear
+              style={{ width: 140 }}
+              options={[{ label: t("common.enabled"), value: 1 }, { label: t("common.disabled"), value: 0 }]}
+            />
+          </Form.Item>
+          <Form.Item>
+            <Button type="primary" htmlType="submit" icon={<SearchOutlined />}>
+              {t("common.search")}
+            </Button>
+          </Form.Item>
+        </Form>
+      </NeSearch>
+
       <NeTablePage
         key={reloadSeed}
-        title={t("dict.typeManagementTitle")}
-        form={typeFilterForm}
-        initialQuery={initialTypeQuery}
+        searchForm={typeFilterForm}
         request={fetchDictTypePage}
-        rowKey="id"
         columns={typeColumns}
-        labels={{ expand: t("common.expand"), collapse: t("common.collapse"), reset: t("common.reset") }}
+        rowKey="id"
         toolbar={
           <Button
             type="primary"
@@ -110,28 +136,6 @@ export function AdvancedDictPage() {
           </Button>
         }
         summary={(result) => t("common.recordCount", undefined, { count: result.total })}
-        searchContent={
-          <>
-            <Form.Item name="code" label={t("common.code")}>
-              <Input allowClear />
-            </Form.Item>
-            <Form.Item name="name" label={t("common.name")}>
-              <Input allowClear />
-            </Form.Item>
-            <Form.Item name="status" label={t("common.status")}>
-              <Select
-                allowClear
-                style={{ width: 140 }}
-                options={[{ label: t("common.enabled"), value: 1 }, { label: t("common.disabled"), value: 0 }]}
-              />
-            </Form.Item>
-            <Form.Item>
-              <Button type="primary" htmlType="submit" icon={<SearchOutlined />}>
-                {t("common.search")}
-              </Button>
-            </Form.Item>
-          </>
-        }
       />
 
       <NeModal

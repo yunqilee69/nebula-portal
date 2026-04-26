@@ -12,7 +12,7 @@ export * from "./ne-modal/ne-modal";
 export * from "./ne-nav-cards/ne-nav-cards";
 export * from "./ne-page/ne-page";
 export * from "./ne-panel/ne-panel";
-export * from "./ne-search-panel/ne-search-panel";
+export * from "./ne-search/ne-search";
 export * from "./ne-status-tag/ne-status-tag";
 export * from "./ne-tree/ne-tree";
 export * from "./pagination";

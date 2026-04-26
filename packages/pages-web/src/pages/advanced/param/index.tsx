@@ -31,7 +31,7 @@ import {
   fetchSystemParamPage,
   updateSystemParam,
 } from "../../../api/system-param-api";
-import { NeDetailDrawer, NeModal, NePage, NeSearchPanel, NeTable } from "@nebula/ui-web";
+import { NeDetailDrawer, NeModal, NePage, NeSearch, NeTable } from "@nebula/ui-web";
 
 const initialQuery: SystemParamPageQuery = {
   pageNum: 1,
@@ -249,7 +249,7 @@ export function AdvancedParamPage() {
 
   return (
     <NePage>
-      <NeSearchPanel
+      <NeSearch
         title={t("common.filters")}
         labels={{ expand: t("common.expand"), collapse: t("common.collapse"), reset: t("common.reset") }}
         onReset={() => {
@@ -278,7 +278,7 @@ export function AdvancedParamPage() {
             </Button>
           </Form.Item>
         </Form>
-      </NeSearchPanel>
+      </NeSearch>
       <NeTable
         toolbar={
           <Space>

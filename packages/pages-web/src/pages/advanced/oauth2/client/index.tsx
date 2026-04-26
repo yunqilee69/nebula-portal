@@ -4,7 +4,7 @@ import type { OAuth2ClientDetail, OAuth2ClientItem, OAuth2ClientMutationPayload,
 import { useI18n } from "@nebula/core";
 import { useEffect, useMemo, useState } from "react";
 import { createOAuth2Client, deleteOAuth2Client, fetchOAuth2ClientDetail, fetchOAuth2ClientPage, updateOAuth2Client } from "../../../../api/oauth2-client-api";
-import { NeDetailDrawer, NeModal, NePage, NeSearchPanel, NeTable } from "@nebula/ui-web";
+import { NeDetailDrawer, NeModal, NePage, NeSearch, NeTable } from "@nebula/ui-web";
 
 const initialQuery: OAuth2ClientPageQuery = { pageNum: 1, pageSize: 10, orderName: "updateTime", orderType: "desc" };
 const initialForm: OAuth2ClientMutationPayload = {
@@ -123,7 +123,7 @@ export function AdvancedOAuth2ClientPage() {
 
   return (
     <NePage>
-      <NeSearchPanel
+      <NeSearch
         title={t("oauth2Client.filterTitle")}
         labels={{ expand: t("common.expand"), collapse: t("common.collapse"), reset: t("common.reset") }}
         onReset={() => {
@@ -148,7 +148,7 @@ export function AdvancedOAuth2ClientPage() {
           </Form.Item>
         </Form>
         {error ? <Typography.Paragraph type="danger" style={{ marginTop: 16, marginBottom: 0 }}>{error}</Typography.Paragraph> : null}
-      </NeSearchPanel>
+      </NeSearch>
 
       <NeTable
         toolbar={

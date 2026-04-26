@@ -2,36 +2,36 @@ import { Button, Space } from "antd";
 import type { ReactNode } from "react";
 import { useState } from "react";
 
-export interface NeSearchPanelLabels {
+export interface NeSearchLabels {
   expand: string;
   collapse: string;
   reset: string;
 }
 
-export interface NeSearchPanelProps {
+export interface NeSearchProps {
   children: ReactNode;
   className?: string;
   defaultCollapsed?: boolean;
   extra?: ReactNode;
-  labels?: NeSearchPanelLabels;
+  labels?: NeSearchLabels;
   onReset?: () => void;
   title?: ReactNode;
 }
 
-const defaultLabels: NeSearchPanelLabels = {
+const defaultLabels: NeSearchLabels = {
   expand: "Expand",
   collapse: "Collapse",
   reset: "Reset",
 };
 
-export function NeSearchPanel({ children, className, defaultCollapsed = false, extra, labels = defaultLabels, onReset, title }: NeSearchPanelProps) {
+export function NeSearch({ children, className, defaultCollapsed = false, extra, labels = defaultLabels, onReset, title }: NeSearchProps) {
   const [collapsed, setCollapsed] = useState(defaultCollapsed);
-  const panelClassName = ["ne-search-panel", className].filter(Boolean).join(" ");
-  const titleContent = title ? <div className="ne-search-panel__title">{title}</div> : <div />;
+  const panelClassName = ["ne-search", className].filter(Boolean).join(" ");
+  const titleContent = title ? <div className="ne-search__title">{title}</div> : <div />;
 
   return (
     <section className={panelClassName}>
-      <header className="ne-search-panel__header">
+      <header className="ne-search__header">
         {titleContent}
         <Space size={8}>
           {extra}
@@ -45,7 +45,7 @@ export function NeSearchPanel({ children, className, defaultCollapsed = false, e
           </Button>
         </Space>
       </header>
-      <div aria-hidden={collapsed} className="ne-search-panel__body" hidden={collapsed}>
+      <div aria-hidden={collapsed} className="ne-search__body" hidden={collapsed}>
         {children}
       </div>
     </section>

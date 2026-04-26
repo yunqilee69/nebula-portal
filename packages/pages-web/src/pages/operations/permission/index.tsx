@@ -13,7 +13,7 @@ import type {
 import { useI18n } from "@nebula/core";
 import { NePermission } from "@nebula/core";
 import { OrganizationTree } from "@nebula/ui-web";
-import { NePage, NePanel, NeSearchPanel, NeTable } from "@nebula/ui-web";
+import { NePage, NePanel, NeSearch, NeTable } from "@nebula/ui-web";
 import { useEffect, useMemo, useState } from "react";
 import type { Key } from "react";
 import { fetchButtonPage } from "../../../api/button-api";
@@ -645,7 +645,7 @@ export function OperationsPermissionPage({ embedded = false }: PermissionAssignm
         </NePanel>
 
         <div className="permission-assignment-layout__content">
-          <NeSearchPanel
+          <NeSearch
             className="permission-assignment-layout__filters permission-assignment-layout__filters--tabs"
             title={
               <Tabs
@@ -691,7 +691,7 @@ export function OperationsPermissionPage({ embedded = false }: PermissionAssignm
                 <Form.Item><Button type="primary" htmlType="submit" icon={<SearchOutlined />}>{t("common.search")}</Button></Form.Item>
               </Form>
             )}
-          </NeSearchPanel>
+          </NeSearch>
 
           <NePanel
             title={t("permissionAssignment.operationPanelTitle")}

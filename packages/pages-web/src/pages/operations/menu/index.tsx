@@ -6,7 +6,7 @@ import { getRegisteredRouteComponentSource, listRegisteredRouteComponents } from
 import type { MenuItem, MenuMutationPayload, MenuPageQuery } from "@nebula/core";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { createMenu, deleteMenu, fetchMenuPage, fetchMenuTree, updateMenu } from "../../../api/menu-admin-api";
-import { NeModal, NePage, NeSearchPanel, NeTable } from "@nebula/ui-web";
+import { NeModal, NePage, NeSearch, NeTable } from "@nebula/ui-web";
 
 const initialQuery: MenuPageQuery = {
   pageNum: 1,
@@ -305,7 +305,7 @@ export function OperationsMenuPage() {
 
   return (
     <NePage>
-      <NeSearchPanel
+      <NeSearch
         title={t("common.filters")}
         labels={{ expand: t("common.expand"), collapse: t("common.collapse"), reset: t("common.reset") }}
         onReset={() => {
@@ -328,7 +328,7 @@ export function OperationsMenuPage() {
           </Form.Item>
         </Form>
         {error ? <Typography.Paragraph type="danger" style={{ marginTop: 16, marginBottom: 0 }}>{error}</Typography.Paragraph> : null}
-      </NeSearchPanel>
+      </NeSearch>
       <NeTable
         toolbar={
           <NePermission code="system:menu:create">

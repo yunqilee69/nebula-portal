@@ -4,7 +4,7 @@ import type { NotifyTemplateDetail, NotifyTemplateItem, NotifyTemplateMutationPa
 import { useI18n } from "@nebula/core";
 import { useEffect, useMemo, useState } from "react";
 import { createNotifyTemplate, deleteNotifyTemplate, fetchNotifyTemplateDetail, fetchNotifyTemplatePage, sendNotification, updateNotifyTemplate } from "../../../api/notify-template-api";
-import { NeDetailDrawer, NeModal, NePage, NeSearchPanel, NeTable } from "@nebula/ui-web";
+import { NeDetailDrawer, NeModal, NePage, NeSearch, NeTable } from "@nebula/ui-web";
 
 const initialQuery: NotifyTemplatePageQuery = { pageNum: 1, pageSize: 10, orderName: "updateTime", orderType: "desc" };
 const initialForm: NotifyTemplateMutationPayload = { templateCode: "", templateName: "", channelType: "SITE", subjectTemplate: "", contentTemplate: "", status: 1, isBuiltin: 0, remark: "" };
@@ -134,7 +134,7 @@ export function NotificationsTemplatePage() {
 
   return (
     <NePage>
-      <NeSearchPanel
+      <NeSearch
         title={t("notifyTemplate.filterTitle")}
         labels={{ expand: t("common.expand"), collapse: t("common.collapse"), reset: t("common.reset") }}
         onReset={() => {
@@ -162,7 +162,7 @@ export function NotificationsTemplatePage() {
           </Form.Item>
         </Form>
         {error ? <Typography.Paragraph type="danger" style={{ marginTop: 16, marginBottom: 0 }}>{error}</Typography.Paragraph> : null}
-      </NeSearchPanel>
+      </NeSearch>
 
       <NeTable
         toolbar={

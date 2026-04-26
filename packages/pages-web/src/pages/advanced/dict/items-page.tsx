@@ -10,7 +10,7 @@ import {
   fetchDictItemPage,
   updateDictItem,
 } from "../../../api/dict-admin-api";
-import { NeModal, NePage, NePanel, NeSearchPanel, NeTable } from "@nebula/ui-web";
+import { NeModal, NePage, NePanel, NeSearch, NeTable } from "@nebula/ui-web";
 
 const initialItemQuery = { pageNum: 1, pageSize: 10, orderName: "sort", orderType: "asc" };
 
@@ -291,7 +291,7 @@ export function AdvancedDictItemsPage() {
         </Space>
       </NePanel>
 
-      <NeSearchPanel
+      <NeSearch
         title={treeEnabled ? t("dict.treeItemFilter") : t("dict.itemFilter")}
         labels={{ expand: t("common.expand"), collapse: t("common.collapse"), reset: t("common.reset") }}
         onReset={() => {
@@ -306,7 +306,7 @@ export function AdvancedDictItemsPage() {
         </Form>
         {treeEnabled ? <Typography.Paragraph type="secondary" style={{ marginTop: 16, marginBottom: 0 }}>{t("dict.treeModeHint")}</Typography.Paragraph> : null}
         {itemError ? <Typography.Paragraph type="danger" style={{ marginTop: 16, marginBottom: 0 }}>{itemError}</Typography.Paragraph> : null}
-      </NeSearchPanel>
+      </NeSearch>
 
       <NeTable
         toolbar={<Space wrap>

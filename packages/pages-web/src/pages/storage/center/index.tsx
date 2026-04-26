@@ -3,7 +3,7 @@ import { Button, Form, Input, Pagination, Popconfirm, Space, Table, Tag, Typogra
 import type { ColumnsType } from "antd/es/table";
 import type { StorageFileItem, StorageListQuery } from "@nebula/core";
 import { useEffect, useMemo, useState } from "react";
-import { NePage, NeSearchPanel, NeTable } from "@nebula/ui-web";
+import { NePage, NeSearch, NeTable } from "@nebula/ui-web";
 import {
   buildStorageDownloadUrl,
   buildStoragePreviewUrl,
@@ -238,7 +238,7 @@ export function StorageCenterPage() {
 
   return (
     <NePage className="storage-center-page">
-      <NeSearchPanel
+      <NeSearch
         title="正式文件筛选"
         labels={{ expand: "展开", collapse: "收起", reset: "重置" }}
         onReset={() => {
@@ -284,7 +284,7 @@ export function StorageCenterPage() {
             {error}
           </Typography.Paragraph>
         ) : null}
-      </NeSearchPanel>
+      </NeSearch>
       <NeTable
         className="storage-center-page__table-panel"
         toolbar={

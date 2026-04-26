@@ -1,8 +1,7 @@
-import { Form, Pagination, Table } from "antd";
-import type { FormInstance, FormProps, PaginationProps, TableProps } from "antd";
+import { Pagination, Table } from "antd";
+import type { FormInstance, PaginationProps, TableProps } from "antd";
 import type { ReactNode } from "react";
 import { useEffect, useMemo, useState } from "react";
-import { NeSearchPanel, type NeSearchPanelProps } from "../ne-search-panel/ne-search-panel";
 import { NeTable } from "../ne-table/ne-table";
 
 export interface NePagedQuery {
@@ -17,49 +16,44 @@ export interface NeTablePageResult<TRow> {
   total: number;
 }
 
+const DEFAULT_PAGE_SIZE = 20;
+const DEFAULT_PAGE_SIZE_OPTIONS = [10, 20, 50];
+
 export interface NeTablePageProps<TQuery extends NePagedQuery, TRow extends object> {
-  title: ReactNode;
-  form: FormInstance<TQuery>;
-  initialQuery: TQuery;
   request: (query: TQuery) => Promise<NeTablePageResult<TRow>>;
   columns: TableProps<TRow>["columns"];
-  rowKey: TableProps<TRow>["rowKey"];
+  rowKey?: TableProps<TRow>["rowKey"];
+  searchForm?: FormInstance<TQuery>;
   toolbar?: ReactNode;
-  labels?: NeSearchPanelProps["labels"];
+  summary?: ReactNode | ((result: NeTablePageResult<TRow>, query: TQuery) => ReactNode);
   pageSizeOptions?: number[];
-  formProps?: Omit<FormProps<TQuery>, "form" | "initialValues" | "onFinish">;
-  searchContent: ReactNode;
-  summary?: (result: NeTablePageResult<TRow>, query: TQuery) => ReactNode;
   tableProps?: Omit<TableProps<TRow>, "columns" | "dataSource" | "loading" | "pagination" | "rowKey">;
   paginationProps?: Partial<PaginationProps>;
-  onQuerySuccess?: (result: NeTablePageResult<TRow>, query: TQuery) => void;
-  onQueryError?: (error: unknown, query: TQuery) => void;
+  onRequestSuccess?: (result: NeTablePageResult<TRow>, query: TQuery) => void;
+  onRequestFail?: (error: unknown, query: TQuery) => void;
   onLoadingChange?: (loading: boolean) => void;
 }
 
-function NeTablePageInner<TQuery extends NePagedQuery, TRow extends object>({
-  title,
-  form,
-  initialQuery,
+export function NeTablePage<TQuery extends NePagedQuery, TRow extends object>({
   request,
   columns,
-  rowKey,
+  rowKey = "id",
+  searchForm,
   toolbar,
-  labels,
-  pageSizeOptions,
-  formProps,
-  searchContent,
   summary,
+  pageSizeOptions = DEFAULT_PAGE_SIZE_OPTIONS,
   tableProps,
   paginationProps,
-  onQuerySuccess,
-  onQueryError,
+  onRequestSuccess,
+  onRequestFail,
   onLoadingChange,
 }: NeTablePageProps<TQuery, TRow>) {
-  const [query, setQuery] = useState<TQuery>(initialQuery);
+  const [query, setQuery] = useState<TQuery>({
+    pageNum: 1,
+    pageSize: DEFAULT_PAGE_SIZE,
+  } as TQuery);
   const [result, setResult] = useState<NeTablePageResult<TRow>>({ data: [], total: 0 });
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     let active = true;
@@ -67,21 +61,21 @@ function NeTablePageInner<TQuery extends NePagedQuery, TRow extends object>({
     const load = async () => {
       setLoading(true);
       onLoadingChange?.(true);
-      setError(null);
+      const formValues = searchForm?.getFieldsValue() ?? {};
+      const mergedQuery = { ...formValues, pageNum: query.pageNum, pageSize: query.pageSize } as TQuery;
       try {
-        const nextResult = await request(query);
+        const nextResult = await request(mergedQuery);
         if (!active) {
           return;
         }
         setResult(nextResult);
-        onQuerySuccess?.(nextResult, query);
+        onRequestSuccess?.(nextResult, mergedQuery);
       } catch (caughtError) {
         if (!active) {
           return;
         }
         setResult({ data: [], total: 0 });
-        setError(caughtError instanceof Error ? caughtError.message : "Request failed");
-        onQueryError?.(caughtError, query);
+        onRequestFail?.(caughtError, mergedQuery);
       } finally {
         if (active) {
           setLoading(false);
@@ -95,65 +89,40 @@ function NeTablePageInner<TQuery extends NePagedQuery, TRow extends object>({
     return () => {
       active = false;
     };
-  }, [onLoadingChange, onQueryError, onQuerySuccess, query, request]);
+  }, [onLoadingChange, onRequestFail, onRequestSuccess, query, request, searchForm]);
 
-  const mergedLabels = labels ?? {
-    expand: "Expand",
-    collapse: "Collapse",
-    reset: "Reset",
-  };
-
-  const resolvedSummary = useMemo(() => summary?.(result, query), [query, result, summary]);
+  const resolvedSummary = useMemo(
+    () => (typeof summary === "function" ? summary(result, query) : summary),
+    [query, result, summary]
+  );
 
   return (
-    <>
-      <NeSearchPanel
-        title={title}
-        labels={mergedLabels}
-        onReset={() => {
-          form.resetFields();
-          setQuery(initialQuery);
-        }}
-      >
-        <Form
-          {...formProps}
-          form={form}
-          initialValues={initialQuery}
-          onFinish={(values) => setQuery((current) => ({ ...current, ...values, pageNum: 1 }))}
-        >
-          {searchContent}
-        </Form>
-        {error ? <div style={{ color: "var(--nebula-danger, #ff4d4f)", marginTop: 16 }}>{error}</div> : null}
-      </NeSearchPanel>
-
-      <NeTable
-        toolbar={toolbar}
-        summary={resolvedSummary}
-        pageSizeOptions={pageSizeOptions}
-        pagination={
-          <Pagination
-            align="end"
-            current={query.pageNum}
-            pageSize={query.pageSize}
-            total={result.total}
-            onChange={(pageNum, pageSize) => setQuery((current) => ({ ...current, pageNum, pageSize }))}
-            {...paginationProps}
-          />
-        }
-      >
-        <Table<TRow>
-          {...tableProps}
-          rowKey={rowKey}
-          loading={loading}
-          dataSource={result.data}
-          columns={columns}
-          pagination={false}
+    <NeTable
+      toolbar={toolbar}
+      summary={resolvedSummary}
+      pageSizeOptions={pageSizeOptions}
+      pagination={
+        <Pagination
+          align="end"
+          current={query.pageNum}
+          pageSize={query.pageSize}
+          total={result.total}
+          onChange={(pageNum, pageSize) => {
+            const formValues = searchForm?.getFieldsValue() ?? {};
+            setQuery({ ...formValues, pageNum, pageSize } as TQuery);
+          }}
+          {...paginationProps}
         />
-      </NeTable>
-    </>
+      }
+    >
+      <Table<TRow>
+        {...tableProps}
+        rowKey={rowKey}
+        loading={loading}
+        dataSource={result.data}
+        columns={columns}
+        pagination={false}
+      />
+    </NeTable>
   );
-}
-
-export function NeTablePage<TQuery extends NePagedQuery, TRow extends object>(props: NeTablePageProps<TQuery, TRow>) {
-  return <NeTablePageInner {...props} />;
 }

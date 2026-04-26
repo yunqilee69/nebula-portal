@@ -6,7 +6,7 @@ import type { OrganizationItem, OrganizationMutationPayload, OrganizationPageQue
 import { useEffect, useMemo, useState } from "react";
 import { createOrganization, deleteOrganization, fetchOrganizationDetail, fetchOrganizationPage, fetchOrganizationTree, updateOrganization } from "../../../api/organization-api";
 import { OrganizationTree } from "@nebula/ui-web";
-import { NeModal, NePage, NePanel, NeSearchPanel, NeTable } from "@nebula/ui-web";
+import { NeModal, NePage, NePanel, NeSearch, NeTable } from "@nebula/ui-web";
 
 type OrganizationType = NonNullable<OrganizationItem["type"]>;
 
@@ -344,7 +344,7 @@ export function OperationsOrgPage() {
           />
         </NePanel>
         <div className="organization-page__main">
-          <NeSearchPanel
+          <NeSearch
             title={t("common.filters")}
             labels={{ expand: t("common.expand"), collapse: t("common.collapse"), reset: t("common.reset") }}
             onReset={() => {
@@ -374,7 +374,7 @@ export function OperationsOrgPage() {
               </Form.Item>
             </Form>
             {error ? <Typography.Paragraph type="danger" style={{ marginTop: 16, marginBottom: 0 }}>{error}</Typography.Paragraph> : null}
-          </NeSearchPanel>
+          </NeSearch>
           <NeTable
             className="organization-page__table-panel"
             toolbar={

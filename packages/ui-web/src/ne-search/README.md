@@ -1,4 +1,4 @@
-# NeSearchPanel
+# NeSearch
 
 Collapsible search container for list pages.
 
