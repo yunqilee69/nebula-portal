@@ -3,7 +3,7 @@ import { Button, Card, Descriptions, Form, Input, Pagination, Select, Space, Tab
 import type { ColumnsType } from "antd/es/table";
 import type { StorageFileItem, StorageUploadTaskItem, StorageUploadTaskPageQuery } from "@nebula/core";
 import { useEffect, useMemo, useState } from "react";
-import { NePage, NeSearchPanel, NeTablePanel } from "@nebula/ui-web";
+import { NePage, NeSearchPanel, NeTable } from "@nebula/ui-web";
 import {
   buildStorageDownloadUrl,
   buildStoragePreviewUrl,
@@ -277,7 +277,7 @@ export function StorageUploadTaskPage() {
           ) : null}
         </NeSearchPanel>
 
-        <NeTablePanel
+        <NeTable
           className="storage-upload-task-page__table-panel"
           toolbar={
             <Space wrap>
@@ -310,7 +310,7 @@ export function StorageUploadTaskPage() {
               },
             })}
           />
-        </NeTablePanel>
+        </NeTable>
 
         <Card title="临时任务详情" loading={detailLoading}>
           {selectedTask ? (

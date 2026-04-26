@@ -4,7 +4,7 @@ import type { OAuth2ClientDetail, OAuth2ClientItem, OAuth2ClientMutationPayload,
 import { useI18n } from "@nebula/core";
 import { useEffect, useMemo, useState } from "react";
 import { createOAuth2Client, deleteOAuth2Client, fetchOAuth2ClientDetail, fetchOAuth2ClientPage, updateOAuth2Client } from "../../../../api/oauth2-client-api";
-import { NeDetailDrawer, NeModal, NePage, NeSearchPanel, NeTablePanel } from "@nebula/ui-web";
+import { NeDetailDrawer, NeModal, NePage, NeSearchPanel, NeTable } from "@nebula/ui-web";
 
 const initialQuery: OAuth2ClientPageQuery = { pageNum: 1, pageSize: 10, orderName: "updateTime", orderType: "desc" };
 const initialForm: OAuth2ClientMutationPayload = {
@@ -150,7 +150,7 @@ export function AdvancedOAuth2ClientPage() {
         {error ? <Typography.Paragraph type="danger" style={{ marginTop: 16, marginBottom: 0 }}>{error}</Typography.Paragraph> : null}
       </NeSearchPanel>
 
-      <NeTablePanel
+      <NeTable
         toolbar={
           <Button
             type="primary"
@@ -168,7 +168,7 @@ export function AdvancedOAuth2ClientPage() {
         pagination={<Pagination align="end" current={query.pageNum} pageSize={query.pageSize} total={total} onChange={(pageNum, pageSize) => setQuery((current) => ({ ...current, pageNum, pageSize }))} />}
       >
         <Table<OAuth2ClientItem> rowKey="id" loading={loading} dataSource={rows} columns={columns} pagination={false} onRow={(record) => ({ onClick: () => openDetail(record.id).catch(() => undefined) })} />
-      </NeTablePanel>
+      </NeTable>
 
       <NeDetailDrawer title={t("oauth2Client.detailTitle")} open={detailOpen && Boolean(detail)} onClose={() => setDetailOpen(false)} width={560}>
         {detail ? (

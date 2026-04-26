@@ -5,7 +5,7 @@ import { getPaginationConfig } from "../pagination";
 
 export type NeTableRowSelection = Exclude<TableProps<unknown>["rowSelection"], undefined>;
 
-export interface NeTablePanelProps {
+export interface NeTableProps {
   children: ReactNode;
   className?: string;
   pagination?: ReactNode;
@@ -62,7 +62,7 @@ function enhanceTableContent(children: ReactNode, rowSelection?: boolean | NeTab
     return children;
   }
 
-  const tableClassName = ["ne-table-panel__table", children.props.className].filter(Boolean).join(" ");
+  const tableClassName = ["ne-table__table", children.props.className].filter(Boolean).join(" ");
   const resolvedRowSelection = resolveRowSelection(rowSelection);
 
   return cloneElement(children, {
@@ -92,21 +92,21 @@ function enhancePagination(pagination: ReactNode, pageSizeOptions?: number[]) {
   });
 }
 
-export function NeTablePanel({ children, className, pagination, pageSizeOptions, rowSelection = false, summary, toolbar }: NeTablePanelProps) {
+export function NeTable({ children, className, pagination, pageSizeOptions, rowSelection = false, summary, toolbar }: NeTableProps) {
   const hasFooter = Boolean(summary || pagination);
-  const panelClassName = ["ne-table-panel", hasFooter ? "ne-table-panel--with-footer" : undefined, className].filter(Boolean).join(" ");
+  const panelClassName = ["ne-table", hasFooter ? "ne-table--with-footer" : undefined, className].filter(Boolean).join(" ");
   const hasToolbar = Children.count(toolbar) > 0;
   const content = enhanceTableContent(children, rowSelection);
   const enhancedPagination = enhancePagination(pagination, pageSizeOptions);
 
   return (
     <section className={panelClassName}>
-      {hasToolbar ? <div className="ne-table-panel__toolbar">{toolbar}</div> : null}
-      <div className="ne-table-panel__body">{content}</div>
+      {hasToolbar ? <div className="ne-table__toolbar">{toolbar}</div> : null}
+      <div className="ne-table__body">{content}</div>
       {hasFooter ? (
-        <footer className="ne-table-panel__footer">
-          {summary ? <div className="ne-table-panel__summary">{summary}</div> : <div />}
-          <div className="ne-table-panel__pagination">{enhancedPagination}</div>
+        <footer className="ne-table__footer">
+          {summary ? <div className="ne-table__summary">{summary}</div> : <div />}
+          <div className="ne-table__pagination">{enhancedPagination}</div>
         </footer>
       ) : null}
     </section>

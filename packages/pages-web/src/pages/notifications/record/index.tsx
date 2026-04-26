@@ -4,7 +4,7 @@ import type { NotifyRecordDetail, NotifyRecordItem, NotifyRecordPageQuery } from
 import { useI18n } from "@nebula/core";
 import { useEffect, useMemo, useState } from "react";
 import { fetchNotifyRecordDetail, fetchNotifyRecordPage } from "../../../api/notify-record-api";
-import { NeDetailDrawer, NePage, NeSearchPanel, NeTablePanel } from "@nebula/ui-web";
+import { NeDetailDrawer, NePage, NeSearchPanel, NeTable } from "@nebula/ui-web";
 
 const initialQuery: NotifyRecordPageQuery = { pageNum: 1, pageSize: 10, orderName: "updateTime", orderType: "desc" };
 
@@ -129,9 +129,9 @@ export function NotificationsRecordPage() {
         {error ? <Typography.Paragraph type="danger" style={{ marginTop: 16, marginBottom: 0 }}>{error}</Typography.Paragraph> : null}
       </NeSearchPanel>
 
-      <NeTablePanel summary={t("common.recordCount", undefined, { count: total })} pagination={<Pagination align="end" current={query.pageNum} pageSize={query.pageSize} total={total} onChange={(pageNum, pageSize) => setQuery((current) => ({ ...current, pageNum, pageSize }))} />}>
+      <NeTable summary={t("common.recordCount", undefined, { count: total })} pagination={<Pagination align="end" current={query.pageNum} pageSize={query.pageSize} total={total} onChange={(pageNum, pageSize) => setQuery((current) => ({ ...current, pageNum, pageSize }))} />}>
         <Table<NotifyRecordItem> rowKey="id" loading={loading} dataSource={rows} columns={columns} pagination={false} onRow={(record) => ({ onClick: () => openDetail(record.id).catch(() => undefined) })} />
-      </NeTablePanel>
+      </NeTable>
 
       <NeDetailDrawer title={t("notifyRecord.detailTitle")} open={detailOpen && Boolean(detail)} onClose={() => setDetailOpen(false)} width={640}>
         {detail ? (

@@ -13,7 +13,7 @@ import type {
 import { useI18n } from "@nebula/core";
 import { NePermission } from "@nebula/core";
 import { OrganizationTree } from "@nebula/ui-web";
-import { NePage, NePanel, NeSearchPanel, NeTablePanel } from "@nebula/ui-web";
+import { NePage, NePanel, NeSearchPanel, NeTable } from "@nebula/ui-web";
 import { useEffect, useMemo, useState } from "react";
 import type { Key } from "react";
 import { fetchButtonPage } from "../../../api/button-api";
@@ -737,7 +737,7 @@ export function OperationsPermissionPage({ embedded = false }: PermissionAssignm
             </Space>
           </NePanel>
 
-          <NeTablePanel
+          <NeTable
             className="permission-assignment-layout__table"
             rowSelection={resourceRowSelection}
             summary={t("permissionAssignment.resourceSummary", undefined, { count: activeResourceTab === "MENU" ? flattenMenus(filteredMenus).length : buttons.length })}
@@ -766,7 +766,7 @@ export function OperationsPermissionPage({ embedded = false }: PermissionAssignm
                 pagination={false}
               />
             )}
-          </NeTablePanel>
+          </NeTable>
         </div>
       </div>
   );

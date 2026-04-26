@@ -4,7 +4,7 @@ import type { NotifyTemplateDetail, NotifyTemplateItem, NotifyTemplateMutationPa
 import { useI18n } from "@nebula/core";
 import { useEffect, useMemo, useState } from "react";
 import { createNotifyTemplate, deleteNotifyTemplate, fetchNotifyTemplateDetail, fetchNotifyTemplatePage, sendNotification, updateNotifyTemplate } from "../../../api/notify-template-api";
-import { NeDetailDrawer, NeModal, NePage, NeSearchPanel, NeTablePanel } from "@nebula/ui-web";
+import { NeDetailDrawer, NeModal, NePage, NeSearchPanel, NeTable } from "@nebula/ui-web";
 
 const initialQuery: NotifyTemplatePageQuery = { pageNum: 1, pageSize: 10, orderName: "updateTime", orderType: "desc" };
 const initialForm: NotifyTemplateMutationPayload = { templateCode: "", templateName: "", channelType: "SITE", subjectTemplate: "", contentTemplate: "", status: 1, isBuiltin: 0, remark: "" };
@@ -164,7 +164,7 @@ export function NotificationsTemplatePage() {
         {error ? <Typography.Paragraph type="danger" style={{ marginTop: 16, marginBottom: 0 }}>{error}</Typography.Paragraph> : null}
       </NeSearchPanel>
 
-      <NeTablePanel
+      <NeTable
         toolbar={
           <Space>
             <Button
@@ -193,7 +193,7 @@ export function NotificationsTemplatePage() {
         pagination={<Pagination align="end" current={query.pageNum} pageSize={query.pageSize} total={total} onChange={(pageNum, pageSize) => setQuery((current) => ({ ...current, pageNum, pageSize }))} />}
       >
         <Table<NotifyTemplateItem> rowKey="id" loading={loading} dataSource={rows} columns={columns} pagination={false} onRow={(record) => ({ onClick: () => openDetail(record.id).catch(() => undefined) })} />
-      </NeTablePanel>
+      </NeTable>
 
       <NeDetailDrawer title={t("notifyTemplate.detailTitle")} open={detailOpen && Boolean(detail)} onClose={() => setDetailOpen(false)} width={640}>
         {detail ? (

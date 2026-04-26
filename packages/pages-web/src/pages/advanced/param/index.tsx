@@ -31,7 +31,7 @@ import {
   fetchSystemParamPage,
   updateSystemParam,
 } from "../../../api/system-param-api";
-import { NeDetailDrawer, NeModal, NePage, NeSearchPanel, NeTablePanel } from "@nebula/ui-web";
+import { NeDetailDrawer, NeModal, NePage, NeSearchPanel, NeTable } from "@nebula/ui-web";
 
 const initialQuery: SystemParamPageQuery = {
   pageNum: 1,
@@ -279,7 +279,7 @@ export function AdvancedParamPage() {
           </Form.Item>
         </Form>
       </NeSearchPanel>
-      <NeTablePanel
+      <NeTable
         toolbar={
           <Space>
             <NePermission code="crm:customer:create">
@@ -321,7 +321,7 @@ export function AdvancedParamPage() {
           })}
           pagination={false}
         />
-      </NeTablePanel>
+      </NeTable>
       <NeDetailDrawer title={t("systemParams.detailTitle")} open={detailOpen} onClose={() => {
         setDetailOpen(false);
         setSelected(null);

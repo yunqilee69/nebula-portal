@@ -6,7 +6,7 @@ import { useNotifyStore, useResourceStore } from "@nebula/core";
 import type { NotificationItem } from "@nebula/core";
 import { useEffect, useState } from "react";
 import { fetchCurrentNotifications, markNotificationRead } from "../../../api/notify-api";
-import { NeDetailDrawer, NePage, NeTablePanel } from "@nebula/ui-web";
+import { NeDetailDrawer, NePage, NeTable } from "@nebula/ui-web";
 
 export function NotificationsAnnouncementPage() {
   const { t } = useI18n();
@@ -37,7 +37,7 @@ export function NotificationsAnnouncementPage() {
 
   return (
     <NePage>
-      <NeTablePanel
+      <NeTable
         toolbar={
           <NePermission code="crm:customer:edit">
             <Button
@@ -116,7 +116,7 @@ export function NotificationsAnnouncementPage() {
             },
           ]}
         />
-      </NeTablePanel>
+      </NeTable>
       <NeDetailDrawer title={t("notifications.detail")} open={Boolean(selected)} onClose={() => setSelected(null)}>
         {selected ? (
           <Descriptions column={1} bordered>

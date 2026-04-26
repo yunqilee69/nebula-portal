@@ -3,7 +3,7 @@ import { Button, Form, Input, Pagination, Popconfirm, Space, Table, Tag, Typogra
 import type { ColumnsType } from "antd/es/table";
 import type { StorageFileItem, StorageListQuery } from "@nebula/core";
 import { useEffect, useMemo, useState } from "react";
-import { NePage, NeSearchPanel, NeTablePanel } from "@nebula/ui-web";
+import { NePage, NeSearchPanel, NeTable } from "@nebula/ui-web";
 import {
   buildStorageDownloadUrl,
   buildStoragePreviewUrl,
@@ -285,7 +285,7 @@ export function StorageCenterPage() {
           </Typography.Paragraph>
         ) : null}
       </NeSearchPanel>
-      <NeTablePanel
+      <NeTable
         className="storage-center-page__table-panel"
         toolbar={
           <Space wrap>
@@ -332,7 +332,7 @@ export function StorageCenterPage() {
           columns={columns}
           pagination={false}
         />
-      </NeTablePanel>
+      </NeTable>
     </NePage>
   );
 }

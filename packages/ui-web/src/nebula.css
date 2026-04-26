@@ -81,14 +81,14 @@
 }
 
 .ne-search-panel,
-.ne-table-panel {
+.ne-table {
   border: 1px solid var(--nebula-border-strong, #c7d2e0);
   border-radius: var(--nebula-radius, 8px);
   background: var(--nebula-surface-strong, #ffffff);
   box-shadow: var(--nebula-shadow, 0 10px 30px rgba(15, 23, 42, 0.06));
 }
 
-.ne-table-panel {
+.ne-table {
   display: flex;
   flex: 1;
   min-height: 0;
@@ -97,8 +97,8 @@
 }
 
 .ne-search-panel__header,
-.ne-table-panel__toolbar,
-.ne-table-panel__footer {
+.ne-table__toolbar,
+.ne-table__footer {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -108,16 +108,16 @@
 }
 
 .ne-search-panel__header,
-.ne-table-panel__toolbar:not(:empty) {
+.ne-table__toolbar:not(:empty) {
   border-bottom: 1px solid var(--nebula-border, #d0d5dd);
 }
 
-.ne-table-panel__toolbar:empty {
+.ne-table__toolbar:empty {
   display: none;
 }
 
 .ne-search-panel__title,
-.ne-table-panel__summary {
+.ne-table__summary {
   color: var(--nebula-text-muted, #667085);
   font-size: 13px;
 }
@@ -126,46 +126,46 @@
   padding: 16px;
 }
 
-.ne-table-panel__body {
+.ne-table__body {
   min-height: 0;
 }
 
-.ne-table-panel__body {
+.ne-table__body {
   display: flex;
   flex: 1;
   overflow: hidden;
 }
 
-.ne-table-panel__table,
-.ne-table-panel__body .ant-table-wrapper,
-.ne-table-panel__body .ant-spin-nested-loading,
-.ne-table-panel__body .ant-spin-container,
-.ne-table-panel__body .ant-table,
-.ne-table-panel__body .ant-table-container {
+.ne-table__table,
+.ne-table__body .ant-table-wrapper,
+.ne-table__body .ant-spin-nested-loading,
+.ne-table__body .ant-spin-container,
+.ne-table__body .ant-table,
+.ne-table__body .ant-table-container {
   display: flex;
   flex: 1;
   min-height: 0;
   flex-direction: column;
 }
 
-.ne-table-panel__body .ant-table {
+.ne-table__body .ant-table {
   background: transparent;
 }
 
-.ne-table-panel__body .ant-table-body,
-.ne-table-panel__body .ant-table-content {
+.ne-table__body .ant-table-body,
+.ne-table__body .ant-table-content {
   min-height: 0;
 }
 
-.ne-table-panel--with-footer .ne-table-panel__body .ant-table-tbody > tr.ant-table-placeholder > .ant-table-cell {
+.ne-table--with-footer .ne-table__body .ant-table-tbody > tr.ant-table-placeholder > .ant-table-cell {
   border-bottom: none;
 }
 
-.ne-table-panel__footer {
+.ne-table__footer {
   border-top: 1px solid var(--nebula-border, #d0d5dd);
 }
 
-.ne-table-panel__pagination {
+.ne-table__pagination {
   margin-left: auto;
 }
 

@@ -1,4 +1,4 @@
-# NeTablePanel
+# NeTable
 
 Unified table workspace container for list pages.
 

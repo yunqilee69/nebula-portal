@@ -6,7 +6,7 @@ import type { OrganizationItem, OrganizationMutationPayload, OrganizationPageQue
 import { useEffect, useMemo, useState } from "react";
 import { createOrganization, deleteOrganization, fetchOrganizationDetail, fetchOrganizationPage, fetchOrganizationTree, updateOrganization } from "../../../api/organization-api";
 import { OrganizationTree } from "@nebula/ui-web";
-import { NeModal, NePage, NePanel, NeSearchPanel, NeTablePanel } from "@nebula/ui-web";
+import { NeModal, NePage, NePanel, NeSearchPanel, NeTable } from "@nebula/ui-web";
 
 type OrganizationType = NonNullable<OrganizationItem["type"]>;
 
@@ -375,7 +375,7 @@ export function OperationsOrgPage() {
             </Form>
             {error ? <Typography.Paragraph type="danger" style={{ marginTop: 16, marginBottom: 0 }}>{error}</Typography.Paragraph> : null}
           </NeSearchPanel>
-          <NeTablePanel
+          <NeTable
             className="organization-page__table-panel"
             toolbar={
               <NePermission code="platform:org:create">
@@ -411,7 +411,7 @@ export function OperationsOrgPage() {
               })}
               pagination={false}
             />
-          </NeTablePanel>
+          </NeTable>
         </div>
       </div>
       <NeModal title={t("organization.detail")} open={detailOpen && Boolean(detail)} onClose={() => setDetailOpen(false)} width={640}>

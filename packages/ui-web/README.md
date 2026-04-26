@@ -28,6 +28,8 @@ import { NePage, NePanel, NeStatusTag } from "@nebula/ui-web";
 - `NeNavCards`：`packages/ui-web/src/ne-nav-cards/README.md`
 - `NeTree`：`packages/ui-web/src/ne-tree/README.md`
 - `NeStatusTag`：`packages/ui-web/src/ne-status-tag/README.md`
+- `NeTable`：`packages/ui-web/src/ne-table/README.md`
+- `NeTablePage`：`packages/ui-web/src/ne-table-page/README.md`
 
 ## 样式说明
 

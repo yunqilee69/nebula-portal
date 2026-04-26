@@ -7,7 +7,7 @@ import { fetchOrganizationList, fetchOrganizationTree } from "../../../api/organ
 import { fetchRoleList } from "../../../api/role-api";
 import { createUser, deleteUser, fetchUserDetail, fetchUserPage, updateUser } from "../../../api/user-api";
 import { OrganizationTree } from "@nebula/ui-web";
-import { NeDetailDrawer, NeModal, NePage, NePanel, NeSearchPanel, NeTablePanel } from "@nebula/ui-web";
+import { NeDetailDrawer, NeModal, NePage, NePanel, NeSearchPanel, NeTable } from "@nebula/ui-web";
 
 const initialQuery: UserPageQuery = {
   pageNum: 1,
@@ -275,7 +275,7 @@ export function OperationsUserPage() {
             </Form>
             {error ? <Typography.Paragraph type="danger" style={{ marginTop: 16, marginBottom: 0 }}>{error}</Typography.Paragraph> : null}
           </NeSearchPanel>
-          <NeTablePanel
+          <NeTable
             className="user-management-page__table-panel"
             toolbar={
               <Button
@@ -303,7 +303,7 @@ export function OperationsUserPage() {
                 },
               })}
             />
-          </NeTablePanel>
+          </NeTable>
         </div>
       </div>
       <NeDetailDrawer title={t("userManagement.detailTitle")} open={detailOpen && Boolean(detail)} onClose={() => setDetailOpen(false)} width={520}>
