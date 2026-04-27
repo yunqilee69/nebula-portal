@@ -9,6 +9,7 @@ import { getMenuIcon } from "./icon-map";
 interface AppSidebarProps {
   menus: MenuItem[];
   collapsed: boolean;
+  routesReady?: boolean;
   onToggleCollapse: () => void;
 }
 
@@ -39,7 +40,7 @@ function findMenuById(menus: MenuItem[], key: string): MenuItem | null {
   return null;
 }
 
-export function AppSidebar({ menus, collapsed, onToggleCollapse }: AppSidebarProps) {
+export function AppSidebar({ menus, collapsed, routesReady = false, onToggleCollapse }: AppSidebarProps) {
   const { t } = useI18n();
   const projectName = useFrontendStore((state) => state.frontendConfig.projectName);
   const location = useLocation();
@@ -118,10 +119,16 @@ export function AppSidebar({ menus, collapsed, onToggleCollapse }: AppSidebarPro
             return;
           }
           if (menu.linkType === 3 && menu.linkUrl) {
+            if (!routesReady) {
+              return;
+            }
             navigate(`/iframe?url=${encodeURIComponent(menu.linkUrl)}`);
             return;
           }
           if (menu.path) {
+            if (!routesReady) {
+              return;
+            }
             navigate(menu.path);
           }
         }}

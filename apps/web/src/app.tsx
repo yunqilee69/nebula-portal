@@ -294,6 +294,7 @@ function AppRouter() {
   }, [session?.token]);
 
   const dynamicRoutes = useMemo(() => buildRoutesFromMenus(menus, UnavailablePage), [menus]);
+  const routesReady = menus.length > 0 && dynamicRoutes.length > 0;
   const platformValidation = useMemo(
     () => (authReady && session?.token ? validatePlatformConsistency(menus) : { issues: [], hasErrors: false }),
     [authReady, menus, session?.token],
@@ -322,7 +323,7 @@ function AppRouter() {
       path: "/",
       element: (
         <AuthGuard>
-          <BasicLayout />
+          <BasicLayout routesReady={routesReady} />
         </AuthGuard>
       ),
       children: [

@@ -34,7 +34,11 @@ function resolveNextTabPath(tabs: { key: string; path: string }[], key: string) 
   return tabs[currentIndex + 1]?.path ?? tabs[currentIndex - 1]?.path ?? "/";
 }
 
-export function BasicLayout() {
+interface BasicLayoutProps {
+  routesReady?: boolean;
+}
+
+export function BasicLayout({ routesReady = false }: BasicLayoutProps) {
   const { t } = useI18n();
   const menus = useMenuStore((state) => state.menus);
   const location = useLocation();
@@ -98,6 +102,7 @@ export function BasicLayout() {
         <AppSidebar
           menus={menus}
           collapsed={sidebarCollapsed}
+          routesReady={routesReady}
           onToggleCollapse={() => setSidebarCollapsed((current) => !current)}
         />
       </Sider>
