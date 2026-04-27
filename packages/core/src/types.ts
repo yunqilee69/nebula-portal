@@ -51,9 +51,38 @@ export interface SystemParamItem {
   description?: string;
   paramValue?: string;
   dataType?: SystemParamDataType;
-  options?: string[];
+  /** 默认值 */
+  defaultValue?: string;
+  /** 选项编码，关联数据字典（用于 SINGLE/MULTIPLE 类型） */
+  optionCode?: string;
+  /** 最小值（用于 INT/DOUBLE 类型） */
   minValue?: number;
+  /** 最大值（用于 INT/DOUBLE 类型） */
   maxValue?: number;
+  /** 最小长度（用于 STRING 类型） */
+  minLength?: number;
+  /** 最大长度（用于 STRING 类型） */
+  maxLength?: number;
+  /** 正则校验规则（用于 STRING 类型） */
+  validatorRegex?: string;
+  /** 校验失败提示（用于 STRING 类型） */
+  validatorMessage?: string;
+  /** 是否启用自动渲染 */
+  renderEnabled?: boolean;
+  /** 输入框占位提示 */
+  placeholder?: string;
+  /** 所属模块编码 */
+  moduleCode?: string;
+  /** 显示排序 */
+  displayOrder?: number;
+  /** 是否敏感 */
+  sensitiveFlag?: boolean;
+  /** 是否内建 */
+  builtinFlag?: boolean;
+  /** 是否可编辑 */
+  editableFlag?: boolean;
+  /** 是否可见 */
+  visibleFlag?: boolean;
   createTime?: string;
   updateTime?: string;
 }
@@ -66,6 +95,10 @@ export interface SystemParamPageQuery {
   paramKey?: string;
   paramName?: string;
   dataType?: SystemParamDataType;
+  /** 模块编码筛选 */
+  moduleCode?: string;
+  /** 是否启用渲染筛选 */
+  renderEnabled?: boolean;
 }
 
 export interface SystemParamPageResult {
@@ -198,9 +231,40 @@ export interface SystemParamMutationPayload {
   description?: string;
   paramValue?: string;
   dataType?: SystemParamDataType;
-  options?: string[];
+  defaultValue?: string;
+  /** 选项编码，关联数据字典（用于 SINGLE/MULTIPLE 类型） */
+  optionCode?: string;
   minValue?: number;
   maxValue?: number;
+  minLength?: number;
+  maxLength?: number;
+  validatorRegex?: string;
+  validatorMessage?: string;
+  renderEnabled?: boolean;
+  placeholder?: string;
+  moduleCode?: string;
+  displayOrder?: number;
+  sensitiveFlag?: boolean;
+  builtinFlag?: boolean;
+  editableFlag?: boolean;
+  visibleFlag?: boolean;
+}
+
+/** 批量更新参数值请求项 */
+export interface SystemParamBatchUpdateItem {
+  paramKey: string;
+  paramValue: string;
+}
+
+/** 批量更新参数值结果 */
+export interface SystemParamBatchUpdateResult {
+  successCount: number;
+  failCount: number;
+  results: Array<{
+    paramKey: string;
+    success: boolean;
+    message?: string;
+  }>;
 }
 
 export interface RoleMutationPayload {

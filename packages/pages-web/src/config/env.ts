@@ -12,7 +12,7 @@ export const webEnv = {
   menuPath: import.meta.env.VITE_MENU_CURRENT_PATH ?? "/api/auth/menus/tree",
   dictTypePath: import.meta.env.VITE_DICT_TYPE_PATH ?? "/api/dict/types/page",
   dictItemPathTemplate: import.meta.env.VITE_DICT_ITEM_PATH_TEMPLATE ?? "/api/dict/items/type/{typeCode}",
-  dictTypeCodes: (import.meta.env.VITE_DICT_TYPE_CODES ?? "file_type")
+  dictTypeCodes: (import.meta.env.VITE_DICT_TYPE_CODES ?? "file_type,param_module")
     .split(",")
     .map((item: string) => item.trim())
     .filter(Boolean),
