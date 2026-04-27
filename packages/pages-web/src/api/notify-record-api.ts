@@ -26,11 +26,10 @@ function mapRecord(item: unknown): NotifyRecordDetail | null {
 }
 
 function parsePage(payload: Record<string, unknown>) {
-  const pageData = getRecord(payload.data) ?? payload;
-  const rows = getArray<unknown>(pageData.data ?? pageData.records ?? pageData.rows ?? pageData.list)
+  const rows = getArray<unknown>(payload.data ?? payload.records ?? payload.rows ?? payload.list)
     .map(mapRecord)
     .filter((value): value is NotifyRecordItem => value !== null);
-  const totalCandidate = pageData.total ?? payload.total ?? payload.count;
+  const totalCandidate = payload.total ?? payload.count;
   const total = typeof totalCandidate === "number" ? totalCandidate : rows.length;
   return { data: rows, total } satisfies NotifyRecordPageResult;
 }

@@ -42,7 +42,7 @@ function isTableLikeElement(node: ReactNode): node is ReactElement<TableLikeProp
     return false;
   }
 
-  return "columns" in node.props && "dataSource" in node.props;
+  return "columns" in node.props;
 }
 
 function resolveRowSelection(rowSelection?: boolean | NeTableRowSelection): TableProps<unknown>["rowSelection"] {

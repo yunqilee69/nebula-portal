@@ -54,13 +54,10 @@ function mapDictItem(item: unknown): DictItemDetail | null {
 }
 
 function parsePageResult<T>(payload: Record<string, unknown>, mapper: (value: unknown) => T | null) {
-  const firstLayer = getRecord(payload.data) ?? payload;
-  const nestedLayer = getRecord(firstLayer.data);
-  const pageData = nestedLayer ?? firstLayer;
-  const rows = getArray<unknown>(pageData.data ?? pageData.records ?? pageData.rows ?? pageData.list)
+  const rows = getArray<unknown>(payload.data ?? payload.records ?? payload.rows ?? payload.list)
     .map(mapper)
     .filter((value): value is T => value !== null);
-  const totalCandidate = pageData.total ?? firstLayer.total ?? payload.total ?? payload.count;
+  const totalCandidate = payload.total ?? payload.count;
   const total = typeof totalCandidate === "number" ? totalCandidate : rows.length;
   return { data: rows, total };
 }

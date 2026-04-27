@@ -11,6 +11,15 @@ import {
   updateDictType,
 } from "../../../api/dict-admin-api";
 import { NeModal, NePage, NeSearch, NeTablePage } from "@nebula/ui-web";
+import { Table } from "antd";
+
+const initialTypeQuery: DictTypePageQuery = {
+  pageNum: 1,
+  pageSize: 20,
+  code: undefined,
+  name: undefined,
+  status: undefined,
+};
 
 const initialTypeForm: DictTypeMutationPayload = {
   code: "",
@@ -85,43 +94,11 @@ export function AdvancedDictPage() {
 
   return (
     <NePage>
-      <NeSearch
-        title={t("dict.typeManagementTitle")}
-        labels={{ expand: t("common.expand"), collapse: t("common.collapse"), reset: t("common.reset") }}
-        onReset={() => typeFilterForm.resetFields()}
-      >
-        <Form
-          form={typeFilterForm}
-          layout="inline"
-          onFinish={() => setReloadSeed((current) => current + 1)}
-        >
-          <Form.Item name="code" label={t("common.code")}>
-            <Input allowClear />
-          </Form.Item>
-          <Form.Item name="name" label={t("common.name")}>
-            <Input allowClear />
-          </Form.Item>
-          <Form.Item name="status" label={t("common.status")}>
-            <Select
-              allowClear
-              style={{ width: 140 }}
-              options={[{ label: t("common.enabled"), value: 1 }, { label: t("common.disabled"), value: 0 }]}
-            />
-          </Form.Item>
-          <Form.Item>
-            <Button type="primary" htmlType="submit" icon={<SearchOutlined />}>
-              {t("common.search")}
-            </Button>
-          </Form.Item>
-        </Form>
-      </NeSearch>
-
       <NeTablePage
-        key={reloadSeed}
         searchForm={typeFilterForm}
         request={fetchDictTypePage}
-        columns={typeColumns}
-        rowKey="id"
+        initialQuery={initialTypeQuery}
+        reloadToken={reloadSeed}
         toolbar={
           <Button
             type="primary"
@@ -136,7 +113,43 @@ export function AdvancedDictPage() {
           </Button>
         }
         summary={(result) => t("common.recordCount", undefined, { count: result.total })}
-      />
+      >
+        <NeSearch
+          title={t("dict.typeManagementTitle")}
+          labels={{ expand: t("common.expand"), collapse: t("common.collapse"), reset: t("common.reset") }}
+          onReset={() => {
+            typeFilterForm.resetFields();
+            setReloadSeed((current) => current + 1);
+          }}
+        >
+          <Form
+            form={typeFilterForm}
+            layout="inline"
+            initialValues={initialTypeQuery}
+            onFinish={() => setReloadSeed((current) => current + 1)}
+          >
+            <Form.Item name="code" label={t("common.code")}>
+              <Input allowClear />
+            </Form.Item>
+            <Form.Item name="name" label={t("common.name")}>
+              <Input allowClear />
+            </Form.Item>
+            <Form.Item name="status" label={t("common.status")}>
+              <Select
+                allowClear
+                style={{ width: 140 }}
+                options={[{ label: t("common.enabled"), value: 1 }, { label: t("common.disabled"), value: 0 }]}
+              />
+            </Form.Item>
+            <Form.Item>
+              <Button type="primary" htmlType="submit" icon={<SearchOutlined />}>
+                {t("common.search")}
+              </Button>
+            </Form.Item>
+          </Form>
+        </NeSearch>
+        <Table<DictTypeItem> rowKey="id" columns={typeColumns} />
+      </NeTablePage>
 
       <NeModal
         title={editingType ? t("dict.editType") : t("dict.createType")}
