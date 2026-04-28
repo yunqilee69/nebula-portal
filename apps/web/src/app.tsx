@@ -114,6 +114,11 @@ function AppRouter() {
   const lastValidationSignatureRef = useRef<string | null>(null);
 
   const openSessionExpiredModal = () => {
+    // 如果已在公开页面（登录页、401页、404页），不弹窗
+    const publicPaths = ['/login', '/401', '/404'];
+    if (publicPaths.some(p => location.pathname.startsWith(p))) {
+      return;
+    }
     setSessionExpiredRedirectTo(`${window.location.pathname}${window.location.search}${window.location.hash}`);
     setSessionExpiredModalOpen(true);
   };
