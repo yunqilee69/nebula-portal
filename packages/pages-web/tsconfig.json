@@ -11,7 +11,8 @@
       "@nebula/request": ["../request/src/index.ts"],
       "@nebula/tokens": ["../tokens/src/index.ts"],
       "@nebula/ui-web": ["../ui-web/src/index.ts"]
-    }
+    },
+    "types": ["../../types/pages-web-types", "node"]
   },
   "include": ["src"]
 }

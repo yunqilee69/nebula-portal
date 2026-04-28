@@ -12,7 +12,7 @@
       "@nebula/core": ["../../packages/core/src/index.ts"],
       "@nebula/tokens": ["../../packages/tokens/src/index.ts"]
     },
-    "types": ["@tarojs/taro", "node"],
+    "types": ["@tarojs/taro", "node", "../../types/pages-web-types"],
     "noEmit": true
   },
   "include": ["src/**/*.ts", "src/**/*.tsx", "config", "types", "project.config.json"]

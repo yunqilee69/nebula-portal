@@ -54,7 +54,7 @@ export function AdvancedDictPage() {
             <Button
               size="small"
               type="primary"
-              onClick={() => navigate(`/system/dict-items?dictCode=${encodeURIComponent(row.code)}&dictName=${encodeURIComponent(row.name)}`)}
+              onClick={() => navigate(`/system/dict-items?dictCode=${encodeURIComponent(row.code)}&dictName=${encodeURIComponent(row.name)}&tabTitle=${encodeURIComponent(`${t("dict.itemsManagementTitle")}（${row.name}）`)}`)}
             >
               {t("dict.manageItems")}
             </Button>

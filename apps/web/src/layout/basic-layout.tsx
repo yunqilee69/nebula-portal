@@ -11,7 +11,7 @@ import {
   useNotifyStore,
 } from "@nebula/core";
 import { NeWorkspaceTabs } from "@nebula/ui-web";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { useEffect, useMemo, useState } from "react";
 import { AppHeader } from "./app-header";
 import { AppSidebar } from "./app-sidebar";
@@ -43,6 +43,7 @@ export function BasicLayout({ routesReady = false }: BasicLayoutProps) {
   const menus = useMenuStore((state) => state.menus);
   const location = useLocation();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const clearSession = useAuthStore((state) => state.clearSession);
   const clearConfig = useConfigStore((state) => state.clear);
   const clearDict = useDictStore((state) => state.clear);
@@ -58,9 +59,24 @@ export function BasicLayout({ routesReady = false }: BasicLayoutProps) {
   const clearNavigation = useNavigationStore((state) => state.clear);
   const setActiveKey = useNavigationStore((state) => state.setActiveKey);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  // 允许 tabTitle 参数覆盖的路由白名单
+  const TAB_TITLE_ALLOWED_PATHS = ['/system/dict-items'];
+  const TAB_TITLE_MAX_LENGTH = 80;
+
   const routeKey = useMemo(() => buildRouteKey(location.pathname, location.search, location.hash), [location.hash, location.pathname, location.search]);
   const breadcrumbItems = useMemo(() => buildBreadcrumbItems(menus, location.pathname), [location.pathname, menus]);
-  const currentLabel = useMemo(() => resolveRouteLabel(menus, location.pathname), [location.pathname, menus]);
+  // 从 URL 参数获取 tabTitle，并进行安全校验
+  const tabTitleFromParams = useMemo(() => {
+    const tabTitle = searchParams.get("tabTitle");
+    if (!tabTitle) return null;
+    // 仅允许白名单路由使用
+    if (!TAB_TITLE_ALLOWED_PATHS.some(p => location.pathname.startsWith(p))) {
+      return null;
+    }
+    // 限制最大长度
+    return tabTitle.length > TAB_TITLE_MAX_LENGTH ? tabTitle.slice(0, TAB_TITLE_MAX_LENGTH) : tabTitle;
+  }, [location.pathname, searchParams]);
+  const currentLabel = useMemo(() => tabTitleFromParams ?? resolveRouteLabel(menus, location.pathname), [location.pathname, menus, tabTitleFromParams]);
 
   useEffect(() => {
     if (location.pathname === "/login") {

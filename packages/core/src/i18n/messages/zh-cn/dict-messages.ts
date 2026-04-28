@@ -30,7 +30,8 @@ const messages = {
   "dict.manageItemsPanelTitle": "管理字典项：{name}",
   "dict.missingDictCode": "缺少字典编码",
   "dict.path": "树路径",
-  "dict.typeManagementTitle": "字典类型管理"
+  "dict.typeManagementTitle": "字典类型管理",
+  "dict.itemsManagementTitle": "字典项管理"
 };
 
 export default messages;

@@ -1,4 +1,5 @@
 import { translateNebulaMessage, useI18nStore } from "../i18n/index";
+import { findStaticRouteByPath, getStaticRouteName } from "../routing/static-routes";
 import type { MenuItem } from "../types";
 import type { NeBreadcrumbItem } from "./navigation-types";
 
@@ -34,6 +35,13 @@ export function buildBreadcrumbItems(menus: MenuItem[], pathname: string): NeBre
     return [{ key: pathname, title: translateNebulaMessage(locale, pathname === "/401" ? "unauthorized.title" : "notFound.title", pathname === "/401" ? "无权访问" : "页面不存在"), href: pathname }];
   }
 
+  // 查询静态路由配置表
+  const staticRoute = findStaticRouteByPath(pathname);
+  if (staticRoute) {
+    const locale = useI18nStore.getState().locale;
+    return [{ key: staticRoute.id, title: getStaticRouteName(staticRoute, locale), href: staticRoute.path }];
+  }
+
   return [{ key: pathname, title: pathname }];
 }
 
@@ -45,6 +53,13 @@ export function resolveRouteLabel(menus: MenuItem[], pathname: string) {
 
   if (pathname === "/401" || pathname === "/404") {
     return translateNebulaMessage(useI18nStore.getState().locale, pathname === "/401" ? "unauthorized.title" : "notFound.title", pathname === "/401" ? "无权访问" : "页面不存在");
+  }
+
+  // 查询静态路由配置表（更内聚）
+  const staticRoute = findStaticRouteByPath(pathname);
+  if (staticRoute) {
+    const locale = useI18nStore.getState().locale;
+    return getStaticRouteName(staticRoute, locale);
   }
 
   const breadcrumbs = buildBreadcrumbItems(menus, pathname);

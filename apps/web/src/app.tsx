@@ -16,16 +16,16 @@ import {
   preloadNebulaData,
   reportPlatformValidation,
   validatePlatformConsistency,
+  getAllStaticRoutes,
   type AppContextValue,
 } from "@nebula/core";
 import { resolveRefreshDelay, restoreSessionOnStartup } from "@nebula/auth";
 import { Alert, Modal, Spin, Typography } from "antd";
-import { Suspense, useEffect, useMemo, useRef, useState } from "react";
+import { lazy, Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { BrowserRouter, Navigate, useLocation, useNavigate, useRoutes } from "react-router-dom";
 import { AppErrorBoundary } from "./components/app-error-boundary";
 import { BasicLayout } from "./layout/basic-layout";
 import {
-  DashboardPage,
   fetchCurrentUser,
   fetchFrontendInit,
   fetchFrontendThemes,
@@ -34,7 +34,6 @@ import {
   fetchDictByCode,
   fetchCurrentConfig,
   fetchCurrentNotifications,
-  IframePage,
   LoginPage,
   NotFoundPage,
   refreshSession,
@@ -320,6 +319,18 @@ function AppRouter() {
     lastValidationSignatureRef.current = signature;
   }, [platformValidation]);
 
+  const staticRoutes = useMemo(
+    () =>
+      getAllStaticRoutes().map((route) => {
+        const Component = lazy(route.componentLoader);
+        return {
+          path: route.path.replace(/^\//, ""),
+          element: <Component />,
+        };
+      }),
+    []
+  );
+
   const routes = [
     { path: "/login", element: session?.token ? <Navigate to="/dashboard" replace /> : <LoginPage /> },
     { path: "/401", element: <UnauthorizedPage /> },
@@ -333,8 +344,7 @@ function AppRouter() {
       ),
       children: [
         { index: true, element: <Navigate to="/dashboard" replace /> },
-        { path: "dashboard", element: <DashboardPage /> },
-        { path: "iframe", element: <IframePage /> },
+        ...staticRoutes,
         ...dynamicRoutes
           .filter((route) => route.path !== "/")
           .map((route) => ({ path: route.path.replace(/^\//, ""), element: route.element })),
@@ -346,11 +356,12 @@ function AppRouter() {
   ];
   const routedElement = useRoutes(routes);
 
+  // 等待菜单数据加载完成，避免路由竞态条件：
+  // 如果菜单加载中或尚未加载，动态路由还未生成，访问特定路径会被 catch-all 重定向
   const waitingForProtectedRoutes = Boolean(
     authReady
       && session?.token
-      && menus.length === 0
-      && !menuResource.lastLoadedAt
+      && (menuResource.loading || (menus.length === 0 && !menuResource.lastLoadedAt))
       && !menuResource.error,
   );
 
