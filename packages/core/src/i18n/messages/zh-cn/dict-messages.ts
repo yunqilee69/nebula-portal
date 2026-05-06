@@ -31,7 +31,8 @@ const messages = {
   "dict.missingDictCode": "缺少字典编码",
   "dict.path": "树路径",
   "dict.typeManagementTitle": "字典类型管理",
-  "dict.itemsManagementTitle": "字典项管理"
+  "dict.itemsManagementTitle": "字典项管理",
+  "dict.presetColors": "预设颜色"
 };
 
 export default messages;

@@ -30,7 +30,9 @@ const messages = {
   "dict.manageItemsPanelTitle": "Manage Items: {name}",
   "dict.missingDictCode": "Missing dictionary code",
   "dict.path": "Tree Path",
-  "dict.typeManagementTitle": "Dictionary Type Management"
+  "dict.typeManagementTitle": "Dictionary Type Management",
+  "dict.itemsManagementTitle": "Dictionary Item Management",
+  "dict.presetColors": "Preset Colors"
 };
 
 export default messages;

@@ -1,5 +1,5 @@
 import { DeleteOutlined, EditOutlined, PlusOutlined, SearchOutlined } from "@ant-design/icons";
-import { Button, Form, Input, InputNumber, Pagination, Popconfirm, Select, Space, Table, Tag, Typography } from "antd";
+import { Button, ColorPicker, Form, Input, InputNumber, Pagination, Popconfirm, Select, Space, Table, Tag, Typography } from "antd";
 import type { DictItemItem, DictItemMutationPayload } from "@nebula/core";
 import { useI18n } from "@nebula/core";
 import { useEffect, useMemo, useState } from "react";
@@ -12,6 +12,26 @@ import {
 } from "../../../api/dict-admin-api";
 import { NeModal, NePage, NePanel, NeSearch, NeTable } from "@nebula/ui-web";
 
+/** 预设标签颜色选项 */
+const PRESET_TAG_COLORS = [
+  { label: "蓝色", value: "#1677ff", color: "#1677ff" },
+  { label: "绿色", value: "#52c41a", color: "#52c41a" },
+  { label: "橙色", value: "#faad14", color: "#faad14" },
+  { label: "红色", value: "#f5222d", color: "#f5222d" },
+  { label: "紫色", value: "#722ed1", color: "#722ed1" },
+];
+
+/** 从 ColorPicker 返回值转换为十六进制颜色字符串 */
+function colorToHex(color: unknown): string {
+  if (color && typeof color === "object" && "toHexString" in color && typeof color.toHexString === "function") {
+    return color.toHexString().toLowerCase();
+  }
+  if (typeof color === "string") {
+    return color.toLowerCase();
+  }
+  return "";
+}
+
 const initialItemQuery = { pageNum: 1, pageSize: 10, orderName: "sort", orderType: "asc" };
 
 const initialItemForm: DictItemMutationPayload = {
@@ -20,10 +40,8 @@ const initialItemForm: DictItemMutationPayload = {
   name: "",
   itemValue: "",
   sort: 0,
-  status: 1,
-  defaultFlag: false,
+  enabled: true,
   tagColor: "",
-  extraJson: "",
   remark: "",
 };
 
@@ -107,7 +125,7 @@ function filterDictItems(nodes: DictItemItem[], keyword: string): DictItemItem[]
 
   return nodes.flatMap((node): DictItemItem[] => {
     const children: DictItemItem[] = filterDictItems(node.children ?? [], keyword);
-    const matched = [node.name, node.itemValue, node.path ?? ""].some((value) => value.toLowerCase().includes(normalizedKeyword));
+    const matched = [node.name, node.itemValue].some((value) => value.toLowerCase().includes(normalizedKeyword));
     if (!matched && children.length === 0) {
       return [];
     }
@@ -207,19 +225,23 @@ export function AdvancedDictItemsPage() {
       { title: t("common.value"), dataIndex: "itemValue" },
       { title: t("common.sort"), dataIndex: "sort" },
       {
-        title: t("dict.path"),
-        dataIndex: "path",
-        render: (value: string | undefined) => value || "-",
-      },
-      {
-        title: t("common.default"),
-        render: (_: unknown, row: DictItemItem) =>
-          row.defaultFlag ? <Tag color="gold">{t("common.yes")}</Tag> : <Tag>{t("common.no")}</Tag>,
+        title: t("common.tagColor"),
+        dataIndex: "tagColor",
+        render: (value: string | undefined) => {
+          if (!value) return "-";
+          const preset = PRESET_TAG_COLORS.find((c) => c.value.toLowerCase() === value.toLowerCase());
+          return (
+            <Space size={4}>
+              <ColorPicker value={value} size="small" disabled />
+              {preset && <Typography.Text type="secondary">{preset.label}</Typography.Text>}
+            </Space>
+          );
+        },
       },
       {
         title: t("common.status"),
         render: (_: unknown, row: DictItemItem) =>
-          row.status === 1 ? <Tag color="success">{t("common.enabled")}</Tag> : <Tag color="error">{t("common.disabled")}</Tag>,
+          row.enabled ? <Tag color="success">{t("common.enabled")}</Tag> : <Tag color="error">{t("common.disabled")}</Tag>,
       },
       {
         title: t("common.actions"),
@@ -253,10 +275,8 @@ export function AdvancedDictItemsPage() {
                   name: row.name,
                   itemValue: row.itemValue,
                   sort: row.sort ?? 0,
-                  status: row.status ?? 1,
-                  defaultFlag: row.defaultFlag ?? false,
+                  enabled: row.enabled ?? true,
                   tagColor: row.tagColor ?? "",
-                  extraJson: row.extraJson ?? "",
                   remark: row.remark ?? "",
                 });
                 setItemDrawerOpen(true);
@@ -301,7 +321,7 @@ export function AdvancedDictItemsPage() {
       >
         <Form form={itemFilterForm} layout="inline" initialValues={initialItemQuery} onFinish={(values) => setItemQuery((current) => ({ ...current, ...values, pageNum: 1 }))}>
           <Form.Item name="name" label={t("common.name")}><Input allowClear /></Form.Item>
-          {!treeEnabled ? <Form.Item name="status" label={t("common.status")}><Select allowClear style={{ width: 140 }} options={[{ label: t("common.enabled"), value: 1 }, { label: t("common.disabled"), value: 0 }]} /></Form.Item> : null}
+          {!treeEnabled ? <Form.Item name="enabled" label={t("common.status")}><Select allowClear style={{ width: 140 }} options={[{ label: t("common.enabled"), value: true }, { label: t("common.disabled"), value: false }]} /></Form.Item> : null}
           <Form.Item><Button type="primary" htmlType="submit" icon={<SearchOutlined />}>{t("common.search")}</Button></Form.Item>
         </Form>
         {treeEnabled ? <Typography.Paragraph type="secondary" style={{ marginTop: 16, marginBottom: 0 }}>{t("dict.treeModeHint")}</Typography.Paragraph> : null}
@@ -354,10 +374,24 @@ export function AdvancedDictItemsPage() {
           <Form.Item name="name" label={t("common.name")} rules={[{ required: true, message: t("validation.enterField", undefined, { field: t("common.name") }) }]}><Input /></Form.Item>
           <Form.Item name="itemValue" label={t("common.itemValue")} rules={[{ required: true, message: t("validation.enterField", undefined, { field: t("common.itemValue") }) }]}><Input /></Form.Item>
           <Form.Item name="sort" label={t("common.sort")}><InputNumber min={0} style={{ width: "100%" }} /></Form.Item>
-          <Form.Item name="defaultFlag" label={t("dict.isDefault")}><Select options={[{ label: t("common.no"), value: false }, { label: t("common.yes"), value: true }]} /></Form.Item>
-          <Form.Item name="tagColor" label={t("common.tagColor")}><Input /></Form.Item>
-          <Form.Item name="extraJson" label={t("common.extJson")} className="ne-modal-form-grid__full"><Input.TextArea rows={3} /></Form.Item>
-          <Form.Item name="status" label={t("common.status")}><Select options={[{ label: t("common.enabled"), value: 1 }, { label: t("common.disabled"), value: 0 }]} /></Form.Item>
+          <Form.Item name="tagColor" label={t("common.tagColor")}>
+            <ColorPicker
+              presets={[
+                {
+                  label: t("dict.presetColors"),
+                  colors: PRESET_TAG_COLORS.map((c) => c.color),
+                },
+              ]}
+              allowClear
+              format="hex"
+              showText
+              onChange={(color) => {
+                itemDrawerForm.setFieldValue("tagColor", color ? colorToHex(color) : "");
+              }}
+              value={itemDrawerForm.getFieldValue("tagColor") || undefined}
+            />
+          </Form.Item>
+          <Form.Item name="enabled" label={t("common.status")}><Select options={[{ label: t("common.enabled"), value: true }, { label: t("common.disabled"), value: false }]} /></Form.Item>
           <Form.Item name="remark" label={t("common.remark")} className="ne-modal-form-grid__full"><Input.TextArea rows={3} /></Form.Item>
         </Form>
       </NeModal>

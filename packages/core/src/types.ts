@@ -427,7 +427,6 @@ export interface DictTypeItem {
   id: string;
   code: string;
   name: string;
-  status?: number;
   remark?: string;
   createTime?: string;
   updateTime?: string;
@@ -442,7 +441,6 @@ export interface DictTypePageQuery {
   orderType?: string;
   code?: string;
   name?: string;
-  status?: number;
 }
 
 export interface DictTypePageResult {
@@ -453,7 +451,6 @@ export interface DictTypePageResult {
 export interface DictTypeMutationPayload {
   code: string;
   name: string;
-  status?: number;
   remark?: string;
 }
 
@@ -461,14 +458,11 @@ export interface DictItemItem {
   id: string;
   dictCode: string;
   parentId?: string;
-  path?: string;
   name: string;
   itemValue: string;
   sort?: number;
-  status?: number;
-  defaultFlag?: boolean;
+  enabled?: boolean;
   tagColor?: string;
-  extraJson?: string;
   remark?: string;
   createTime?: string;
   updateTime?: string;
@@ -484,7 +478,7 @@ export interface DictItemPageQuery {
   orderType?: string;
   dictCode?: string;
   name?: string;
-  status?: number;
+  enabled?: boolean;
 }
 
 export interface DictItemPageResult {
@@ -498,10 +492,8 @@ export interface DictItemMutationPayload {
   name: string;
   itemValue: string;
   sort?: number;
-  status?: number;
-  defaultFlag?: boolean;
+  enabled?: boolean;
   tagColor?: string;
-  extraJson?: string;
   remark?: string;
 }
 

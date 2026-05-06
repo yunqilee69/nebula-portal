@@ -19,7 +19,6 @@ function mapDictType(item: unknown): DictTypeDetail | null {
     id: getString(record.id) ?? crypto.randomUUID(),
     code: getString(record.code) ?? "",
     name: getString(record.name) ?? "",
-    status: getNumber(record.status),
     remark: getString(record.remark),
     createTime: getString(record.createTime),
     updateTime: getString(record.updateTime),
@@ -36,14 +35,11 @@ function mapDictItem(item: unknown): DictItemDetail | null {
     id: getString(record.id) ?? crypto.randomUUID(),
     dictCode: getString(record.dictCode) ?? "",
     parentId: getString(record.parentId),
-    path: getString(record.path),
     name: getString(record.name) ?? "",
     itemValue: getString(record.itemValue) ?? "",
     sort: getNumber(record.sort),
-    status: getNumber(record.status),
-    defaultFlag: getBoolean(record.defaultFlag),
+    enabled: getBoolean(record.enabled),
     tagColor: getString(record.tagColor),
-    extraJson: getString(record.extraJson),
     remark: getString(record.remark),
     createTime: getString(record.createTime),
     updateTime: getString(record.updateTime),
@@ -79,7 +75,6 @@ export async function createDictType(payload: DictTypeMutationPayload) {
 export async function updateDictType(id: string, payload: DictTypeMutationPayload) {
   return requestPut<unknown>(`/api/dict/types/${id}`, {
     name: payload.name,
-    status: payload.status,
     remark: payload.remark,
   });
 }
@@ -104,14 +99,11 @@ export async function createDictItem(payload: DictItemMutationPayload) {
 
 export async function updateDictItem(id: string, payload: DictItemMutationPayload) {
   return requestPut<unknown>(`/api/dict/items/${id}`, {
-    parentId: payload.parentId,
     name: payload.name,
     itemValue: payload.itemValue,
     sort: payload.sort,
-    status: payload.status,
-    defaultFlag: payload.defaultFlag,
+    enabled: payload.enabled,
     tagColor: payload.tagColor,
-    extraJson: payload.extraJson,
     remark: payload.remark,
   });
 }

@@ -18,13 +18,11 @@ const initialTypeQuery: DictTypePageQuery = {
   pageSize: 20,
   code: undefined,
   name: undefined,
-  status: undefined,
 };
 
 const initialTypeForm: DictTypeMutationPayload = {
   code: "",
   name: "",
-  status: 1,
   remark: "",
 };
 
@@ -42,11 +40,7 @@ export function AdvancedDictPage() {
     () => [
       { title: t("common.code"), dataIndex: "code" },
       { title: t("common.name"), dataIndex: "name" },
-      {
-        title: t("common.status"),
-        render: (_: unknown, row: DictTypeItem) =>
-          row.status === 1 ? <Tag color="success">{t("common.enabled")}</Tag> : <Tag color="error">{t("common.disabled")}</Tag>,
-      },
+      { title: t("common.remark"), dataIndex: "remark", render: (value: string | undefined) => value || "-" },
       {
         title: t("common.actions"),
         render: (_: unknown, row: DictTypeItem) => (
@@ -66,7 +60,6 @@ export function AdvancedDictPage() {
                 typeDrawerForm.setFieldsValue({
                   code: row.code,
                   name: row.name,
-                  status: row.status ?? 1,
                   remark: row.remark ?? "",
                 });
                 setTypeDrawerOpen(true);
@@ -134,13 +127,6 @@ export function AdvancedDictPage() {
             <Form.Item name="name" label={t("common.name")}>
               <Input allowClear />
             </Form.Item>
-            <Form.Item name="status" label={t("common.status")}>
-              <Select
-                allowClear
-                style={{ width: 140 }}
-                options={[{ label: t("common.enabled"), value: 1 }, { label: t("common.disabled"), value: 0 }]}
-              />
-            </Form.Item>
             <Form.Item>
               <Button type="primary" htmlType="submit" icon={<SearchOutlined />}>
                 {t("common.search")}
@@ -186,9 +172,6 @@ export function AdvancedDictPage() {
           </Form.Item>
           <Form.Item name="name" label={t("common.name")} rules={[{ required: true, message: t("validation.enterField", undefined, { field: t("common.name") }) }]}>
             <Input />
-          </Form.Item>
-          <Form.Item name="status" label={t("common.status")}>
-            <Select options={[{ label: t("common.enabled"), value: 1 }, { label: t("common.disabled"), value: 0 }]} />
           </Form.Item>
           <Form.Item name="remark" label={t("common.remark")} className="ne-modal-form-grid__full">
             <Input.TextArea rows={3} />
