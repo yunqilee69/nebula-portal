@@ -25,22 +25,26 @@ export interface RestoreSessionOptions {
 export async function restoreSessionOnStartup(options: RestoreSessionOptions): Promise<AuthSession | null> {
   const { storedSession } = options;
 
-  if (!storedSession?.token) {
+  if (!storedSession) {
     return null;
   }
 
-  if (!storedSession.refreshToken && isSessionExpired(storedSession.accessTokenExpiresIn)) {
+  if (!storedSession.refreshToken || isSessionExpired(storedSession.refreshTokenExpiresIn)) {
     return null;
   }
 
-  if (storedSession.refreshToken && isSessionExpired(storedSession.refreshTokenExpiresIn)) {
-    return null;
+  if (!storedSession.token || isSessionExpired(storedSession.accessTokenExpiresIn)) {
+    return options.refreshSession(storedSession.refreshToken);
   }
 
-  if (!shouldRefreshSession(storedSession) || !storedSession.refreshToken) {
+  if (shouldRefreshSession(storedSession)) {
+    return options.refreshSession(storedSession.refreshToken);
+  }
+
+  try {
     const currentUser = await options.fetchCurrentUser(storedSession.token);
     return mergeSessionWithCurrentUser(storedSession, currentUser);
+  } catch {
+    return options.refreshSession(storedSession.refreshToken);
   }
-
-  return options.refreshSession(storedSession.refreshToken);
 }

@@ -196,6 +196,11 @@ export function createPlatformRequestClient(options: CreatePlatformRequestClient
     async (error: unknown) => {
       const axiosError = axios.isAxiosError(error) ? error : undefined;
       const originalRequest = axiosError?.config as RequestFeedbackConfig | undefined;
+      
+      if (axiosError?.response?.status === 401) {
+        return Promise.reject(error);
+      }
+
       const resolvedError = normalizePlatformApiError(error, originalRequest?.feedbackOptions?.errorMessage ?? "Request failed");
       options.onResolvedError?.(resolvedError, originalRequest);
       return Promise.reject(resolvedError);

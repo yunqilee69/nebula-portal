@@ -62,13 +62,23 @@ function normalizeHeaders(headers?: AxiosRequestConfig["headers"] | InternalAxio
   return normalizedHeaders;
 }
 
-export function hasSessionToken(value: unknown): value is { token: string } {
+export function hasSessionToken(value: unknown): value is { token: string | null | undefined } {
   if (typeof value !== "object" || value === null) {
     return false;
   }
 
   const candidate = value as Record<string, unknown>;
-  return typeof candidate.token === "string" && candidate.token.length > 0;
+  
+  if (typeof candidate.token === "string" && candidate.token.length > 0) {
+    return true;
+  }
+  
+  if (candidate.token === null || candidate.token === undefined) {
+    const refreshTokenValue = candidate.refreshToken;
+    return typeof refreshTokenValue === "string" && refreshTokenValue.length > 0;
+  }
+  
+  return false;
 }
 
 export function parseStoredSession<T>(raw: string | null, deserialize: (value: unknown) => T | null): T | null {

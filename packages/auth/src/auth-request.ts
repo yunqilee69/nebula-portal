@@ -1,6 +1,7 @@
 import axios from "axios";
 import type { AxiosHeaders, AxiosInstance, AxiosRequestConfig, AxiosHeaderValue, InternalAxiosRequestConfig } from "axios";
 import type { AuthSession } from "./session-utils";
+import { PlatformApiClientError } from "@nebula/request";
 
 export interface AttachAuthRequestOptions {
   client: AxiosInstance;
@@ -85,10 +86,13 @@ export function attachAuthToRequestClient(options: AttachAuthRequestOptions) {
 
   options.client.interceptors.response.use(undefined, async (error: unknown) => {
     const axiosError = axios.isAxiosError(error) ? error : undefined;
+    const platformError = error instanceof PlatformApiClientError ? error : undefined;
+    
+    const errorStatus = axiosError?.response?.status ?? platformError?.status;
     const originalRequest = axiosError?.config as RetryableAxiosRequestConfig | undefined;
     const isAuthLifecycleRequest = options.isAuthLifecycleRequest?.(originalRequest) ?? false;
 
-    if (axiosError?.response?.status === 401 && originalRequest && !originalRequest._retry && !isAuthLifecycleRequest && options.refreshSession && options.getRefreshToken) {
+    if (errorStatus === 401 && originalRequest && !originalRequest._retry && !isAuthLifecycleRequest && options.refreshSession && options.getRefreshToken) {
       originalRequest._retry = true;
 
       try {
@@ -103,7 +107,7 @@ export function attachAuthToRequestClient(options: AttachAuthRequestOptions) {
       }
     }
 
-    if (axiosError?.response?.status === 401) {
+    if (errorStatus === 401) {
       await options.onUnauthorized?.();
     }
 
