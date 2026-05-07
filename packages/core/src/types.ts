@@ -807,7 +807,42 @@ export interface PlatformEvents {
 }
 
 export type RouteComponentLoader = () => Promise<{ default: ComponentType<object> }>;
-export type RouteComponentLoaderMap = Record<string, RouteComponentLoader>;
+
+/**
+ * 路由组件元数据，用于菜单管理页面新增菜单时的默认值回显
+ */
+export interface RouteComponentMeta {
+  /** 组件名称（用于菜单名称默认值） */
+  name?: string;
+  /** 名称国际化 key（优先使用） */
+  nameKey?: string;
+  /** 默认路径 */
+  path?: string;
+  /** 默认图标 */
+  icon?: string;
+  /** 默认权限码 */
+  permission?: string;
+  /** 排序 */
+  sort?: number;
+}
+
+/**
+ * 路由组件注册项
+ * - loader: 组件加载器（必填）
+ * - meta: 组件元数据（可选，用于菜单管理页面默认值回显）
+ */
+export interface RouteComponentRegistration {
+  loader: RouteComponentLoader;
+  meta?: RouteComponentMeta;
+}
+
+/**
+ * 路由组件注册表
+ * 支持两种格式：
+ * - 简单格式：直接提供 loader（向后兼容）
+ * - 详细格式：提供 { loader, meta } 对象
+ */
+export type RouteComponentLoaderMap = Record<string, RouteComponentLoader | RouteComponentRegistration>;
 
 export interface PlatformRoute {
   path: string;

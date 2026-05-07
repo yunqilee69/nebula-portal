@@ -17,7 +17,7 @@ export function buildDefaultNebulaMenus(locale: LocaleCode = "zh-CN"): MenuItem[
       name: translateNebulaMessage(locale, "nav.home", "首页"),
       type: 2,
       path: "/dashboard",
-      component: "nebula/DashboardPage",
+      component: "DashboardPage",
       linkType: 1,
       icon: "HomeOutlined",
       visible: 1,
