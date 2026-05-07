@@ -2,7 +2,7 @@ import { DeleteOutlined, EditOutlined, PlusOutlined, SearchOutlined } from "@ant
 import { Button, Form, Input, InputNumber, Pagination, Popconfirm, Select, Space, Table, Tag, Typography } from "antd";
 import { useI18n } from "@nebula/core";
 import { NePermission } from "@nebula/core";
-import { getRegisteredRouteComponentSource, listRegisteredRouteComponents } from "@nebula/core";
+import { getRouteComponentMeta, listRegisteredRouteComponents, translateNebulaMessage } from "@nebula/core";
 import type { MenuItem, MenuMutationPayload, MenuPageQuery } from "@nebula/core";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { createMenu, deleteMenu, fetchMenuPage, fetchMenuTree, updateMenu } from "../../../api/menu-admin-api";
@@ -135,21 +135,8 @@ function collectSuggestedPaths(menuTree: MenuItem[]) {
   return suggestions;
 }
 
-function collectRouteComponentSources() {
-  const sources = new Map<string, string>();
-
-  listRegisteredRouteComponents().forEach((componentKey) => {
-    const source = getRegisteredRouteComponentSource(componentKey);
-    if (source) {
-      sources.set(componentKey, source);
-    }
-  });
-
-  return sources;
-}
-
 export function OperationsMenuPage() {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const [form] = Form.useForm<MenuPageQuery>();
   const [drawerForm] = Form.useForm<MenuMutationPayload>();
   const [query, setQuery] = useState<MenuPageQuery>(initialQuery);
@@ -170,12 +157,17 @@ export function OperationsMenuPage() {
   const parentOptions = useMemo(() => flattenDirectoryOptions(menuTree, editingDescendantIds), [editingDescendantIds, menuTree]);
   const editingHasChildren = Boolean(editingTreeNode?.children?.length);
   const suggestedPathsByComponent = useMemo(() => collectSuggestedPaths(menuTree), [menuTree]);
-  const routeComponentSources = useMemo(() => collectRouteComponentSources(), [drawerOpen]);
   const componentOptions = useMemo(() => {
-    const registeredOptions = listRegisteredRouteComponents().map((componentKey) => ({
-      label: `${componentKey} · ${routeComponentSources.get(componentKey) ?? (componentKey.startsWith("nebula/") ? t("menuManagement.nebulaPageSource") : t("menuManagement.unknownPageSource"))}`,
-      value: componentKey,
-    }));
+    const registeredOptions = listRegisteredRouteComponents().map((componentKey) => {
+      const meta = getRouteComponentMeta(componentKey);
+      const displayName = meta?.nameKey
+        ? translateNebulaMessage(locale, meta.nameKey, meta.name ?? componentKey)
+        : meta?.name ?? componentKey;
+      return {
+        label: `${displayName} (${componentKey})`,
+        value: componentKey,
+      };
+    });
 
     if (!currentComponent) {
       return registeredOptions;
@@ -184,7 +176,7 @@ export function OperationsMenuPage() {
     return registeredOptions.some((item) => item.value === currentComponent)
       ? registeredOptions
       : [{ label: `${currentComponent} (${t("menuManagement.unregisteredPage")})`, value: currentComponent }, ...registeredOptions];
-  }, [currentComponent, drawerOpen, routeComponentSources, t]);
+  }, [currentComponent, drawerOpen, locale]);
   const suggestedPaths = useMemo(
     () => (currentComponent ? [...(suggestedPathsByComponent.get(currentComponent) ?? [])].sort((left, right) => left.localeCompare(right)) : []),
     [currentComponent, suggestedPathsByComponent],
@@ -222,6 +214,46 @@ export function OperationsMenuPage() {
 
     lastAutoSuggestedPathRef.current = nextSuggestedPath;
   }, [currentPath, currentType, drawerForm, suggestedPaths]);
+
+  useEffect(() => {
+    if (!currentComponent || editing || currentType !== "MENU") {
+      return;
+    }
+
+    const meta = getRouteComponentMeta(currentComponent);
+    if (!meta) {
+      return;
+    }
+
+    const currentName = drawerForm.getFieldValue("name")?.trim() ?? "";
+    const currentIcon = drawerForm.getFieldValue("icon")?.trim() ?? "";
+    const currentSort = drawerForm.getFieldValue("sort");
+    const currentPermission = drawerForm.getFieldValue("code")?.trim() ?? "";
+
+    const updates: Partial<MenuMutationPayload> = {};
+
+    if (!currentName && meta.nameKey) {
+      updates.name = translateNebulaMessage(locale, meta.nameKey, meta.name ?? "");
+    } else if (!currentName && meta.name) {
+      updates.name = meta.name;
+    }
+
+    if (!currentIcon && meta.icon) {
+      updates.icon = meta.icon;
+    }
+
+    if (!currentSort && meta.sort !== undefined) {
+      updates.sort = meta.sort;
+    }
+
+    if (!currentPermission && meta.permission) {
+      updates.code = meta.permission;
+    }
+
+    if (Object.keys(updates).length > 0) {
+      drawerForm.setFieldsValue(updates);
+    }
+  }, [currentComponent, currentType, drawerForm, editing, locale]);
 
   async function loadRows(nextQuery: MenuPageQuery) {
     setLoading(true);
