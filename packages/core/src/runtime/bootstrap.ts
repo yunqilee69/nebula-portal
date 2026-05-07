@@ -10,6 +10,83 @@ import type { AppContextValue, AuthSession, ConfigMap, DictRecord, MenuItem, Not
 
 export { applyNebulaLocale, translateNebulaMessage };
 
+export interface PrepareAppDataOptions {
+  sessionMenuList?: MenuItem[];
+  fetchMenus?: () => Promise<MenuItem[]>;
+  fetchDictCodes: () => Promise<Array<{ code: string }>>;
+  fetchDictByCode: (code: string) => Promise<DictRecord[]>;
+  fetchConfig: () => Promise<ConfigMap>;
+  fetchNotifications: () => Promise<NotificationItem[]>;
+}
+
+export async function prepareAppData(options: PrepareAppDataOptions) {
+  const {
+    sessionMenuList,
+    fetchMenus,
+    fetchDictCodes,
+    fetchDictByCode,
+    fetchConfig,
+    fetchNotifications,
+  } = options;
+
+  useResourceStore.getState().start("menus");
+  useResourceStore.getState().start("dicts");
+  useResourceStore.getState().start("config");
+  useResourceStore.getState().start("notifications");
+
+  const locale = useI18nStore.getState().locale;
+
+  const menusPromise = sessionMenuList && sessionMenuList.length > 0
+    ? Promise.resolve(withDefaultNebulaMenus(sessionMenuList, locale))
+    : fetchMenus
+      ? fetchMenus().then(menus => withDefaultNebulaMenus(menus, locale))
+      : Promise.resolve(withDefaultNebulaMenus([], locale));
+
+  await Promise.all([
+    menusPromise
+      .then((menus) => {
+        useMenuStore.getState().setMenus(menus);
+        useResourceStore.getState().succeed("menus");
+        console.log('[prepareAppData] Menus loaded:', menus.length, 'items');
+      })
+      .catch((error: unknown) => {
+        useMenuStore.getState().setMenus(withDefaultNebulaMenus([], locale));
+        useResourceStore.getState().fail("menus", error instanceof Error ? error.message : "Failed to load menus");
+      }),
+
+    fetchDictCodes()
+      .then((items) => Promise.all(items.map((item) => fetchDictByCode(item.code))))
+      .then(() => {
+        useResourceStore.getState().succeed("dicts");
+      })
+      .catch((error: unknown) => {
+        useResourceStore.getState().fail("dicts", error instanceof Error ? error.message : "Failed to load dictionaries");
+      }),
+
+    fetchConfig()
+      .then((config) => {
+        useConfigStore.getState().setValues(config);
+        useResourceStore.getState().succeed("config");
+      })
+      .catch((error: unknown) => {
+        useConfigStore.getState().setValues({});
+        useResourceStore.getState().fail("config", error instanceof Error ? error.message : "Failed to load config");
+      }),
+
+    fetchNotifications()
+      .then((notifications) => {
+        useNotifyStore.getState().setItems(notifications);
+        useResourceStore.getState().succeed("notifications");
+      })
+      .catch((error: unknown) => {
+        useNotifyStore.getState().setItems([]);
+        useResourceStore.getState().fail("notifications", error instanceof Error ? error.message : "Failed to load notifications");
+      }),
+  ]);
+
+  console.log('[prepareAppData] All app data prepared');
+}
+
 export async function preloadNebulaData(apis: {
   fetchMenus: () => Promise<MenuItem[]>;
   fetchDictCodes: () => Promise<Array<{ code: string }>>;

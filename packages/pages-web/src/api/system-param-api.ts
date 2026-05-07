@@ -67,19 +67,19 @@ export async function fetchSystemParamPage(query: SystemParamPageQuery): Promise
 }
 
 export async function fetchSystemParamDetail(id: string) {
-  const response = await apiClient.get(`/api/param/system-params/${id}`);
+  const response = await apiClient.get(`/api/param/${id}`);
   const payload = unwrapEnvelope<unknown>(response.data);
   return mapSystemParam(payload);
 }
 
 export async function fetchSystemParamByKeyDetail(paramKey: string) {
-  const response = await apiClient.get(`/api/param/system-params/key/${paramKey}/detail`);
+  const response = await apiClient.get(`/api/param/key/${paramKey}/detail`);
   const payload = unwrapEnvelope<unknown>(response.data);
   return mapSystemParam(payload);
 }
 
 export async function fetchSystemParamsByModule(moduleCode: string) {
-  const response = await apiClient.get(`/api/param/system-params/module/${moduleCode}`);
+  const response = await apiClient.get(`/api/param/module/${moduleCode}`);
   const payload = unwrapEnvelope<unknown>(response.data);
   const data = getArray<unknown>(payload)
     .map(mapSystemParam)
@@ -88,44 +88,44 @@ export async function fetchSystemParamsByModule(moduleCode: string) {
 }
 
 export async function fetchSystemParamValueByKey(paramKey: string) {
-  const response = await apiClient.get(`/api/param/system-params/key/${paramKey}`);
+  const response = await apiClient.get(`/api/param/key/${paramKey}`);
   const payload = unwrapEnvelope<string>(response.data);
   return payload;
 }
 
 export async function fetchSystemParamBooleanByKey(paramKey: string) {
-  const response = await apiClient.get(`/api/param/system-params/key/${paramKey}/boolean`);
+  const response = await apiClient.get(`/api/param/key/${paramKey}/boolean`);
   const payload = unwrapEnvelope<boolean>(response.data);
   return payload;
 }
 
 export async function fetchSystemParamIntegerByKey(paramKey: string) {
-  const response = await apiClient.get(`/api/param/system-params/key/${paramKey}/integer`);
+  const response = await apiClient.get(`/api/param/key/${paramKey}/integer`);
   const payload = unwrapEnvelope<number>(response.data);
   return payload;
 }
 
 export async function createSystemParam(payload: SystemParamMutationPayload) {
-  const response = await apiClient.post("/api/param/system-params", payload);
+  const response = await apiClient.post("/api/param", payload);
   return unwrapEnvelope<unknown>(response.data);
 }
 
 export async function updateSystemParam(id: string, payload: SystemParamMutationPayload) {
-  const response = await apiClient.put(`/api/param/system-params/${id}`, payload);
+  const response = await apiClient.put(`/api/param/${id}`, payload);
   return unwrapEnvelope<unknown>(response.data);
 }
 
 export async function saveOrUpdateSystemParamByKey(paramKey: string, payload: SystemParamMutationPayload) {
-  const response = await apiClient.put(`/api/param/system-params/key/${paramKey}`, payload);
+  const response = await apiClient.put(`/api/param/key/${paramKey}`, payload);
   return unwrapEnvelope<unknown>(response.data);
 }
 
 export async function deleteSystemParam(id: string) {
-  await apiClient.delete(`/api/param/system-params/${id}`);
+  await apiClient.delete(`/api/param/${id}`);
 }
 
 export async function batchUpdateParamValues(items: SystemParamBatchUpdateItem[]): Promise<SystemParamBatchUpdateResult> {
-  const response = await apiClient.post("/api/param/system-params/batch-update-values", items);
+  const response = await apiClient.post("/api/param/batch-update-values", items);
   const payload = unwrapEnvelope<Record<string, unknown>>(response.data);
 
   const results = getArray<unknown>(payload.results ?? payload.items ?? [])

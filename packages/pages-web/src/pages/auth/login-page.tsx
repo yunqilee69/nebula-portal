@@ -1,6 +1,6 @@
 import { LockOutlined, QrcodeOutlined, UserOutlined, WechatOutlined } from "@ant-design/icons";
 import { Alert, Button, Card, Divider, Form, Input, Segmented, Space, Typography } from "antd";
-import { eventBus, preloadNebulaData, useAuthStore, useFrontendStore, useI18n } from "@nebula/core";
+import { eventBus, prepareAppData, useAuthStore, useFrontendStore, useI18n } from "@nebula/core";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import {
@@ -100,14 +100,19 @@ export function LoginPage() {
   const handleLoginSuccess = async (session: Awaited<ReturnType<typeof loginWithPassword>>) => {
     setSession(session);
     eventBus.emit("auth:login", session);
-    await preloadNebulaData({
-      fetchMenus: fetchCurrentMenus,
+    
+    await prepareAppData({
+      sessionMenuList: session.menuList,
+      fetchMenus: session.menuList ? undefined : fetchCurrentMenus,
       fetchDictCodes: fetchDictCodes,
       fetchDictByCode: fetchDictByCode,
       fetchConfig: fetchCurrentConfig,
       fetchNotifications: fetchCurrentNotifications,
     });
-    navigate(from, { replace: true });
+    
+    const destination = from ?? "/";
+    console.log('[Login] Setting pending navigation to:', destination);
+    eventBus.emit("auth:navigate-after-login", { destination });
   };
 
   const scheduleWechatQrPoll = (loginId: string) => {

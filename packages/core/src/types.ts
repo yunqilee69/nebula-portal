@@ -244,10 +244,10 @@ export interface SystemParamMutationPayload {
   placeholder?: string;
   moduleCode?: string;
   displayOrder?: number;
-  sensitiveFlag?: boolean;
-  builtinFlag?: boolean;
-  editableFlag?: boolean;
-  visibleFlag?: boolean;
+  sensitive?: boolean;
+  builtin?: boolean;
+  editable?: boolean;
+  visible?: boolean;
 }
 
 /** 批量更新参数值请求项 */

@@ -14,6 +14,7 @@ import {
   buildRoutesFromMenus,
   buildAppContext,
   preloadNebulaData,
+  prepareAppData,
   reportPlatformValidation,
   validatePlatformConsistency,
   getAllStaticRoutes,
@@ -111,6 +112,7 @@ function AppRouter() {
   const frontendHydrated = useFrontendStore((state) => state.hydrated);
   const refreshTimerRef = useRef<number | null>(null);
   const lastValidationSignatureRef = useRef<string | null>(null);
+  const [pendingNavigation, setPendingNavigation] = useState<string | null>(null);
 
   const openSessionExpiredModal = () => {
     // 如果已在公开页面（登录页、401页、404页），不弹窗
@@ -280,6 +282,14 @@ function AppRouter() {
   }, []);
 
   useEffect(() => {
+    const unsubscribe = eventBus.on("auth:navigate-after-login", (payload: { destination: string }) => {
+      console.log('[App] Received navigate-after-login event:', payload.destination);
+      setPendingNavigation(payload.destination);
+    });
+    return unsubscribe;
+  }, []);
+
+  useEffect(() => {
     registerUnauthorizedHandler(() => {
       openSessionExpiredModal();
     });
@@ -296,6 +306,18 @@ function AppRouter() {
       resetUnauthorizedHandling();
     }
   }, [session?.token]);
+
+  const staticRoutes = useMemo(
+    () =>
+      getAllStaticRoutes().map((route) => {
+        const Component = lazy(route.componentLoader);
+        return {
+          path: route.path.replace(/^\//, ""),
+          element: <Component />,
+        };
+      }),
+    []
+  );
 
   const dynamicRoutes = useMemo(() => buildRoutesFromMenus(menus, UnavailablePage), [menus]);
   const routesReady = menus.length > 0 && dynamicRoutes.length > 0;
@@ -319,17 +341,28 @@ function AppRouter() {
     lastValidationSignatureRef.current = signature;
   }, [platformValidation]);
 
-  const staticRoutes = useMemo(
-    () =>
-      getAllStaticRoutes().map((route) => {
-        const Component = lazy(route.componentLoader);
-        return {
-          path: route.path.replace(/^\//, ""),
-          element: <Component />,
-        };
-      }),
-    []
-  );
+  useEffect(() => {
+    if (!routesReady || !pendingNavigation) {
+      return;
+    }
+
+    const allRoutes = [...staticRoutes, ...dynamicRoutes];
+    const targetExists = allRoutes.some(route => {
+      const routePath = route.path.replace(/^\//, "");
+      const targetPath = pendingNavigation.replace(/^\//, "");
+      return routePath === targetPath;
+    });
+
+    if (targetExists) {
+      console.log('[Navigation] Routes ready, navigating to:', pendingNavigation);
+      navigate(pendingNavigation, { replace: true });
+      setPendingNavigation(null);
+    } else {
+      console.warn('[Navigation] Target route not found, fallback to dashboard. Path:', pendingNavigation);
+      navigate('/dashboard', { replace: true });
+      setPendingNavigation(null);
+    }
+  }, [routesReady, pendingNavigation, navigate, staticRoutes, dynamicRoutes]);
 
   const routes = [
     { path: "/login", element: session?.token ? <Navigate to="/dashboard" replace /> : <LoginPage /> },

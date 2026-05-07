@@ -135,10 +135,10 @@ function normalizePayload(values: SystemParamFormValues): SystemParamMutationPay
     placeholder: values.placeholder?.trim() || undefined,
     moduleCode: values.moduleCode?.trim() || undefined,
     displayOrder: values.displayOrder,
-    sensitiveFlag: values.sensitiveFlag,
-    builtinFlag: values.builtinFlag,
-    editableFlag: values.editableFlag,
-    visibleFlag: values.visibleFlag,
+    sensitive: values.sensitiveFlag,
+    builtin: values.builtinFlag,
+    editable: values.editableFlag,
+    visible: values.visibleFlag,
   };
 }
 
@@ -431,9 +431,6 @@ export function AdvancedParamPage() {
                 ) : "-"}
               </Descriptions.Item>
             )}
-            <Descriptions.Item label={t("common.value")}>
-              {selected.sensitiveFlag ? "******" : selected.paramValue ?? "-"}
-            </Descriptions.Item>
             {isNumericDataType(selected.dataType) && (
               <>
                 <Descriptions.Item label={t("common.minValue")}>
@@ -530,9 +527,6 @@ export function AdvancedParamPage() {
           </Form.Item>
           <Form.Item name="defaultValue" label={t("common.defaultValue")}>
             <Input />
-          </Form.Item>
-          <Form.Item label={t("common.value")} extra={t("systemParams.valueHint")}>
-            <Input value={editing?.paramValue ?? ""} readOnly placeholder="-" />
           </Form.Item>
           {isOptionDataType(currentDataType) ? (
             <Form.Item

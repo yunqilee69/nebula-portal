@@ -22,7 +22,7 @@ export const webEnv = {
     .split(",")
     .map((item: string) => item.trim())
     .filter(Boolean),
-  systemParamPagePath: import.meta.env.VITE_SYSTEM_PARAM_PAGE_PATH ?? "/api/param/system-params/page",
+  systemParamPagePath: import.meta.env.VITE_SYSTEM_PARAM_PAGE_PATH ?? "/api/param/page",
   notifyPath: import.meta.env.VITE_NOTIFY_CURRENT_PATH ?? "/api/notify/site-messages/page",
   notifyReadPathTemplate:
     import.meta.env.VITE_NOTIFY_READ_PATH_TEMPLATE ?? "/api/notify/site-messages/{id}/read",
