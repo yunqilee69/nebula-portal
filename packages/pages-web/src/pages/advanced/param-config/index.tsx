@@ -118,7 +118,13 @@ export function AdvancedParamConfigPage() {
         if (currentRequestId !== requestIdRef.current) {
           return;
         }
-        const editableParams = result.filter((p) => p.editableFlag !== false && p.renderEnabled !== false);
+        const editableParams = result
+          .filter((p) => p.editableFlag !== false && p.renderEnabled !== false)
+          .sort((a, b) => {
+            const orderA = a.displayOrder ?? Number.MAX_SAFE_INTEGER;
+            const orderB = b.displayOrder ?? Number.MAX_SAFE_INTEGER;
+            return orderA - orderB;
+          });
         setParams(editableParams);
         const initialValues: ParamConfigFormValue = {};
         for (const param of editableParams) {
