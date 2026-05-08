@@ -25,23 +25,20 @@ import { BrowserRouter, Navigate, useLocation, useNavigate, useRoutes } from "re
 import { AppErrorBoundary } from "./components/app-error-boundary";
 import { BasicLayout } from "./layout/basic-layout";
 import {
-   fetchCurrentUser,
-   fetchFrontendInit,
-   fetchCurrentNotifications,
-   LoginPage,
-   NotFoundPage,
-   refreshSession,
-   UnauthorizedPage,
-   UnavailablePage,
-   apiClient,
-   registerUnauthorizedHandler,
-   resetUnauthorizedHandling,
-   webEnv,
- } from "@nebula/pages-web";
+    fetchCurrentUser,
+    fetchFrontendInit,
+    fetchCurrentNotifications,
+    LoginPage,
+    NotFoundPage,
+    refreshSession,
+    UnauthorizedPage,
+    UnavailablePage,
+    apiClient,
+    registerUnauthorizedHandler,
+    resetUnauthorizedHandling,
+    webEnv,
+  } from "@nebula/pages-web";
 import { NeExceptionResult } from "@nebula/ui-web";
-import { registerNebulaPages } from "./platform/register-nebula-pages";
-
-registerNebulaPages();
 
 function AppLoadingFallback() {
   return (

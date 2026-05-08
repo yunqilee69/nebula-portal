@@ -21,7 +21,16 @@ export { NotificationsTemplatePage, NotificationsTemplatePage as NotificationTem
 export { NotificationsAnnouncementPage, NotificationsAnnouncementPage as AnnouncementPage } from "./pages/notifications/announcement";
 export { StorageCenterPage } from "./pages/storage/center";
 export { StorageUploadTaskPage } from "./pages/storage/upload-task";
-export { createNebulaRoutes, type NebulaRoutesOptions } from "./routes";
+export { createNebulaRoutes, type NebulaRoutesOptions, allRouteConfigs } from "./routes";
+export {
+  dashboardRoutes,
+  operationsRoutes,
+  notificationsRoutes,
+  advancedRoutes,
+  storageRoutes,
+  errorsRoutes,
+  authRoutes,
+} from "./routes";
 export {
   acknowledgeWechatWebCallback,
   createWechatWebQrCode,

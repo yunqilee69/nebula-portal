@@ -31,7 +31,10 @@ const NEBULA_CORE_STATIC_ROUTES: StaticRouteItem[] = [
     icon: "DashboardOutlined",
     visible: true,
     sort: 0,
-    componentLoader: async () => ({ default: (await import("@nebula/pages-web")).DashboardPage }),
+    componentLoader: async () => {
+      // @ts-ignore Dynamic import resolved at runtime by apps/web, avoiding circular dependency
+      return { default: (await import("@nebula/pages-web")).DashboardPage };
+    },
   },
   {
     id: "nebula-iframe",
@@ -40,7 +43,10 @@ const NEBULA_CORE_STATIC_ROUTES: StaticRouteItem[] = [
     nameKey: "nav.iframe",
     visible: false,
     sort: 100,
-    componentLoader: async () => ({ default: (await import("@nebula/pages-web")).IframePage }),
+    componentLoader: async () => {
+      // @ts-ignore Dynamic import resolved at runtime by apps/web, avoiding circular dependency
+      return { default: (await import("@nebula/pages-web")).IframePage };
+    },
   },
   {
     id: "nebula-dict-items",
@@ -49,7 +55,10 @@ const NEBULA_CORE_STATIC_ROUTES: StaticRouteItem[] = [
     nameKey: "dict.itemsManagementTitle",
     visible: false,
     sort: 200,
-    componentLoader: async () => ({ default: (await import("@nebula/pages-web")).AdvancedDictItemsPage }),
+    componentLoader: async () => {
+      // @ts-ignore Dynamic import resolved at runtime by apps/web, avoiding circular dependency
+      return { default: (await import("@nebula/pages-web")).AdvancedDictItemsPage };
+    },
   },
 ];
 

@@ -19,5 +19,5 @@ export * from "./pagination";
 export * from "./ne-table/ne-table";
 export * from "./ne-table-page/ne-table-page";
 export * from "./ne-workspace-tabs/ne-workspace-tabs";
-export * from "./organization-tree";
-export * from "./notification-panel";
+export * from "./ne-organization-tree";
+export * from "./ne-notification-panel";
