@@ -1,5 +1,4 @@
 import type { ConfigMap } from "@nebula/core";
-import { webEnv } from "../config/env";
 import { apiClient, unwrapEnvelope } from "./client";
 
 function normalizeSystemParamValue(rawValue: string): string | number | boolean | null {
@@ -23,17 +22,20 @@ function normalizeSystemParamValue(rawValue: string): string | number | boolean 
   return rawValue;
 }
 
-export async function fetchCurrentConfig() {
-  if (webEnv.configKeys.length === 0) {
+export async function fetchSystemParamValue(paramKey: string) {
+  const response = await apiClient.get(`/api/param/system-params/key/${encodeURIComponent(paramKey)}`);
+  const payload = unwrapEnvelope<unknown>(response.data);
+  return typeof payload === "string" ? normalizeSystemParamValue(payload) : null;
+}
+
+export async function fetchCurrentConfig(paramKeys: string[]) {
+  if (paramKeys.length === 0) {
     return {};
   }
   const entries = await Promise.all(
-    webEnv.configKeys.map(async (paramKey: string) => {
-      const response = await apiClient.get(
-        webEnv.systemParamKeyPathTemplate.replace("{paramKey}", encodeURIComponent(paramKey)),
-      );
-      const payload = unwrapEnvelope<unknown>(response.data);
-      return [paramKey, typeof payload === "string" ? normalizeSystemParamValue(payload) : null] as const;
+    paramKeys.map(async (paramKey) => {
+      const value = await fetchSystemParamValue(paramKey);
+      return [paramKey, value] as const;
     }),
   );
 

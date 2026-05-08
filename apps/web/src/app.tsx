@@ -1,25 +1,23 @@
 import {
-  AppContextProvider,
-  AuthGuard,
-  eventBus,
-  hydrateFrontendPublicData,
-  translateNebulaMessage,
-  useAuthStore,
-  useDictStore,
-  useFrontendStore,
-  useI18nStore,
-  useNotifyStore,
-  useResourceStore,
-  useMenuStore,
-  buildRoutesFromMenus,
-  buildAppContext,
-  preloadNebulaData,
-  prepareAppData,
-  reportPlatformValidation,
-  validatePlatformConsistency,
-  getAllStaticRoutes,
-  type AppContextValue,
-} from "@nebula/core";
+   AppContextProvider,
+   AuthGuard,
+   eventBus,
+   hydrateFrontendPublicData,
+   translateNebulaMessage,
+   useAuthStore,
+   useFrontendStore,
+   useI18nStore,
+   useNotifyStore,
+   useResourceStore,
+   useMenuStore,
+   buildRoutesFromMenus,
+   buildAppContext,
+   preloadNebulaData,
+   reportPlatformValidation,
+   validatePlatformConsistency,
+   getAllStaticRoutes,
+   type AppContextValue,
+ } from "@nebula/core";
 import { resolveRefreshDelay, restoreSessionOnStartup } from "@nebula/auth";
 import { Alert, Modal, Spin, Typography } from "antd";
 import { lazy, Suspense, useEffect, useMemo, useRef, useState } from "react";
@@ -27,24 +25,19 @@ import { BrowserRouter, Navigate, useLocation, useNavigate, useRoutes } from "re
 import { AppErrorBoundary } from "./components/app-error-boundary";
 import { BasicLayout } from "./layout/basic-layout";
 import {
-  fetchCurrentUser,
-  fetchFrontendInit,
-  fetchFrontendThemes,
-  fetchCurrentMenus,
-  fetchDictCodes,
-  fetchDictByCode,
-  fetchCurrentConfig,
-  fetchCurrentNotifications,
-  LoginPage,
-  NotFoundPage,
-  refreshSession,
-  UnauthorizedPage,
-  UnavailablePage,
-  apiClient,
-  registerUnauthorizedHandler,
-  resetUnauthorizedHandling,
-  webEnv,
-} from "@nebula/pages-web";
+   fetchCurrentUser,
+   fetchFrontendInit,
+   fetchCurrentNotifications,
+   LoginPage,
+   NotFoundPage,
+   refreshSession,
+   UnauthorizedPage,
+   UnavailablePage,
+   apiClient,
+   registerUnauthorizedHandler,
+   resetUnauthorizedHandling,
+   webEnv,
+ } from "@nebula/pages-web";
 import { NeExceptionResult } from "@nebula/ui-web";
 import { registerNebulaPages } from "./platform/register-nebula-pages";
 
@@ -105,7 +98,6 @@ function AppRouter() {
   const patchSession = useAuthStore((state) => state.patchSession);
   const menus = useMenuStore((state) => state.menus);
   const menuResource = useResourceStore((state) => state.resources.menus);
-  const dictRecords = useDictStore((state) => state.records);
   const [sessionExpiredModalOpen, setSessionExpiredModalOpen] = useState(false);
   const [sessionExpiredRedirectTo, setSessionExpiredRedirectTo] = useState<string | null>(null);
   const [authReady, setAuthReady] = useState(false);
@@ -199,15 +191,11 @@ function AppRouter() {
     if (!authReady || !session?.token) {
       return;
     }
-      preloadNebulaData({
-
-      fetchMenus: fetchCurrentMenus,
-      fetchDictCodes: fetchDictCodes,
-      fetchDictByCode: fetchDictByCode,
-      fetchConfig: fetchCurrentConfig,
+    preloadNebulaData({
+      sessionMenuList: session?.menuList,
       fetchNotifications: fetchCurrentNotifications,
     }).catch(() => undefined);
-  }, [authReady, session?.token]);
+  }, [authReady, session?.menuList, session?.token]);
 
   useEffect(() => {
     if (refreshTimerRef.current !== null) {

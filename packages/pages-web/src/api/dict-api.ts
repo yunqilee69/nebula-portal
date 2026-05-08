@@ -1,5 +1,4 @@
 import type { DictRecord } from "@nebula/core";
-import { webEnv } from "../config/env";
 import { apiClient, getArray, getRecord, getString, unwrapEnvelope } from "./client";
 
 function pickRecordExtras(record: Record<string, unknown>) {
@@ -34,7 +33,7 @@ function normalizeDictPayload(payload: unknown) {
 }
 
 export async function fetchDictCodes(): Promise<Array<{ code: string }>> {
-  const response = await apiClient.get(webEnv.dictTypePath);
+  const response = await apiClient.get("/api/dict/types/page");
   const payload = unwrapEnvelope<unknown>(response.data);
   const items = getArray<unknown>(payload);
   return items.map((item) => {
@@ -44,9 +43,7 @@ export async function fetchDictCodes(): Promise<Array<{ code: string }>> {
 }
 
 export async function fetchDictByCode(typeCode: string) {
-  const response = await apiClient.get(
-    webEnv.dictItemPathTemplate.replace("{typeCode}", encodeURIComponent(typeCode)),
-  );
+  const response = await apiClient.get(`/api/dict/items/type/${encodeURIComponent(typeCode)}`);
   const payload = unwrapEnvelope<unknown>(response.data);
   return normalizeDictPayload(payload);
 }

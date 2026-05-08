@@ -10,19 +10,6 @@ export const webEnv = {
   wechatWebStatusPath: import.meta.env.VITE_AUTH_WECHAT_WEB_STATUS_PATH ?? "/api/auth/wechat/web/status",
   wechatWebCallbackPath: import.meta.env.VITE_AUTH_WECHAT_WEB_CALLBACK_PATH ?? "/api/auth/wechat/web/callback",
   menuPath: import.meta.env.VITE_MENU_CURRENT_PATH ?? "/api/auth/menus/tree",
-  dictTypePath: import.meta.env.VITE_DICT_TYPE_PATH ?? "/api/dict/types/page",
-  dictItemPathTemplate: import.meta.env.VITE_DICT_ITEM_PATH_TEMPLATE ?? "/api/dict/items/type/{typeCode}",
-  dictTypeCodes: (import.meta.env.VITE_DICT_TYPE_CODES ?? "file_type,param_module")
-    .split(",")
-    .map((item: string) => item.trim())
-    .filter(Boolean),
-  systemParamKeyPathTemplate:
-    import.meta.env.VITE_SYSTEM_PARAM_KEY_PATH_TEMPLATE ?? "/api/param/system-params/key/{paramKey}",
-  configKeys: (import.meta.env.VITE_SYSTEM_PARAM_KEYS ?? "upload_max_size,theme.primaryColor,theme.radius,theme.mode")
-    .split(",")
-    .map((item: string) => item.trim())
-    .filter(Boolean),
-  systemParamPagePath: import.meta.env.VITE_SYSTEM_PARAM_PAGE_PATH ?? "/api/param/page",
   notifyPath: import.meta.env.VITE_NOTIFY_CURRENT_PATH ?? "/api/notify/site-messages/page",
   notifyReadPathTemplate:
     import.meta.env.VITE_NOTIFY_READ_PATH_TEMPLATE ?? "/api/notify/site-messages/{id}/read",

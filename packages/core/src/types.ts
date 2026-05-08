@@ -800,6 +800,7 @@ export interface StorageUploadTaskPageResult {
 export interface PlatformEvents {
   "auth:login": AuthSession;
   "auth:logout": Record<string, never>;
+  "auth:navigate-after-login": { destination: string };
   "notify:new": NotificationItem;
   "dict:loaded": { keys: string[] };
   "i18n:locale-changed": { locale: LocaleCode };

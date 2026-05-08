@@ -11,8 +11,6 @@ import {
   prepareWechatWebRedirectLogin,
 } from "../../api/auth-api";
 import { fetchCurrentMenus } from "../../api/menu-api";
-import { fetchDictCodes, fetchDictByCode } from "../../api/dict-api";
-import { fetchCurrentConfig } from "../../api/config-api";
 import { fetchCurrentNotifications } from "../../api/notify-api";
 
 interface LoginFormValues {
@@ -104,9 +102,6 @@ export function LoginPage() {
     await prepareAppData({
       sessionMenuList: session.menuList,
       fetchMenus: session.menuList ? undefined : fetchCurrentMenus,
-      fetchDictCodes: fetchDictCodes,
-      fetchDictByCode: fetchDictByCode,
-      fetchConfig: fetchCurrentConfig,
       fetchNotifications: fetchCurrentNotifications,
     });
     

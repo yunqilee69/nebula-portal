@@ -2,7 +2,6 @@ import { Col, List, Row, Space, Statistic, Typography } from "antd";
 import {
   listRegisteredRouteComponents,
   useAuthStore,
-  useConfigStore,
   useI18n,
   useMenuStore,
   useNotifyStore,
@@ -36,11 +35,9 @@ export function DashboardPage() {
   const { t } = useI18n();
   const session = useAuthStore((state) => state.session);
   const menus = useMenuStore((state) => state.menus);
-  const configValues = useConfigStore((state) => state.values);
   const notifications = useNotifyStore((state) => state.items);
   const routeComponents = useMemo(() => listRegisteredRouteComponents(), []);
   const navigate = useNavigate();
-  const uploadSize = configValues.upload_max_size ?? "-";
   const menuCards = useMemo(() => collectMenuCards(menus), [menus]);
 
   return (
@@ -88,18 +85,6 @@ export function DashboardPage() {
         <Col span={24}>
           <NePanel title={t("dashboard.platformNavigation")}>
             <NeNavCards items={menuCards.map((item: MenuCardItem) => ({ key: item.key, title: item.title, description: item.description, onClick: () => navigate(item.path) }))} />
-          </NePanel>
-        </Col>
-        <Col span={24}>
-          <NePanel title={t("dashboard.nebulaParams")}>
-            <List
-              dataSource={[
-                t("dashboard.uploadLimit", undefined, { value: String(uploadSize) }),
-                t("dashboard.primaryTheme", undefined, { value: String(configValues["theme.primaryColor"] ?? "local") }),
-                t("dashboard.themeMode", undefined, { value: String(configValues["theme.mode"] ?? "local") }),
-              ]}
-              renderItem={(item) => <List.Item>{item}</List.Item>}
-            />
           </NePanel>
         </Col>
         <Col span={24}>

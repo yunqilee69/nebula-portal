@@ -7,7 +7,6 @@ import type {
   SystemParamPageQuery,
   SystemParamPageResult,
 } from "@nebula/core";
-import { webEnv } from "../config/env";
 import { apiClient, getArray, getRecord, getString, unwrapEnvelope } from "./client";
 
 function getNumber(value: unknown): number | undefined {
@@ -55,7 +54,7 @@ function mapSystemParam(item: unknown): SystemParamItem | null {
 }
 
 export async function fetchSystemParamPage(query: SystemParamPageQuery): Promise<SystemParamPageResult> {
-  const response = await apiClient.post(webEnv.systemParamPagePath, query);
+  const response = await apiClient.post("/api/param/page", query);
   const payload = unwrapEnvelope<Record<string, unknown>>(response.data);
 
   const data = getArray<unknown>(payload.records ?? payload.rows ?? payload.data)
