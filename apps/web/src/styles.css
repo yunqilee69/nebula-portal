@@ -387,6 +387,99 @@ body,
   box-shadow: var(--nebula-shadow-strong);
 }
 
+.login-card .ant-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.login-section-title {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.login-section-title .ant-typography {
+  margin-bottom: 8px;
+}
+
+.login-section-form {
+  width: 100%;
+}
+
+.login-section-badges {
+  margin-top: 28px;
+  padding-top: 20px;
+  border-top: 1px solid var(--nebula-border);
+}
+
+.login-badge-switch {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.login-badge-switch-label {
+  font-size: 13px;
+}
+
+.login-badge-list {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+}
+
+.login-badge-circle {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 1px solid var(--nebula-border);
+  background: var(--nebula-surface, #fff);
+  color: var(--nebula-text-muted);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 20px;
+  transition:
+    border-color 0.2s ease,
+    color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+}
+
+.login-badge-circle:hover,
+.login-badge-circle--active {
+  border-color: var(--nebula-primary);
+  color: var(--nebula-primary);
+  transform: translateY(-1px);
+}
+
+.login-badge-circle--active {
+  box-shadow: 0 0 0 3px rgba(22, 119, 255, 0.16);
+}
+
+.login-badge-circle--wechat:hover,
+.login-badge-circle--wechat.login-badge-circle--active {
+  border-color: #07c160;
+  color: #07c160;
+}
+
+.login-wechat-qr-frame {
+  display: flex;
+  justify-content: center;
+  padding: 16px;
+  border: 1px solid var(--nebula-border);
+  border-radius: 12px;
+  background: #fff;
+}
+
+.login-wechat-qr-image {
+  width: 180px;
+  height: 180px;
+  object-fit: contain;
+}
+
 .nebula-metric-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));

@@ -1,8 +1,8 @@
-import { LockOutlined, QrcodeOutlined, UserOutlined, WechatOutlined } from "@ant-design/icons";
-import { Alert, Button, Card, Divider, Form, Input, Segmented, Space, Typography } from "antd";
+import { UserOutlined, WechatOutlined } from "@ant-design/icons";
+import { message } from "antd";
 import { eventBus, prepareAppData, useAuthStore, useFrontendStore, useI18n } from "@nebula/core";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import {
   createWechatWebQrCode,
   fetchWechatWebLoginStatus,
@@ -12,14 +12,10 @@ import {
 } from "../../api/auth-api";
 import { fetchCurrentMenus } from "../../api/menu-api";
 import { fetchCurrentNotifications } from "../../api/notify-api";
-
-interface LoginFormValues {
-  username: string;
-  password: string;
-}
-
-type WechatWebMode = "redirect" | "qr";
-type WechatQrStatus = "WAITING" | "SCANNED" | "SUCCESS" | "EXPIRED";
+import { LoginBadgeSwitch } from "./login-badge-switch";
+import { LoginCard } from "./login-card";
+import { UsernameForm, WechatForm } from "./login-forms";
+import type { LoginFormValues, LoginMode, LoginModeOption, WechatQrStatus, WechatWebMode } from "./login-types";
 
 const DEFAULT_WECHAT_POLL_INTERVAL_MS = 2000;
 
@@ -38,10 +34,9 @@ function resolveWechatQrStatusMessage(status: WechatQrStatus, t: ReturnType<type
 }
 
 export function LoginPage() {
+  const [activeMode, setActiveMode] = useState<LoginMode>("username");
   const [submitting, setSubmitting] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const [wechatBusy, setWechatBusy] = useState(false);
-  const [wechatError, setWechatError] = useState<string | null>(null);
   const [wechatQrStatus, setWechatQrStatus] = useState<WechatQrStatus | null>(null);
   const [wechatQrLoginId, setWechatQrLoginId] = useState<string | null>(null);
   const [wechatQrCodeUrl, setWechatQrCodeUrl] = useState<string | null>(null);
@@ -50,7 +45,6 @@ export function LoginPage() {
   const setSession = useAuthStore((state) => state.setSession);
   const frontendConfig = useFrontendStore((state) => state.frontendConfig);
   const loginConfig = useFrontendStore((state) => state.loginConfig);
-  const navigate = useNavigate();
   const location = useLocation();
   const from = (location.state as { from?: string } | null)?.from ?? "/";
   const pollTimerRef = useRef<number | null>(null);
@@ -77,7 +71,7 @@ export function LoginPage() {
     }
   }, [loginConfig.wechatWebMode, qrEnabled, redirectEnabled]);
 
-  const availableWechatModes = useMemo(() => {
+  const availableWechatModes = useMemo<WechatWebMode[]>(() => {
     const modes: WechatWebMode[] = [];
     if (redirectEnabled) {
       modes.push("redirect");
@@ -87,6 +81,45 @@ export function LoginPage() {
     }
     return modes;
   }, [qrEnabled, redirectEnabled]);
+
+  const showWechatSection = wechatWebEnabled && availableWechatModes.length > 0;
+
+  const loginModes = useMemo<LoginModeOption[]>(() => {
+    const modes: LoginModeOption[] = [];
+
+    if (loginConfig.usernameEnabled !== false) {
+      modes.push({
+        key: "username",
+        label: t("login.username"),
+        description: t("login.subtitle"),
+        icon: <UserOutlined />,
+      });
+    }
+
+    if (showWechatSection) {
+      modes.push({
+        key: "wechat",
+        label: t("login.wechat.title"),
+        description: t("login.wechat.description"),
+        icon: <WechatOutlined />,
+      });
+    }
+
+    return modes;
+  }, [loginConfig.usernameEnabled, showWechatSection, t]);
+
+  useEffect(() => {
+    if (loginModes.some((mode) => mode.key === activeMode)) {
+      return;
+    }
+
+    const fallbackMode = loginModes[0]?.key;
+    if (fallbackMode) {
+      setActiveMode(fallbackMode);
+    }
+  }, [activeMode, loginModes]);
+
+  const activeModeOption = useMemo(() => loginModes.find((mode) => mode.key === activeMode) ?? loginModes[0], [activeMode, loginModes]);
 
   const clearWechatPoll = () => {
     if (pollTimerRef.current !== null) {
@@ -98,15 +131,14 @@ export function LoginPage() {
   const handleLoginSuccess = async (session: Awaited<ReturnType<typeof loginWithPassword>>) => {
     setSession(session);
     eventBus.emit("auth:login", session);
-    
+
     await prepareAppData({
       sessionMenuList: session.menuList,
       fetchMenus: session.menuList ? undefined : fetchCurrentMenus,
       fetchNotifications: fetchCurrentNotifications,
     });
-    
+
     const destination = from ?? "/";
-    console.log('[Login] Setting pending navigation to:', destination);
     eventBus.emit("auth:navigate-after-login", { destination });
   };
 
@@ -133,7 +165,6 @@ export function LoginPage() {
       if (result.status === "SUCCESS" && "session" in result) {
         clearWechatPoll();
         setWechatBusy(false);
-        setWechatError(null);
         await handleLoginSuccess(result.session);
         return;
       }
@@ -141,6 +172,7 @@ export function LoginPage() {
       if (result.status === "EXPIRED") {
         clearWechatPoll();
         setWechatBusy(false);
+        message.warning(resolveWechatQrStatusMessage(result.status, t));
         return;
       }
 
@@ -149,13 +181,12 @@ export function LoginPage() {
       clearWechatPoll();
       setWechatBusy(false);
       setWechatQrStatus(null);
-      setWechatError(caughtError instanceof Error ? caughtError.message : t("login.failed"));
+      message.error(caughtError instanceof Error ? caughtError.message : t("login.failed"));
     }
   };
 
   const startWechatRedirectLogin = async () => {
     setWechatBusy(true);
-    setWechatError(null);
     try {
       const result = await prepareWechatWebRedirectLogin(`${window.location.origin}${window.location.pathname}`);
       if (!result.authorizeUrl) {
@@ -164,13 +195,12 @@ export function LoginPage() {
       window.location.href = result.authorizeUrl;
     } catch (caughtError) {
       setWechatBusy(false);
-      setWechatError(caughtError instanceof Error ? caughtError.message : t("login.failed"));
+      message.error(caughtError instanceof Error ? caughtError.message : t("login.failed"));
     }
   };
 
   const startWechatQrLogin = async () => {
     setWechatBusy(true);
-    setWechatError(null);
     setWechatQrStatus("WAITING");
     clearWechatPoll();
 
@@ -191,7 +221,7 @@ export function LoginPage() {
       setWechatQrStatus(null);
       setWechatQrLoginId(null);
       setWechatQrCodeUrl(null);
-      setWechatError(caughtError instanceof Error ? caughtError.message : t("login.failed"));
+      message.error(caughtError instanceof Error ? caughtError.message : t("login.failed"));
     }
   };
 
@@ -204,9 +234,15 @@ export function LoginPage() {
       return;
     }
 
+    if (showWechatSection) {
+      setActiveMode("wechat");
+      if (redirectEnabled) {
+        setWechatMode("redirect");
+      }
+    }
+
     handledRedirectCodeRef.current = code;
     setWechatBusy(true);
-    setWechatError(null);
     setWechatQrStatus("SUCCESS");
 
     loginWithWechatWebRedirectCallback({ code, state })
@@ -216,107 +252,81 @@ export function LoginPage() {
       .catch((caughtError) => {
         setWechatBusy(false);
         setWechatQrStatus(null);
-        setWechatError(caughtError instanceof Error ? caughtError.message : t("login.failed"));
+        message.error(caughtError instanceof Error ? caughtError.message : t("login.failed"));
       });
-  }, [location.search]);
+  }, [location.search, redirectEnabled, showWechatSection, t]);
 
-  useEffect(() => () => {
-    clearWechatPoll();
-    activeLoginIdRef.current = null;
-  }, []);
+  useEffect(
+    () => () => {
+      clearWechatPoll();
+      activeLoginIdRef.current = null;
+    },
+    [],
+  );
 
-  const onFinish = async (values: LoginFormValues) => {
+  const handleUsernameSubmit = async (values: LoginFormValues) => {
+    if (loginConfig.usernameEnabled === false) {
+      message.warning(t("login.username.disabled"));
+      return;
+    }
+
     setSubmitting(true);
-    setError(null);
     try {
-      if (loginConfig.usernameEnabled === false) {
-        throw new Error(t("login.username.disabled"));
-      }
       const session = await loginWithPassword(values);
       await handleLoginSuccess(session);
     } catch (caughtError) {
-      setError(caughtError instanceof Error ? caughtError.message : t("login.failed"));
+      message.error(caughtError instanceof Error ? caughtError.message : t("login.failed"));
     } finally {
       setSubmitting(false);
     }
   };
 
-  const showWechatSection = wechatWebEnabled && availableWechatModes.length > 0;
-
   return (
     <div className="login-screen">
-      <Card className="login-card" variant="borderless">
-        <Typography.Title level={2}>{frontendConfig.projectName || t("login.title")}</Typography.Title>
-        <Typography.Paragraph type="secondary">{t("login.subtitle")}</Typography.Paragraph>
-        {loginConfig.usernameEnabled === false ? <Alert style={{ marginBottom: 16 }} type="warning" showIcon message={t("login.username.disabled")} /> : null}
-        {error ? <Alert style={{ marginBottom: 16 }} type="error" showIcon message={error} /> : null}
-        {location.search.includes("code=") ? <Alert style={{ marginBottom: 16 }} type="info" showIcon message={t("login.wechat.callback.processing")} /> : null}
-        <Form layout="vertical" onFinish={onFinish} initialValues={{ username: "admin", password: "123456" }}>
-          <Form.Item label={t("login.username")} name="username" rules={[{ required: true, message: t("login.username.required") }]}>
-            <Input prefix={<UserOutlined />} placeholder="admin" />
-          </Form.Item>
-          <Form.Item label={t("login.password")} name="password" rules={[{ required: true, message: t("login.password.required") }]}>
-            <Input.Password prefix={<LockOutlined />} placeholder={t("login.password")} />
-          </Form.Item>
-          <Button type="primary" htmlType="submit" loading={submitting} block>
-            {t("login.submit")}
-          </Button>
-        </Form>
-
-        {showWechatSection ? (
-          <>
-            <Divider>{t("login.wechat.title")}</Divider>
-            <Space direction="vertical" size="middle" style={{ width: "100%" }}>
-              <Typography.Paragraph type="secondary" style={{ marginBottom: 0 }}>
-                {t("login.wechat.description")}
-              </Typography.Paragraph>
-              {availableWechatModes.length > 1 ? (
-                <Segmented
-                  block
-                  options={availableWechatModes.map((mode) => ({
-                    label: t(mode === "qr" ? "login.wechat.mode.qr" : "login.wechat.mode.redirect"),
-                    value: mode,
-                  }))}
-                  value={wechatMode}
-                  onChange={(value) => setWechatMode(value as WechatWebMode)}
-                />
-              ) : null}
-              {wechatError ? <Alert type="error" showIcon message={wechatError} /> : null}
-              {wechatMode === "redirect" ? (
-                <>
-                  <Typography.Paragraph type="secondary" style={{ marginBottom: 0 }}>
-                    {t("login.wechat.redirect.description")}
-                  </Typography.Paragraph>
-                  <Button icon={<WechatOutlined />} loading={wechatBusy} onClick={() => void startWechatRedirectLogin()}>
-                    {t("login.wechat.start")}
-                  </Button>
-                </>
-              ) : (
-                <>
-                  <Typography.Paragraph type="secondary" style={{ marginBottom: 0 }}>
-                    {t("login.wechat.qr.description")}
-                  </Typography.Paragraph>
-                  {wechatQrStatus ? (
-                    <Alert
-                      type={wechatQrStatus === "EXPIRED" ? "warning" : "info"}
-                      showIcon
-                      message={resolveWechatQrStatusMessage(wechatQrStatus, t)}
-                    />
-                  ) : null}
-                  <Button icon={<QrcodeOutlined />} loading={wechatBusy} onClick={() => void startWechatQrLogin()}>
-                    {wechatQrLoginId ? t("login.wechat.refresh") : t("login.wechat.start")}
-                  </Button>
-                  {wechatQrCodeUrl ? (
-                    <div style={{ display: "flex", justifyContent: "center", padding: 16, border: "1px solid rgba(5, 5, 5, 0.06)", borderRadius: 12, background: "#fff" }}>
-                      <img src={wechatQrCodeUrl} alt={t("login.wechat.qr.alt")} style={{ width: 180, height: 180, objectFit: "contain" }} />
-                    </div>
-                  ) : null}
-                </>
-              )}
-            </Space>
-          </>
-        ) : null}
-      </Card>
+      <LoginCard
+        title={frontendConfig.projectName || t("login.title")}
+        description={activeModeOption?.description ?? t("login.subtitle")}
+        badges={
+          loginModes.length > 1 ? (
+            <LoginBadgeSwitch label={t("login.badges.other")} modes={loginModes} activeMode={activeMode} onChange={setActiveMode} />
+          ) : undefined
+        }
+      >
+        {activeMode === "wechat" ? (
+          <WechatForm
+            availableModes={availableWechatModes}
+            busy={wechatBusy}
+            mode={wechatMode}
+            qrCodeUrl={wechatQrCodeUrl}
+            qrLoginId={wechatQrLoginId}
+            qrStatus={wechatQrStatus}
+            description={t("login.wechat.description")}
+            redirectDescription={t("login.wechat.redirect.description")}
+            qrDescription={t("login.wechat.qr.description")}
+            redirectModeLabel={t("login.wechat.mode.redirect")}
+            qrModeLabel={t("login.wechat.mode.qr")}
+            startLabel={t("login.wechat.start")}
+            refreshLabel={t("login.wechat.refresh")}
+            qrAlt={t("login.wechat.qr.alt")}
+            callbackProcessingLabel={t("login.wechat.callback.processing")}
+            resolveQrStatusMessage={(status) => resolveWechatQrStatusMessage(status, t)}
+            onModeChange={setWechatMode}
+            onStartRedirect={() => void startWechatRedirectLogin()}
+            onStartQr={() => void startWechatQrLogin()}
+          />
+        ) : (
+          <UsernameForm
+            disabled={loginConfig.usernameEnabled === false}
+            loading={submitting}
+            usernameLabel={t("login.username")}
+            usernameRequiredMessage={t("login.username.required")}
+            passwordLabel={t("login.password")}
+            passwordRequiredMessage={t("login.password.required")}
+            submitLabel={t("login.submit")}
+            onSubmit={handleUsernameSubmit}
+          />
+        )}
+      </LoginCard>
     </div>
   );
 }
