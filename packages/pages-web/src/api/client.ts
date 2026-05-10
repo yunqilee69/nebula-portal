@@ -1,7 +1,7 @@
 import { message } from "antd";
 import type { AxiosRequestConfig } from "axios";
 import { attachAuthToRequestClient } from "@nebula/auth";
-import { getToken, useAuthStore, useI18nStore } from "@nebula/core";
+import { getToken, translateNebulaMessage, useAuthStore, useI18nStore } from "@nebula/core";
 import { PlatformApiClientError, createPlatformRequestClient, getArray, getRecord, getString, normalizePlatformApiError, unwrapEnvelope } from "@nebula/request";
 import { webEnv } from "../config/env";
 
@@ -39,6 +39,19 @@ function isAuthLifecycleRequest(config?: AxiosRequestConfig) {
   ].some((path) => url.includes(path));
 }
 
+function resolveServerErrorMessage() {
+  const { locale } = useI18nStore.getState();
+  return translateNebulaMessage(locale, "frontend.request.serverError", "Server error. Please contact the administrator.");
+}
+
+function resolveApiErrorMessage(error: { message: string; status?: number }, fallbackMessage: string) {
+  if ((error.status ?? 0) >= 500) {
+    return resolveServerErrorMessage();
+  }
+
+  return error.message || fallbackMessage;
+}
+
 let unauthorizedHandler: (() => void) | null = null;
 let unauthorizedHandled = false;
 
@@ -73,7 +86,7 @@ const requestClient = createPlatformRequestClient({
     }
 
     const fallbackMessage = (config as ApiClientRequestConfig | undefined)?.feedbackOptions?.errorMessage ?? "Request failed";
-    message.error(error.message || fallbackMessage);
+    message.error(resolveApiErrorMessage(error, fallbackMessage));
   },
   onResolvedSuccess: (messageText) => {
     message.success(messageText);
@@ -107,11 +120,12 @@ export { getArray, getRecord, getString, unwrapEnvelope };
 
 export function normalizeApiError(error: unknown, fallbackMessage = "Request failed") {
   const normalizedError = normalizePlatformApiError(error, fallbackMessage);
+  const resolvedMessage = resolveApiErrorMessage(normalizedError, fallbackMessage);
   if (normalizedError instanceof ApiClientError) {
-    return normalizedError;
+    return new ApiClientError(resolvedMessage, normalizedError.status, normalizedError.payload);
   }
 
-  return new ApiClientError(normalizedError.message, normalizedError.status, normalizedError.payload);
+  return new ApiClientError(resolvedMessage, normalizedError.status, normalizedError.payload);
 }
 
 async function requestWithFeedback<T>(config: AxiosRequestConfig, options: ApiRequestOptions = {}) {
