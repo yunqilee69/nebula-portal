@@ -3,6 +3,9 @@ dist
 dist-native
 .turbo
 .sisyphus
+.worktrees
+.superpowers
+/docs/superpowers
 .DS_Store
 coverage
 pnpm-lock.yaml
