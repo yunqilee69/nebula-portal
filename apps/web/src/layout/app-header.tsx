@@ -1,7 +1,7 @@
 import { LogoutOutlined } from "@ant-design/icons";
 import { Avatar, Dropdown, Space, Typography } from "antd";
 import { type NeBreadcrumbItem, useAuthStore, useI18n } from "@nebula/core";
-import { NeBreadcrumbs, NotificationPanel } from "@nebula/ui-web";
+import { NeBreadcrumbs, NeNotificationPanel } from "@nebula/ui-web";
 import { useMemo } from "react";
 import { ThemeConfigDrawer } from "../components/theme-config-drawer";
 
@@ -33,7 +33,7 @@ export function AppHeader({ breadcrumbItems, onLogout }: AppHeaderProps) {
       </div>
       <Space size="middle" className="app-header__actions">
         <ThemeConfigDrawer />
-        <NotificationPanel />
+        <NeNotificationPanel />
         <Dropdown menu={{ items: menuItems }} trigger={["click"]}>
           <Space className="app-header__profile">
             <Avatar src={session?.user.avatar}>{session?.user.username?.slice(0, 1).toUpperCase() ?? "G"}</Avatar>

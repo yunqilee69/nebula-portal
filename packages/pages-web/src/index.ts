@@ -10,8 +10,9 @@ export { OperationsPermissionPage, OperationsPermissionPage as PermissionListPag
 export { OperationsOrgPage, OperationsOrgPage as OrgListPage } from "./pages/operations/org";
 export { OperationsMenuPage, OperationsMenuPage as MenuListPage } from "./pages/operations/menu";
 export { AdvancedDictPage, AdvancedDictPage as DictListPage } from "./pages/advanced/dict";
-export { AdvancedDictItemsPage, AdvancedDictItemsPage as DictItemsPage } from "./pages/advanced/dict/items-page";
+export { AdvancedDictItemsPage, AdvancedDictItemsPage as DictItemsPage } from "./pages/advanced/dict-items";
 export { AdvancedParamPage, AdvancedParamPage as ParamListPage } from "./pages/advanced/param";
+export { AdvancedParamConfigPage, AdvancedParamConfigPage as ParamConfigPage } from "./pages/advanced/param-config";
 export { AdvancedConfigPage, AdvancedConfigPage as ConfigListPage } from "./pages/advanced/config";
 export { AdvancedOAuth2ClientPage, AdvancedOAuth2ClientPage as OAuth2ClientPage } from "./pages/advanced/oauth2/client";
 export { AdvancedOAuth2AccountPage, AdvancedOAuth2AccountPage as OAuth2AccountPage } from "./pages/advanced/oauth2/account";

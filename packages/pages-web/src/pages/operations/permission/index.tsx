@@ -12,7 +12,7 @@ import type {
 } from "@nebula/core";
 import { useI18n } from "@nebula/core";
 import { NePermission } from "@nebula/core";
-import { OrganizationTree } from "@nebula/ui-web";
+import { NeOrganizationTree } from "@nebula/ui-web";
 import { NePage, NePanel, NeSearch, NeTable } from "@nebula/ui-web";
 import { useEffect, useMemo, useState } from "react";
 import type { Key } from "react";
@@ -584,7 +584,7 @@ export function OperationsPermissionPage({ embedded = false }: PermissionAssignm
                   key: "ORG",
                   label: t("common.organization"),
                   children: (
-                    <OrganizationTree
+<NeOrganizationTree
                       className="permission-assignment-layout__tree-surface"
                       treeClassName="permission-assignment-layout__tree"
                       data={organizations}

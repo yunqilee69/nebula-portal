@@ -39,7 +39,6 @@ export async function prepareAppData(options: PrepareAppDataOptions) {
       .then((menus) => {
         useMenuStore.getState().setMenus(menus);
         useResourceStore.getState().succeed("menus");
-        console.log('[prepareAppData] Menus loaded:', menus.length, 'items');
       })
       .catch((error: unknown) => {
         useMenuStore.getState().setMenus(withDefaultNebulaMenus([], locale));
@@ -58,8 +57,6 @@ export async function prepareAppData(options: PrepareAppDataOptions) {
         })
       : Promise.resolve(),
   ]);
-
-  console.log('[prepareAppData] All app data prepared');
 }
 
 export interface PreloadNebulaDataOptions {

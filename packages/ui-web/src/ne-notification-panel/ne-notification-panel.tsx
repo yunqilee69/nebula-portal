@@ -14,11 +14,11 @@ function belongsToNotification(item: NotificationItem) {
   return !belongsToAnnouncement(item);
 }
 
-interface NotificationPanelProps {
+export interface NeNotificationPanelProps {
   onMarkRead?: (id: string) => Promise<void>;
 }
 
-export function NotificationPanel({ onMarkRead }: NotificationPanelProps) {
+export function NeNotificationPanel({ onMarkRead }: NeNotificationPanelProps) {
   const [open, setOpen] = useState(false);
   const { t } = useI18n();
   const items = useNotifyStore((state) => state.items);

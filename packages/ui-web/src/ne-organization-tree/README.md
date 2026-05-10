@@ -1,11 +1,11 @@
-# OrganizationTree
+# NeOrganizationTree
 
 组织架构树组件，用于展示和选择组织机构。
 
 ## 使用方式
 
 ```tsx
-import { OrganizationTree } from "@nebula/ui-web";
+import { NeOrganizationTree } from "@nebula/ui-web";
 import type { OrganizationTreeItem } from "@nebula/core";
 
 // 组件会自动从 @nebula/core 获取 i18n 翻译函数
@@ -26,7 +26,7 @@ const treeData: OrganizationTreeItem[] = [
 
 function MyComponent() {
   return (
-    <OrganizationTree
+    <NeOrganizationTree
       data={treeData}
       mode="single"
       searchPlaceholder="搜索组织..."

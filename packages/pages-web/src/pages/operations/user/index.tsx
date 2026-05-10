@@ -6,7 +6,7 @@ import { useEffect, useMemo, useState } from "react";
 import { fetchOrganizationList, fetchOrganizationTree } from "../../../api/organization-api";
 import { fetchRoleList } from "../../../api/role-api";
 import { createUser, deleteUser, fetchUserDetail, fetchUserPage, updateUser } from "../../../api/user-api";
-import { OrganizationTree } from "@nebula/ui-web";
+import { NeOrganizationTree } from "@nebula/ui-web";
 import { NeDetailDrawer, NeModal, NePage, NePanel, NeSearch, NeTable } from "@nebula/ui-web";
 
 const initialQuery: UserPageQuery = {
@@ -209,7 +209,7 @@ export function OperationsUserPage() {
     <NePage className="user-management-page">
       <div className="nebula-split-grid user-management-page__content">
         <NePanel title={t("organization.tree")} className="nebula-panel user-management-page__tree-panel">
-          <OrganizationTree
+<NeOrganizationTree
             className="user-management-page__tree-surface"
             treeClassName="user-management-page__tree"
             data={organizationTree}

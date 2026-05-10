@@ -1,6 +1,6 @@
 import { AdvancedDictPage } from "../../pages/advanced/dict";
-import { AdvancedDictItemsPage } from "../../pages/advanced/dict/items-page";
 import { AdvancedParamPage } from "../../pages/advanced/param";
+import { AdvancedParamConfigPage } from "../../pages/advanced/param-config";
 import { AdvancedConfigPage } from "../../pages/advanced/config";
 import { AdvancedOAuth2ClientPage } from "../../pages/advanced/oauth2/client";
 import { AdvancedOAuth2AccountPage } from "../../pages/advanced/oauth2/account";
@@ -18,16 +18,6 @@ export const advancedRoutes: RouteComponentLoaderMap = {
       sort: 900,
     },
   },
-  AdvancedDictItemsPage: {
-    loader: async () => ({ default: AdvancedDictItemsPage }),
-    meta: {
-      nameKey: "dict.itemsManagementTitle",
-      path: "/system/dict-items",
-      icon: "UnorderedListOutlined",
-      permission: "system:dict:view",
-      sort: 910,
-    },
-  },
   AdvancedParamPage: {
     loader: async () => ({ default: AdvancedParamPage }),
     meta: {
@@ -36,6 +26,16 @@ export const advancedRoutes: RouteComponentLoaderMap = {
       icon: "SettingOutlined",
       permission: "system:param:view",
       sort: 1000,
+    },
+  },
+  AdvancedParamConfigPage: {
+    loader: async () => ({ default: AdvancedParamConfigPage }),
+    meta: {
+      nameKey: "platform.paramConfig.title",
+      path: "/system/param-config",
+      icon: "ToolOutlined",
+      permission: "system:param:view",
+      sort: 1010,
     },
   },
   AdvancedConfigPage: {

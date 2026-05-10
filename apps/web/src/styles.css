@@ -513,7 +513,6 @@ body,
   display: flex;
   flex-direction: column;
   min-height: 0;
-  gap: var(--nebula-content-gap);
 }
 
 .organization-page__tree-panel.ant-card,

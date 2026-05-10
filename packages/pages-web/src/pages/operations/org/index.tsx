@@ -5,7 +5,7 @@ import { NePermission } from "@nebula/core";
 import type { OrganizationItem, OrganizationMutationPayload, OrganizationPageQuery, OrganizationTreeItem } from "@nebula/core";
 import { useEffect, useMemo, useState } from "react";
 import { createOrganization, deleteOrganization, fetchOrganizationDetail, fetchOrganizationPage, fetchOrganizationTree, updateOrganization } from "../../../api/organization-api";
-import { OrganizationTree } from "@nebula/ui-web";
+import { NeOrganizationTree } from "@nebula/ui-web";
 import { NeModal, NePage, NePanel, NeSearch, NeTable } from "@nebula/ui-web";
 
 type OrganizationType = NonNullable<OrganizationItem["type"]>;
@@ -318,7 +318,7 @@ export function OperationsOrgPage() {
     <NePage className="organization-page">
       <div className="nebula-split-grid organization-page__content">
         <NePanel title={t("organization.tree")} className="nebula-panel organization-page__tree-panel">
-          <OrganizationTree
+<NeOrganizationTree
             className="organization-page__tree-surface"
             treeClassName="organization-page__tree"
             data={tree}

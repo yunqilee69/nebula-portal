@@ -7,7 +7,7 @@ import type { Key } from "react";
 
 type OrganizationType = NonNullable<OrganizationTreeItem["type"]>;
 
-interface OrganizationTreeProps {
+export interface NeOrganizationTreeProps {
   className?: string;
   treeClassName?: string;
   data: OrganizationTreeItem[];
@@ -93,7 +93,7 @@ function collectExpandedKeys(nodes: OrganizationTreeItem[]): Key[] {
   });
 }
 
-export function OrganizationTree(props: OrganizationTreeProps) {
+export function NeOrganizationTree(props: NeOrganizationTreeProps) {
   const { className, treeClassName, data, mode = "single", selectedIds = [], checkedIds = [], searchPlaceholder, onSelectIdsChange, onCheckIdsChange } = props;
   const { t } = useI18n();
   const [keyword, setKeyword] = useState("");

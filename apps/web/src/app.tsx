@@ -121,21 +121,32 @@ function AppRouter() {
     if (frontendHydrated) {
       return;
     }
+
+    let active = true;
+
     fetchFrontendInit()
       .then((initData) => {
-        hydrateFrontendPublicData({
-          frontendConfig: initData.frontendConfig,
-          defaultPreference: initData.defaultPreference,
-          loginConfig: initData.loginConfig,
-        });
+        if (active) {
+          hydrateFrontendPublicData({
+            frontendConfig: initData.frontendConfig,
+            defaultPreference: initData.defaultPreference,
+            loginConfig: initData.loginConfig,
+          });
+        }
       })
       .catch(() => {
-        hydrateFrontendPublicData({
-          frontendConfig: { projectName: "Nebula", defaultLocale: "zh-CN" },
-          defaultPreference: { localeTag: "zh-CN", themeCode: "nebula-light" },
-          loginConfig: {},
-        });
+        if (active) {
+          hydrateFrontendPublicData({
+            frontendConfig: { projectName: "Nebula", defaultLocale: "zh-CN" },
+            defaultPreference: { localeTag: "zh-CN", themeCode: "nebula-light" },
+            loginConfig: {},
+          });
+        }
       });
+
+    return () => {
+      active = false;
+    };
   }, [frontendHydrated]);
 
   useEffect(() => {
@@ -268,7 +279,6 @@ function AppRouter() {
 
   useEffect(() => {
     const unsubscribe = eventBus.on("auth:navigate-after-login", (payload: { destination: string }) => {
-      console.log('[App] Received navigate-after-login event:', payload.destination);
       setPendingNavigation(payload.destination);
     });
     return unsubscribe;
@@ -339,7 +349,6 @@ function AppRouter() {
     });
 
     if (targetExists) {
-      console.log('[Navigation] Routes ready, navigating to:', pendingNavigation);
       navigate(pendingNavigation, { replace: true });
       setPendingNavigation(null);
     } else {

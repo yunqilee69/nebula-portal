@@ -1,16 +1,16 @@
-# NotificationPanel
+# NeNotificationPanel
 
 通知面板组件，用于显示系统通知和公告。
 
 ## 使用方式
 
 ```tsx
-import { NotificationPanel } from "@nebula/ui-web";
+import { NeNotificationPanel } from "@nebula/ui-web";
 import { markNotificationRead } from "@/api/notify-api";
 
 function MyComponent() {
   return (
-    <NotificationPanel
+    <NeNotificationPanel
       onMarkRead={markNotificationRead}
     />
   );
