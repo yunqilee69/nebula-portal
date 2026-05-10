@@ -60,6 +60,7 @@ const messages = {
   "frontend.validation.defaultTheme": "Select a default theme",
   "frontend.validation.defaultLocale": "Select a default language",
   "frontend.validation.localeOptions": "Select at least one language",
+  "frontend.request.serverError": "Server error. Please contact the administrator.",
 };
 
 export default messages;

@@ -7,6 +7,7 @@ const messages = {
   "login.password.required": "Enter password",
   "login.submit": "Sign In",
   "login.failed": "Login failed",
+  "login.badges.other": "Other sign-in methods",
   "login.wechat.title": "WeChat Login",
   "login.wechat.mode.redirect": "WeChat Login",
   "login.wechat.mode.qr": "Scan Login",

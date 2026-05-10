@@ -60,6 +60,7 @@ const messages = {
   "frontend.validation.defaultTheme": "请选择默认主题",
   "frontend.validation.defaultLocale": "请选择默认语言",
   "frontend.validation.localeOptions": "请选择至少一种语言",
+  "frontend.request.serverError": "服务器异常，请联系管理员",
 };
 
 export default messages;
