@@ -17,7 +17,7 @@ import {
 } from "antd";
 import type { SystemParamDataType, SystemParamItem, SystemParamMutationPayload, SystemParamPageQuery } from "@nebula/core";
 import { useAppContext, useI18n } from "@nebula/core";
-import { NePermission } from "@nebula/core";
+
 import { useResourceStore } from "@nebula/core";
 import { useEffect, useMemo, useState } from "react";
 import { NeDetailDrawer, NeModal, NePage, NeSearch, NeTable } from "@nebula/ui-web";
@@ -287,35 +287,31 @@ export function AdvancedParamPage() {
         fixed: "right" as const,
         render: (_: unknown, row: SystemParamItem) => (
           <Space>
-            <NePermission code="crm:customer:edit">
-              <Button
-                size="small"
-                icon={<EditOutlined />}
-                onClick={(event) => {
-                  event.stopPropagation();
-                  void openEditor(row);
-                }}
-              >
-                {t("common.edit")}
+            <Button
+              size="small"
+              icon={<EditOutlined />}
+              onClick={(event) => {
+                event.stopPropagation();
+                void openEditor(row);
+              }}
+            >
+              {t("common.edit")}
+            </Button>
+            <Popconfirm
+              title={t("common.confirmDelete")}
+              onConfirm={async () => {
+                await deleteSystemParam(String(row.id));
+                if (selected?.id === row.id) {
+                  setSelected(null);
+                  setDetailOpen(false);
+                }
+                await loadPage(query);
+              }}
+            >
+              <Button size="small" danger icon={<DeleteOutlined />}>
+                {t("common.delete")}
               </Button>
-            </NePermission>
-            <NePermission code="crm:customer:export">
-              <Popconfirm
-                title={t("common.confirmDelete")}
-                onConfirm={async () => {
-                  await deleteSystemParam(String(row.id));
-                  if (selected?.id === row.id) {
-                    setSelected(null);
-                    setDetailOpen(false);
-                  }
-                  await loadPage(query);
-                }}
-              >
-                <Button size="small" danger icon={<DeleteOutlined />}>
-                  {t("common.delete")}
-                </Button>
-              </Popconfirm>
-            </NePermission>
+            </Popconfirm>
           </Space>
         ),
       },
@@ -359,9 +355,8 @@ export function AdvancedParamPage() {
         </Form>
       </NeSearch>
       <NeTable
-        toolbar={
-          <Space>
-            <NePermission code="crm:customer:create">
+toolbar={
+            <Space>
               <Button
                 type="primary"
                 icon={<PlusOutlined />}
@@ -371,11 +366,8 @@ export function AdvancedParamPage() {
               >
                 {t("systemParams.createParam")}
               </Button>
-            </NePermission>
-            <NePermission code="crm:customer:export">
               <Button>{t("common.exportSnapshot")}</Button>
-            </NePermission>
-          </Space>
+            </Space>
         }
         summary={t("common.recordCount", undefined, { count: total })}
         pagination={

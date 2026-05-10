@@ -2,8 +2,6 @@ import { AdvancedDictPage } from "../../pages/advanced/dict";
 import { AdvancedParamPage } from "../../pages/advanced/param";
 import { AdvancedParamConfigPage } from "../../pages/advanced/param-config";
 import { AdvancedConfigPage } from "../../pages/advanced/config";
-import { AdvancedOAuth2ClientPage } from "../../pages/advanced/oauth2/client";
-import { AdvancedOAuth2AccountPage } from "../../pages/advanced/oauth2/account";
 import { AdvancedCachePage } from "../../pages/advanced/cache";
 import type { RouteComponentLoaderMap } from "@nebula/core";
 
@@ -46,26 +44,6 @@ export const advancedRoutes: RouteComponentLoaderMap = {
       icon: "ControlOutlined",
       permission: "system:config:view",
       sort: 1100,
-    },
-  },
-  AdvancedOAuth2ClientPage: {
-    loader: async () => ({ default: AdvancedOAuth2ClientPage }),
-    meta: {
-      nameKey: "platform.oauth2ClientManagement.title",
-      path: "/system/oauth2/client",
-      icon: "ApiOutlined",
-      permission: "system:oauth2-client:view",
-      sort: 1200,
-    },
-  },
-  AdvancedOAuth2AccountPage: {
-    loader: async () => ({ default: AdvancedOAuth2AccountPage }),
-    meta: {
-      nameKey: "platform.oauth2AccountManagement.title",
-      path: "/system/oauth2/account",
-      icon: "LinkOutlined",
-      permission: "system:oauth2-account:view",
-      sort: 1300,
     },
   },
   AdvancedCachePage: {

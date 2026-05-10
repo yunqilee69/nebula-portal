@@ -11,7 +11,7 @@ import type {
   UserItem,
 } from "@nebula/core";
 import { useI18n } from "@nebula/core";
-import { NePermission } from "@nebula/core";
+
 import { NeOrganizationTree } from "@nebula/ui-web";
 import { NePage, NePanel, NeSearch, NeTable } from "@nebula/ui-web";
 import { useEffect, useMemo, useState } from "react";
@@ -722,16 +722,12 @@ export function OperationsPermissionPage({ embedded = false }: PermissionAssignm
                 ) : null}
                 <Typography.Text strong>{t("permissionAssignment.decisionLabel")}</Typography.Text>
                 <Select value={decision} onChange={(value) => setDecision(value)} style={{ width: 160 }} options={[{ label: t("permission.allow"), value: "Allow" }, { label: t("permission.deny"), value: "Deny" }]} />
-                <NePermission hasAnyCode={["platform:menu-permission:create", "platform:button-permission:create", "platform:org-permission:create"]}>
-                  <Button type="primary" loading={submitting} disabled={selectedSubjects.length === 0 || selectedResources.length === 0} onClick={() => handleApplyDecision()}>
-                    {t("permissionAssignment.applyDecision")}
-                  </Button>
-                </NePermission>
-                <NePermission hasAnyCode={["platform:menu-permission:delete", "platform:button-permission:delete", "platform:org-permission:delete"]}>
-                  <Button danger icon={<DeleteOutlined />} loading={submitting} disabled={selectedSubjects.length === 0 || selectedResources.length === 0} onClick={() => handleClearAssignments()}>
-                    {t("permissionAssignment.clearAssignments")}
-                  </Button>
-                </NePermission>
+                <Button type="primary" loading={submitting} disabled={selectedSubjects.length === 0 || selectedResources.length === 0} onClick={() => handleApplyDecision()}>
+                  {t("permissionAssignment.applyDecision")}
+                </Button>
+                <Button danger icon={<DeleteOutlined />} loading={submitting} disabled={selectedSubjects.length === 0 || selectedResources.length === 0} onClick={() => handleClearAssignments()}>
+                  {t("permissionAssignment.clearAssignments")}
+                </Button>
               </Space>
               <Typography.Text type="secondary">{t("permissionAssignment.operationHint")}</Typography.Text>
             </Space>

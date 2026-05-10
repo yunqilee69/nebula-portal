@@ -1,7 +1,7 @@
 import { DeleteOutlined, EditOutlined, PlusOutlined, SearchOutlined } from "@ant-design/icons";
 import { Button, Descriptions, Form, Input, Pagination, Popconfirm, Select, Space, Table, Tag, Typography } from "antd";
 import { useI18n } from "@nebula/core";
-import { NePermission } from "@nebula/core";
+
 import type { OrganizationItem, OrganizationMutationPayload, OrganizationPageQuery, OrganizationTreeItem } from "@nebula/core";
 import { useEffect, useMemo, useState } from "react";
 import { createOrganization, deleteOrganization, fetchOrganizationDetail, fetchOrganizationPage, fetchOrganizationTree, updateOrganization } from "../../../api/organization-api";
@@ -265,48 +265,44 @@ export function OperationsOrgPage() {
         title: t("common.actions"),
         render: (_: unknown, row: OrganizationItem) => (
           <Space>
-            <NePermission code="platform:org:edit">
-              <Button
-                size="small"
-                icon={<EditOutlined />}
-                onClick={(event) => {
-                  event.stopPropagation();
-                  setEditing(row);
-                  drawerForm.setFieldsValue({
-                    name: row.name,
-                    code: row.code,
-                    type: row.type ?? "COMPANY",
-                    leader: row.leader,
-                    phone: row.phone,
-                    address: row.address,
-                    parentId: row.parentId,
-                    status: row.status ?? 1,
-                  });
-                  setDrawerOpen(true);
-                }}
-              >
-                {t("common.edit")}
+            <Button
+              size="small"
+              icon={<EditOutlined />}
+              onClick={(event) => {
+                event.stopPropagation();
+                setEditing(row);
+                drawerForm.setFieldsValue({
+                  name: row.name,
+                  code: row.code,
+                  type: row.type ?? "COMPANY",
+                  leader: row.leader,
+                  phone: row.phone,
+                  address: row.address,
+                  parentId: row.parentId,
+                  status: row.status ?? 1,
+                });
+                setDrawerOpen(true);
+              }}
+            >
+              {t("common.edit")}
+            </Button>
+            <Popconfirm
+              title={t("organization.deleteConfirm")}
+              onConfirm={async (event) => {
+                event?.stopPropagation();
+                await deleteOrganization(row.id);
+                if (selected?.id === row.id) {
+                  setSelected(null);
+                  setDetail(null);
+                  setDetailOpen(false);
+                }
+                await loadData(query);
+              }}
+            >
+              <Button size="small" danger icon={<DeleteOutlined />}>
+                {t("common.delete")}
               </Button>
-            </NePermission>
-            <NePermission code="platform:org:delete">
-              <Popconfirm
-                title={t("organization.deleteConfirm")}
-                onConfirm={async (event) => {
-                  event?.stopPropagation();
-                  await deleteOrganization(row.id);
-                  if (selected?.id === row.id) {
-                    setSelected(null);
-                    setDetail(null);
-                    setDetailOpen(false);
-                  }
-                  await loadData(query);
-                }}
-              >
-                <Button size="small" danger icon={<DeleteOutlined />}>
-                  {t("common.delete")}
-                </Button>
-              </Popconfirm>
-            </NePermission>
+            </Popconfirm>
           </Space>
         ),
       },
@@ -377,8 +373,7 @@ export function OperationsOrgPage() {
           </NeSearch>
           <NeTable
             className="organization-page__table-panel"
-            toolbar={
-              <NePermission code="platform:org:create">
+toolbar={
                 <Button
                   type="primary"
                   icon={<PlusOutlined />}
@@ -394,7 +389,6 @@ export function OperationsOrgPage() {
                 >
                   {t("organization.new")}
                 </Button>
-              </NePermission>
             }
             summary={t("common.recordCount", undefined, { count: total })}
             pagination={<Pagination align="end" current={query.pageNum} pageSize={query.pageSize} total={total} onChange={(pageNum, pageSize) => setQuery((current) => ({ ...current, pageNum, pageSize }))} />}

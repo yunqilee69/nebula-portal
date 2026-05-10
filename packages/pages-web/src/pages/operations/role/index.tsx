@@ -1,7 +1,7 @@
 import { DeleteOutlined, EditOutlined, PlusOutlined, SearchOutlined } from "@ant-design/icons";
 import { Button, Descriptions, Form, Input, List, Pagination, Popconfirm, Select, Space, Table, Tag, Typography } from "antd";
 import { useI18n } from "@nebula/core";
-import { NePermission } from "@nebula/core";
+
 import type { RoleDetail, RoleItem, RoleMutationPayload, RolePageQuery } from "@nebula/core";
 import { useEffect, useMemo, useState } from "react";
 import { createRole, deleteRole, fetchRoleDetail, fetchRoleList, fetchRolePage, updateRole } from "../../../api/role-api";
@@ -126,36 +126,32 @@ export function OperationsRolePage() {
         title: t("common.actions"),
         render: (_: unknown, row: RoleItem) => (
           <Space>
-            <NePermission code="platform:role:edit">
-              <Button
-                size="small"
-                icon={<EditOutlined />}
-                onClick={(event) => {
-                  event.stopPropagation();
-                  openEditor(row).catch(() => undefined);
-                }}
-              >
-                {t("common.edit")}
+            <Button
+              size="small"
+              icon={<EditOutlined />}
+              onClick={(event) => {
+                event.stopPropagation();
+                openEditor(row).catch(() => undefined);
+              }}
+            >
+              {t("common.edit")}
+            </Button>
+            <Popconfirm
+              title={t("roleManagement.deleteConfirm")}
+              onConfirm={async (event) => {
+                event?.stopPropagation();
+                await deleteRole(row.id);
+                if (detail?.id === row.id) {
+                  setDetail(null);
+                  setDetailOpen(false);
+                }
+                await reloadCurrentData();
+              }}
+            >
+              <Button size="small" danger icon={<DeleteOutlined />}>
+                {t("common.delete")}
               </Button>
-            </NePermission>
-            <NePermission code="platform:role:delete">
-              <Popconfirm
-                title={t("roleManagement.deleteConfirm")}
-                onConfirm={async (event) => {
-                  event?.stopPropagation();
-                  await deleteRole(row.id);
-                  if (detail?.id === row.id) {
-                    setDetail(null);
-                    setDetailOpen(false);
-                  }
-                  await reloadCurrentData();
-                }}
-              >
-                <Button size="small" danger icon={<DeleteOutlined />}>
-                  {t("common.delete")}
-                </Button>
-              </Popconfirm>
-            </NePermission>
+            </Popconfirm>
           </Space>
         ),
       },
@@ -192,8 +188,7 @@ export function OperationsRolePage() {
         {error ? <Typography.Paragraph type="danger" style={{ marginTop: 16, marginBottom: 0 }}>{error}</Typography.Paragraph> : null}
       </NeSearch>
       <NeTable
-        toolbar={
-          <NePermission code="platform:role:create">
+toolbar={
             <Button
               type="primary"
               icon={<PlusOutlined />}
@@ -203,7 +198,6 @@ export function OperationsRolePage() {
             >
               {t("roleManagement.createRole")}
             </Button>
-          </NePermission>
         }
         summary={t("common.recordCount", undefined, { count: total })}
         pagination={<Pagination align="end" current={query.pageNum} pageSize={query.pageSize} total={total} onChange={(pageNum, pageSize) => setQuery((current) => ({ ...current, pageNum, pageSize }))} />}

@@ -1,7 +1,7 @@
 import { CheckOutlined } from "@ant-design/icons";
 import { Button, Descriptions, Table, Tag, Typography } from "antd";
 import { useI18n } from "@nebula/core";
-import { NePermission } from "@nebula/core";
+
 import { useNotifyStore, useResourceStore } from "@nebula/core";
 import type { NotificationItem } from "@nebula/core";
 import { useEffect, useState } from "react";
@@ -39,7 +39,6 @@ export function NotificationsAnnouncementPage() {
     <NePage>
       <NeTable
         toolbar={
-          <NePermission code="crm:customer:edit">
             <Button
               icon={<CheckOutlined />}
               onClick={async () => {
@@ -59,7 +58,6 @@ export function NotificationsAnnouncementPage() {
             >
               {t("notifications.markAllRead")}
             </Button>
-          </NePermission>
         }
         summary={t("common.recordCount", undefined, { count: items.length })}
       >
@@ -96,7 +94,6 @@ export function NotificationsAnnouncementPage() {
               title: t("common.actions"),
               render: (_: unknown, row: NotificationItem) =>
                 row.read ? null : (
-                  <NePermission code="crm:customer:edit">
                     <Button
                       type="link"
                       size="small"
@@ -111,7 +108,6 @@ export function NotificationsAnnouncementPage() {
                     >
                       {row.actionable === false ? t("notify.unavailableRead") : t("notify.markRead")}
                     </Button>
-                  </NePermission>
                 ),
             },
           ]}

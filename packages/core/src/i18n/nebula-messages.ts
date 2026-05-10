@@ -8,14 +8,13 @@ import m5 from "./messages/zh-cn/feedback-messages";
 import m6 from "./messages/zh-cn/menu-management-messages";
 import m7 from "./messages/zh-cn/navigation-messages";
 import m8 from "./messages/zh-cn/notify-messages";
-import m9 from "./messages/zh-cn/oauth2-messages";
-import m10 from "./messages/zh-cn/organization-messages";
-import m11 from "./messages/zh-cn/permission-messages";
-import m12 from "./messages/zh-cn/role-management-messages";
-import m13 from "./messages/zh-cn/storage-messages";
-import m14 from "./messages/zh-cn/system-params-messages";
-import m15 from "./messages/zh-cn/user-management-messages";
-import m16 from "./messages/zh-cn/frontend-messages";
+import m9 from "./messages/zh-cn/organization-messages";
+import m10 from "./messages/zh-cn/permission-messages";
+import m11 from "./messages/zh-cn/role-management-messages";
+import m12 from "./messages/zh-cn/storage-messages";
+import m13 from "./messages/zh-cn/system-params-messages";
+import m14 from "./messages/zh-cn/user-management-messages";
+import m15 from "./messages/zh-cn/frontend-messages";
 import e0 from "./messages/en-us/app-nebula-messages";
 import e1 from "./messages/en-us/auth-messages";
 import e2 from "./messages/en-us/common-messages";
@@ -25,14 +24,13 @@ import e5 from "./messages/en-us/feedback-messages";
 import e6 from "./messages/en-us/menu-management-messages";
 import e7 from "./messages/en-us/navigation-messages";
 import e8 from "./messages/en-us/notify-messages";
-import e9 from "./messages/en-us/oauth2-messages";
-import e10 from "./messages/en-us/organization-messages";
-import e11 from "./messages/en-us/permission-messages";
-import e12 from "./messages/en-us/role-management-messages";
-import e13 from "./messages/en-us/storage-messages";
-import e14 from "./messages/en-us/system-params-messages";
-import e15 from "./messages/en-us/user-management-messages";
-import e16 from "./messages/en-us/frontend-messages";
+import e9 from "./messages/en-us/organization-messages";
+import e10 from "./messages/en-us/permission-messages";
+import e11 from "./messages/en-us/role-management-messages";
+import e12 from "./messages/en-us/storage-messages";
+import e13 from "./messages/en-us/system-params-messages";
+import e14 from "./messages/en-us/user-management-messages";
+import e15 from "./messages/en-us/frontend-messages";
 
 export type LocaleMessages = Record<string, string>;
 export type LocaleBundle = Record<LocaleCode, LocaleMessages>;
@@ -55,7 +53,6 @@ export const nebulaMessages: LocaleBundle = {
     ...m13,
     ...m14,
     ...m15,
-    ...m16,
   },
   "en-US": {
     ...e0,
@@ -74,6 +71,5 @@ export const nebulaMessages: LocaleBundle = {
     ...e13,
     ...e14,
     ...e15,
-    ...e16,
   },
 };

@@ -1,7 +1,7 @@
 import { DeleteOutlined, EditOutlined, PlusOutlined, SearchOutlined } from "@ant-design/icons";
 import { Button, Form, Input, InputNumber, Pagination, Popconfirm, Select, Space, Table, Tag, Typography } from "antd";
 import { useI18n } from "@nebula/core";
-import { NePermission } from "@nebula/core";
+
 import { getRouteComponentMeta, listRegisteredRouteComponents, translateNebulaMessage } from "@nebula/core";
 import type { MenuItem, MenuMutationPayload, MenuPageQuery } from "@nebula/core";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -292,7 +292,6 @@ export function OperationsMenuPage() {
         title: t("common.actions"),
         render: (_: unknown, row: MenuItem) => (
           <Space>
-            <NePermission code="system:menu:edit">
               <Button
                 size="small"
                 icon={<EditOutlined />}
@@ -314,8 +313,6 @@ export function OperationsMenuPage() {
               >
                 {t("common.edit")}
               </Button>
-            </NePermission>
-            <NePermission code="system:menu:delete">
               <Popconfirm
                 title={t("common.confirmDelete")}
                 onConfirm={async () => {
@@ -327,7 +324,6 @@ export function OperationsMenuPage() {
                   {t("common.delete")}
                 </Button>
               </Popconfirm>
-            </NePermission>
           </Space>
         ),
       },
@@ -363,7 +359,6 @@ export function OperationsMenuPage() {
       </NeSearch>
       <NeTable
         toolbar={
-          <NePermission code="system:menu:create">
             <Button
               type="primary"
               icon={<PlusOutlined />}
@@ -375,7 +370,6 @@ export function OperationsMenuPage() {
             >
               {t("menuManagement.createMenu")}
             </Button>
-          </NePermission>
         }
         summary={t("common.recordCount", undefined, { count: total })}
         pagination={<Pagination align="end" current={query.pageNum} pageSize={query.pageSize} total={total} onChange={(pageNum, pageSize) => setQuery((current) => ({ ...current, pageNum, pageSize }))} />}

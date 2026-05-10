@@ -14,8 +14,6 @@ export { AdvancedDictItemsPage, AdvancedDictItemsPage as DictItemsPage } from ".
 export { AdvancedParamPage, AdvancedParamPage as ParamListPage } from "./pages/advanced/param";
 export { AdvancedParamConfigPage, AdvancedParamConfigPage as ParamConfigPage } from "./pages/advanced/param-config";
 export { AdvancedConfigPage, AdvancedConfigPage as ConfigListPage } from "./pages/advanced/config";
-export { AdvancedOAuth2ClientPage, AdvancedOAuth2ClientPage as OAuth2ClientPage } from "./pages/advanced/oauth2/client";
-export { AdvancedOAuth2AccountPage, AdvancedOAuth2AccountPage as OAuth2AccountPage } from "./pages/advanced/oauth2/account";
 export { AdvancedCachePage, AdvancedCachePage as CachePage } from "./pages/advanced/cache";
 export { NotificationsRecordPage, NotificationsRecordPage as NotificationRecordPage } from "./pages/notifications/record";
 export { NotificationsTemplatePage, NotificationsTemplatePage as NotificationTemplatePage } from "./pages/notifications/template";
