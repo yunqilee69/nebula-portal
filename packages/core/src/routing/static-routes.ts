@@ -1,6 +1,7 @@
 import type { LocaleCode } from "../i18n/index";
 import { translateNebulaMessage } from "../i18n/index";
 import type { RouteComponentLoader } from "../types";
+import { loadRouteComponent } from "./route-component-registry";
 
 export interface StaticRouteItem {
   id: string;
@@ -22,6 +23,12 @@ function normalizePath(path: string): string {
   return path.replace(/\/+$/, "");
 }
 
+function createRegisteredStaticRouteLoader(componentKey: string): RouteComponentLoader {
+  return async () => ({
+    default: loadRouteComponent(componentKey, () => null),
+  });
+}
+
 const NEBULA_CORE_STATIC_ROUTES: StaticRouteItem[] = [
   {
     id: "nebula-dashboard",
@@ -31,10 +38,7 @@ const NEBULA_CORE_STATIC_ROUTES: StaticRouteItem[] = [
     icon: "DashboardOutlined",
     visible: true,
     sort: 0,
-    componentLoader: async () => {
-      // @ts-ignore Dynamic import resolved at runtime by apps/web, avoiding circular dependency
-      return { default: (await import("@nebula/pages-web")).DashboardPage };
-    },
+    componentLoader: createRegisteredStaticRouteLoader("DashboardPage"),
   },
   {
     id: "nebula-iframe",
@@ -43,10 +47,7 @@ const NEBULA_CORE_STATIC_ROUTES: StaticRouteItem[] = [
     nameKey: "nav.iframe",
     visible: false,
     sort: 100,
-    componentLoader: async () => {
-      // @ts-ignore Dynamic import resolved at runtime by apps/web, avoiding circular dependency
-      return { default: (await import("@nebula/pages-web")).IframePage };
-    },
+    componentLoader: createRegisteredStaticRouteLoader("IframePage"),
   },
   {
     id: "nebula-dict-items",
@@ -55,10 +56,7 @@ const NEBULA_CORE_STATIC_ROUTES: StaticRouteItem[] = [
     nameKey: "dict.itemsManagementTitle",
     visible: false,
     sort: 200,
-    componentLoader: async () => {
-      // @ts-ignore Dynamic import resolved at runtime by apps/web, avoiding circular dependency
-      return { default: (await import("@nebula/pages-web")).AdvancedDictItemsPage };
-    },
+    componentLoader: createRegisteredStaticRouteLoader("AdvancedDictItemsPage"),
   },
 ];
 
