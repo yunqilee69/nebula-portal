@@ -47,11 +47,11 @@ export interface NeUserPickerProps {
   excludeUserIds?: string[];
   /** User ids that should remain available even when external filtering is applied. */
   includeUserIds?: string[];
-  /** Async data source used to fetch paginated users by filter conditions. */
-  fetchUsers: FetchUsersFn;
-  /** Async data source used to fetch organization filter options. */
+  /** Async data source used to fetch paginated users by filter conditions. Defaults to fetchUserPage from pages-web. */
+  fetchUsers?: FetchUsersFn;
+  /** Async data source used to fetch organization filter options. Defaults to fetchOrganizationList from pages-web. */
   fetchOrganizations?: FetchOrganizationsFn;
-  /** Async data source used to fetch role filter options. */
+  /** Async data source used to fetch role filter options. Defaults to fetchRoleList from pages-web. */
   fetchRoles?: FetchRolesFn;
 }
 
@@ -86,11 +86,11 @@ export interface NeUserPickerModalProps {
   excludeUserIds?: string[];
   /** User ids that should remain selectable even when other filters apply. */
   includeUserIds?: string[];
-  /** Async data source used to fetch paginated users by filter conditions. */
-  fetchUsers: FetchUsersFn;
-  /** Async data source used to fetch organization filter options. */
+  /** Async data source used to fetch paginated users by filter conditions. Defaults to fetchUserPage from pages-web. */
+  fetchUsers?: FetchUsersFn;
+  /** Async data source used to fetch organization filter options. Defaults to fetchOrganizationList from pages-web. */
   fetchOrganizations?: FetchOrganizationsFn;
-  /** Async data source used to fetch role filter options. */
+  /** Async data source used to fetch role filter options. Defaults to fetchRoleList from pages-web. */
   fetchRoles?: FetchRolesFn;
 }
 

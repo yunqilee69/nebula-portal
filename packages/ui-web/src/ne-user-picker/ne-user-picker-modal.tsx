@@ -3,6 +3,9 @@ import type { PaginationProps, TableProps } from "antd";
 import { Avatar, Empty, Input, Pagination, Select, Space, Spin, Table, Tag, Typography } from "antd";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { type OrganizationItem, type RoleItem, type UserItem, type UserPageQuery, useI18n } from "@nebula/core";
+import { fetchUserPage } from "@nebula/pages-web/api/user-api";
+import { fetchOrganizationList } from "@nebula/pages-web/api/organization-api";
+import { fetchRoleList } from "@nebula/pages-web/api/role-api";
 
 import { NeModal } from "../ne-modal/ne-modal";
 import type { NeUserPickerModalProps } from "./types";
@@ -61,9 +64,9 @@ export function NeUserPickerModal(props: NeUserPickerModalProps) {
     width,
     excludeUserIds,
     includeUserIds,
-    fetchUsers,
-    fetchOrganizations,
-    fetchRoles,
+    fetchUsers = fetchUserPage,
+    fetchOrganizations = fetchOrganizationList,
+    fetchRoles = fetchRoleList,
   } = props;
   const { t } = useI18n();
   const [users, setUsers] = useState<UserItem[]>([]);
@@ -140,10 +143,7 @@ export function NeUserPickerModal(props: NeUserPickerModalProps) {
       return;
     }
 
-    Promise.all([
-      fetchOrganizations ? fetchOrganizations() : Promise.resolve([]),
-      fetchRoles ? fetchRoles() : Promise.resolve([]),
-    ])
+    Promise.all([fetchOrganizations(), fetchRoles()])
       .then(([organizations, roles]) => {
         setOrgOptions(organizations);
         setRoleOptions(roles);

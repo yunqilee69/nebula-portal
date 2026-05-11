@@ -18,23 +18,8 @@
 
 ```tsx
 import { useState } from "react";
-import type { OrganizationItem, RoleItem, UserItem, UserPageQuery, UserPageResult } from "@nebula/core";
+import type { UserItem } from "@nebula/core";
 import { NeUserPicker } from "@nebula/ui-web";
-
-async function fetchUsers(query: UserPageQuery): Promise<UserPageResult> {
-  return {
-    data: [],
-    total: 0,
-  };
-}
-
-async function fetchOrganizations(): Promise<OrganizationItem[]> {
-  return [];
-}
-
-async function fetchRoles(): Promise<RoleItem[]> {
-  return [];
-}
 
 export function MultiUserPickerDemo() {
   const [value, setValue] = useState<string[]>([]);
@@ -49,12 +34,6 @@ export function MultiUserPickerDemo() {
       }}
       placeholder="请选择协作成员"
       maxTagCount={3}
-      showOrgFilter
-      showRoleFilter
-      showStatusFilter
-      fetchUsers={fetchUsers}
-      fetchOrganizations={fetchOrganizations}
-      fetchRoles={fetchRoles}
     />
   );
 }
@@ -64,15 +43,7 @@ export function MultiUserPickerDemo() {
 
 ```tsx
 import { useState } from "react";
-import type { UserPageQuery, UserPageResult } from "@nebula/core";
 import { NeUserPicker } from "@nebula/ui-web";
-
-async function fetchUsers(query: UserPageQuery): Promise<UserPageResult> {
-  return {
-    data: [],
-    total: 0,
-  };
-}
 
 export function SingleUserPickerDemo() {
   const [value, setValue] = useState<string | undefined>();
@@ -86,8 +57,6 @@ export function SingleUserPickerDemo() {
       }}
       placeholder="请选择负责人"
       modalTitle="选择负责人"
-      modalWidth={720}
-      fetchUsers={fetchUsers}
     />
   );
 }
@@ -97,30 +66,17 @@ export function SingleUserPickerDemo() {
 
 ```tsx
 import { Form } from "antd";
-import type { UserPageQuery, UserPageResult } from "@nebula/core";
 import { NeUserPicker } from "@nebula/ui-web";
-
-async function fetchUsers(query: UserPageQuery): Promise<UserPageResult> {
-  return {
-    data: [],
-    total: 0,
-  };
-}
 
 export function UserFormDemo() {
   return (
     <Form layout="vertical" initialValues={{ approverId: undefined, memberIds: [] }}>
       <Form.Item label="审批人" name="approverId">
-        <NeUserPicker mode="single" placeholder="请选择审批人" fetchUsers={fetchUsers} />
+        <NeUserPicker mode="single" placeholder="请选择审批人" />
       </Form.Item>
 
       <Form.Item label="参与成员" name="memberIds">
-        <NeUserPicker
-          placeholder="请选择参与成员"
-          showStatusFilter
-          excludeUserIds={["1"]}
-          fetchUsers={fetchUsers}
-        />
+        <NeUserPicker placeholder="请选择参与成员" showStatusFilter excludeUserIds={["1"]} />
       </Form.Item>
     </Form>
   );
@@ -132,15 +88,8 @@ export function UserFormDemo() {
 ```tsx
 import { Button, Space, Typography } from "antd";
 import { useMemo, useState } from "react";
-import type { UserItem, UserPageQuery, UserPageResult } from "@nebula/core";
+import type { UserItem } from "@nebula/core";
 import { NeUserPickerModal } from "@nebula/ui-web";
-
-async function fetchUsers(query: UserPageQuery): Promise<UserPageResult> {
-  return {
-    data: [],
-    total: 0,
-  };
-}
 
 export function CustomTriggerDemo() {
   const [open, setOpen] = useState(false);
@@ -154,13 +103,9 @@ export function CustomTriggerDemo() {
 
   return (
     <Space direction="vertical" size={12}>
-      <Typography.Text>
-        当前已选：{selectedNames || "未选择"}
-      </Typography.Text>
+      <Typography.Text>当前已选：{selectedNames || "未选择"}</Typography.Text>
 
-      <Button type="primary" onClick={() => setOpen(true)}>
-        选择成员
-      </Button>
+      <Button type="primary" onClick={() => setOpen(true)}>选择成员</Button>
 
       <NeUserPickerModal
         open={open}
@@ -173,11 +118,6 @@ export function CustomTriggerDemo() {
           setSelectedIds(users.map((user) => user.id));
         }}
         title="选择项目成员"
-        width={860}
-        showOrgFilter
-        showRoleFilter
-        showStatusFilter
-        fetchUsers={fetchUsers}
       />
     </Space>
   );
@@ -203,9 +143,9 @@ export function CustomTriggerDemo() {
 | `modalWidth` | `number \| string` | `600` | 透传给内置 `NeUserPickerModal` 的弹窗宽度 |
 | `excludeUserIds` | `string[]` | `undefined` | 需要从选择结果中排除的用户 ID 列表 |
 | `includeUserIds` | `string[]` | `undefined` | 当外部存在筛选限制时，仍然强制保留可选的用户 ID 列表 |
-| `fetchUsers` | `(query: UserPageQuery) => Promise<UserPageResult>` | 必填 | 获取用户分页数据的方法，支持组织、状态、关键字等查询条件 |
-| `fetchOrganizations` | `() => Promise<OrganizationItem[]>` | `undefined` | 获取组织筛选选项的方法；未传入时组织下拉为空 |
-| `fetchRoles` | `() => Promise<RoleItem[]>` | `undefined` | 获取角色筛选选项的方法；未传入时角色下拉为空 |
+| `fetchUsers` | `(query: UserPageQuery) => Promise<UserPageResult>` | `fetchUserPage` | 获取用户分页数据的方法；默认使用 pages-web 的 fetchUserPage |
+| `fetchOrganizations` | `() => Promise<OrganizationItem[]>` | `fetchOrganizationList` | 获取组织筛选选项的方法；默认使用 pages-web 的 fetchOrganizationList |
+| `fetchRoles` | `() => Promise<RoleItem[]>` | `fetchRoleList` | 获取角色筛选选项的方法；默认使用 pages-web 的 fetchRoleList |
 
 ## NeUserPickerModal Props
 
@@ -226,9 +166,9 @@ export function CustomTriggerDemo() {
 | `width` | `number \| string` | `860` | 弹窗宽度；内部会在未传数值时回退到 `860` |
 | `excludeUserIds` | `string[]` | `undefined` | 需要从当前结果中移除的用户 ID 列表 |
 | `includeUserIds` | `string[]` | `undefined` | 仅允许出现在结果中的用户 ID 列表；有值时会对列表做白名单过滤 |
-| `fetchUsers` | `(query: UserPageQuery) => Promise<UserPageResult>` | 必填 | 获取用户分页数据的方法 |
-| `fetchOrganizations` | `() => Promise<OrganizationItem[]>` | `undefined` | 获取组织选项的方法 |
-| `fetchRoles` | `() => Promise<RoleItem[]>` | `undefined` | 获取角色选项的方法 |
+| `fetchUsers` | `(query: UserPageQuery) => Promise<UserPageResult>` | `fetchUserPage` | 获取用户分页数据的方法；默认使用 pages-web 的 fetchUserPage |
+| `fetchOrganizations` | `() => Promise<OrganizationItem[]>` | `fetchOrganizationList` | 获取组织选项的方法；默认使用 pages-web 的 fetchOrganizationList |
+| `fetchRoles` | `() => Promise<RoleItem[]>` | `fetchRoleList` | 获取角色选项的方法；默认使用 pages-web 的 fetchRoleList |
 
 ## 依赖
 

@@ -1,4 +1,7 @@
 import type { UserItem } from "@nebula/core";
+import { fetchUserPage } from "@nebula/pages-web/api/user-api";
+import { fetchOrganizationList } from "@nebula/pages-web/api/organization-api";
+import { fetchRoleList } from "@nebula/pages-web/api/role-api";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { NeUserPickerModal } from "./ne-user-picker-modal";
@@ -30,9 +33,9 @@ export function NeUserPicker(props: NeUserPickerProps) {
     modalWidth = 600,
     excludeUserIds,
     includeUserIds,
-    fetchUsers,
-    fetchOrganizations,
-    fetchRoles,
+    fetchUsers = fetchUserPage,
+    fetchOrganizations = fetchOrganizationList,
+    fetchRoles = fetchRoleList,
   } = props;
   const [open, setOpen] = useState(false);
   const [pendingIds, setPendingIds] = useState<string[]>(() => normalizeValue(value));
