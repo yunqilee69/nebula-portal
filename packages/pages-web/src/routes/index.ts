@@ -1,6 +1,6 @@
 import { createElement, type ComponentType } from "react";
 import type { RouteObject } from "react-router-dom";
-import { registryRouteComponents } from "@nebula/core";
+import { registryRouteComponents, registryStaticRoutes } from "@nebula/core";
 import { LoginPage } from "../pages/auth/login-page";
 import { UnauthorizedPage } from "../pages/401";
 import { NotFoundPage } from "../pages/404";
@@ -13,6 +13,7 @@ import { advancedRoutes } from "./advanced";
 import { storageRoutes } from "./storage";
 import { errorsRoutes } from "./errors";
 import { authRoutes } from "./auth";
+import { userStaticRoutes } from "./user";
 import type { RouteComponentLoaderMap } from "@nebula/core";
 
 export const allRouteConfigs: RouteComponentLoaderMap = {
@@ -40,6 +41,7 @@ function autoRegisterNebulaPages(): void {
   }
 
   registryRouteComponents(allRouteConfigs, NEBULA_PAGES_SOURCE);
+  registryStaticRoutes(userStaticRoutes, NEBULA_PAGES_SOURCE);
   globalState[NEBULA_PAGES_REGISTERED_FLAG] = true;
 }
 
@@ -73,4 +75,5 @@ export { advancedRoutes } from "./advanced";
 export { storageRoutes } from "./storage";
 export { errorsRoutes } from "./errors";
 export { authRoutes } from "./auth";
+export { userStaticRoutes } from "./user";
 export { type RouteComponentLoaderMap, type RouteComponentMeta, type RouteComponentRegistration } from "@nebula/core";

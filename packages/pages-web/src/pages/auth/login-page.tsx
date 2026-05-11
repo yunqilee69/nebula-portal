@@ -14,6 +14,7 @@ import { fetchCurrentMenus } from "../../api/menu-api";
 import { fetchCurrentNotifications } from "../../api/notify-api";
 import { LoginBadgeSwitch } from "./login-badge-switch";
 import { LoginCard } from "./login-card";
+import { LoginLanguageSwitch } from "./login-language-switch";
 import { UsernameForm, WechatForm } from "./login-forms";
 import type { LoginFormValues, LoginMode, LoginModeOption, WechatQrStatus, WechatWebMode } from "./login-types";
 
@@ -283,6 +284,7 @@ export function LoginPage() {
 
   return (
     <div className="login-screen">
+      <LoginLanguageSwitch />
       <LoginCard
         title={frontendConfig.projectName || t("login.title")}
         description={activeModeOption?.description ?? t("login.subtitle")}

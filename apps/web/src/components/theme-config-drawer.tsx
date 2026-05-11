@@ -1,6 +1,6 @@
-import { BgColorsOutlined, GlobalOutlined, LayoutOutlined, MenuOutlined, SettingOutlined } from "@ant-design/icons";
+import { BgColorsOutlined, LayoutOutlined, MenuOutlined, SettingOutlined } from "@ant-design/icons";
 import { Button, Drawer, Select, Space, Typography, message } from "antd";
-import { applyNebulaLocale, hydrateFrontendThemeCatalog, useFrontendStore, useI18n } from "@nebula/core";
+import { hydrateFrontendThemeCatalog, useFrontendStore, useI18n } from "@nebula/core";
 import { useThemeStore } from "@nebula/tokens";
 import { useEffect, useMemo, useState } from "react";
 import { normalizeApiError, switchFrontendLayout, switchFrontendTheme, fetchFrontendThemes } from "@nebula/pages-web";
@@ -8,12 +8,9 @@ import { normalizeApiError, switchFrontendLayout, switchFrontendTheme, fetchFron
 export function ThemeConfigDrawer() {
   const [open, setOpen] = useState(false);
   const [switching, setSwitching] = useState(false);
-  const [switchingLocale, setSwitchingLocale] = useState(false);
   const [switchingLayout, setSwitchingLayout] = useState(false);
   const { t } = useI18n();
-  const locale = useFrontendStore((state) => state.defaultPreference.localeTag);
   const defaultPreference = useFrontendStore((state) => state.defaultPreference);
-  const localeOptions = useFrontendStore((state) => state.frontendConfig.localeOptions);
   const themeCatalog = useFrontendStore((state) => state.themeCatalog);
   const setDefaultPreference = useFrontendStore((state) => state.setDefaultPreference);
   const currentTheme = useThemeStore((state) => state.currentTheme);
@@ -24,17 +21,14 @@ export function ThemeConfigDrawer() {
       .then((catalog) => {
         hydrateFrontendThemeCatalog(catalog);
       })
-      .catch(() => undefined);
+      .catch((error) => {
+        console.warn("Failed to fetch frontend themes:", error);
+      });
   }, []);
 
   const themeOptions = useMemo(
     () => themeCatalog.themes.map((item) => ({ label: item.themeName, value: item.themeCode })),
     [themeCatalog.themes],
-  );
-
-  const localeSelectOptions = useMemo(
-    () => localeOptions.map((item) => ({ label: t(`app.language.${item}`), value: item })),
-    [localeOptions, t],
   );
 
   const navigationLayoutOptions = useMemo(
@@ -94,32 +88,6 @@ export function ThemeConfigDrawer() {
               />
             </Space.Compact>
             {switching ? <Typography.Paragraph type="secondary" style={{ marginTop: 8, marginBottom: 0 }}>{t("theme.switching")}</Typography.Paragraph> : null}
-          </div>
-
-          <div>
-            <Typography.Text strong>{t("app.language")}</Typography.Text>
-            <Typography.Paragraph type="secondary" style={{ marginTop: 8, marginBottom: 12 }}>
-              {t("theme.localeHint")}
-            </Typography.Paragraph>
-            <Space.Compact block>
-              <Button icon={<GlobalOutlined />} disabled />
-              <Select
-                value={locale}
-                options={localeSelectOptions}
-                disabled={switchingLocale}
-                onChange={async (value) => {
-                  setSwitchingLocale(true);
-                  try {
-                    await applyNebulaLocale(value);
-                  } catch (error) {
-                    message.warning(t("theme.localeSwitchFallback", undefined, { reason: normalizeApiError(error).message }));
-                  } finally {
-                    setSwitchingLocale(false);
-                  }
-                }}
-              />
-            </Space.Compact>
-            {switchingLocale ? <Typography.Paragraph type="secondary" style={{ marginTop: 8, marginBottom: 0 }}>{t("theme.localeSwitching")}</Typography.Paragraph> : null}
           </div>
 
           <div>
