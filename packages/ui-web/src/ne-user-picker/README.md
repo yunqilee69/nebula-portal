@@ -143,9 +143,9 @@ export function CustomTriggerDemo() {
 | `modalWidth` | `number \| string` | `600` | 透传给内置 `NeUserPickerModal` 的弹窗宽度 |
 | `excludeUserIds` | `string[]` | `undefined` | 需要从选择结果中排除的用户 ID 列表 |
 | `includeUserIds` | `string[]` | `undefined` | 当外部存在筛选限制时，仍然强制保留可选的用户 ID 列表 |
-| `fetchUsers` | `(query: UserPageQuery) => Promise<UserPageResult>` | `fetchUserPage` | 获取用户分页数据的方法；默认使用 pages-web 的 fetchUserPage |
-| `fetchOrganizations` | `() => Promise<OrganizationItem[]>` | `fetchOrganizationList` | 获取组织筛选选项的方法；默认使用 pages-web 的 fetchOrganizationList |
-| `fetchRoles` | `() => Promise<RoleItem[]>` | `fetchRoleList` | 获取角色筛选选项的方法；默认使用 pages-web 的 fetchRoleList |
+| `fetchUsers` | `(query: UserPageQuery) => Promise<UserPageResult>` | 内置函数 | 获取用户分页数据的方法；默认调用 `/api/auth/users/page` |
+| `fetchOrganizations` | `() => Promise<OrganizationItem[]>` | 内置函数 | 获取组织筛选选项的方法；默认调用 `/api/auth/orgs/list` |
+| `fetchRoles` | `() => Promise<RoleItem[]>` | 内置函数 | 获取角色筛选选项的方法；默认调用 `/api/auth/roles/list` |
 
 ## NeUserPickerModal Props
 
@@ -166,9 +166,9 @@ export function CustomTriggerDemo() {
 | `width` | `number \| string` | `860` | 弹窗宽度；内部会在未传数值时回退到 `860` |
 | `excludeUserIds` | `string[]` | `undefined` | 需要从当前结果中移除的用户 ID 列表 |
 | `includeUserIds` | `string[]` | `undefined` | 仅允许出现在结果中的用户 ID 列表；有值时会对列表做白名单过滤 |
-| `fetchUsers` | `(query: UserPageQuery) => Promise<UserPageResult>` | `fetchUserPage` | 获取用户分页数据的方法；默认使用 pages-web 的 fetchUserPage |
-| `fetchOrganizations` | `() => Promise<OrganizationItem[]>` | `fetchOrganizationList` | 获取组织选项的方法；默认使用 pages-web 的 fetchOrganizationList |
-| `fetchRoles` | `() => Promise<RoleItem[]>` | `fetchRoleList` | 获取角色选项的方法；默认使用 pages-web 的 fetchRoleList |
+| `fetchUsers` | `(query: UserPageQuery) => Promise<UserPageResult>` | 内置函数 | 获取用户分页数据的方法；默认调用 `/api/auth/users/page` |
+| `fetchOrganizations` | `() => Promise<OrganizationItem[]>` | 内置函数 | 获取组织选项的方法；默认调用 `/api/auth/orgs/list` |
+| `fetchRoles` | `() => Promise<RoleItem[]>` | 内置函数 | 获取角色选项的方法；默认调用 `/api/auth/roles/list` |
 
 ## 依赖
 
