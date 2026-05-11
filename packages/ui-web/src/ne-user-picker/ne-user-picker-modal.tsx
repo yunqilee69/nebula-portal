@@ -2,13 +2,10 @@ import type { ColumnsType } from "antd/es/table";
 import type { PaginationProps, TableProps } from "antd";
 import { Avatar, Empty, Input, Pagination, Select, Space, Spin, Table, Tag, Typography } from "antd";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { type OrganizationItem, type RoleItem, type UserItem, type UserPageQuery, useI18n } from "@nebula/core";
-import { fetchUserPage } from "@nebula/pages-web/api/user-api";
-import { fetchOrganizationList } from "@nebula/pages-web/api/organization-api";
-import { fetchRoleList } from "@nebula/pages-web/api/role-api";
+import { type OrganizationItem, type RoleItem, type UserItem, type UserPageQuery, type UserPageResult, useI18n } from "@nebula/core";
 
 import { NeModal } from "../ne-modal/ne-modal";
-import type { NeUserPickerModalProps } from "./types";
+import type { NeUserPickerModalProps, FetchUsersFn, FetchOrganizationsFn, FetchRolesFn } from "./types";
 
 const PAGE_SIZE = 10;
 const DEBOUNCE_MS = 300;
@@ -16,6 +13,28 @@ const DEBOUNCE_MS = 300;
 function getUserDisplayName(user: UserItem) {
   return user.nickname || user.username;
 }
+
+const defaultFetchUsers: FetchUsersFn = async (query: UserPageQuery): Promise<UserPageResult> => {
+  const response = await fetch("/api/auth/users/page", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(query),
+  });
+  const data = await response.json();
+  return { data: data.data ?? data.records ?? [], total: data.total ?? 0 };
+};
+
+const defaultFetchOrganizations: FetchOrganizationsFn = async (): Promise<OrganizationItem[]> => {
+  const response = await fetch("/api/auth/orgs/list");
+  const data = await response.json();
+  return data.data ?? data ?? [];
+};
+
+const defaultFetchRoles: FetchRolesFn = async (): Promise<RoleItem[]> => {
+  const response = await fetch("/api/auth/roles/list");
+  const data = await response.json();
+  return data.data ?? data ?? [];
+};
 
 function applyClientSideFilters(users: UserItem[], options: { selectedRoleId?: string; excludeUserIds?: string[]; includeUserIds?: string[] }) {
   const { selectedRoleId, excludeUserIds = [], includeUserIds = [] } = options;
@@ -64,9 +83,9 @@ export function NeUserPickerModal(props: NeUserPickerModalProps) {
     width,
     excludeUserIds,
     includeUserIds,
-    fetchUsers = fetchUserPage,
-    fetchOrganizations = fetchOrganizationList,
-    fetchRoles = fetchRoleList,
+    fetchUsers = defaultFetchUsers,
+    fetchOrganizations = defaultFetchOrganizations,
+    fetchRoles = defaultFetchRoles,
   } = props;
   const { t } = useI18n();
   const [users, setUsers] = useState<UserItem[]>([]);

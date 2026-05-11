@@ -1,12 +1,10 @@
-import type { UserItem } from "@nebula/core";
-import { fetchUserPage } from "@nebula/pages-web/api/user-api";
-import { fetchOrganizationList } from "@nebula/pages-web/api/organization-api";
-import { fetchRoleList } from "@nebula/pages-web/api/role-api";
+import type { UserItem, UserPageQuery, UserPageResult, OrganizationItem, RoleItem } from "@nebula/core";
+import { useAppContext } from "@nebula/core";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { NeUserPickerModal } from "./ne-user-picker-modal";
 import { NeUserPickerTrigger } from "./ne-user-picker-trigger";
-import type { NeUserPickerProps } from "./types";
+import type { NeUserPickerProps, FetchUsersFn, FetchOrganizationsFn, FetchRolesFn } from "./types";
 
 function normalizeValue(value: string | string[] | undefined) {
   if (typeof value === "string") {
@@ -15,6 +13,28 @@ function normalizeValue(value: string | string[] | undefined) {
 
   return value ?? [];
 }
+
+const defaultFetchUsers: FetchUsersFn = async (query: UserPageQuery): Promise<UserPageResult> => {
+  const response = await fetch("/api/auth/users/page", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(query),
+  });
+  const data = await response.json();
+  return { data: data.data ?? data.records ?? [], total: data.total ?? 0 };
+};
+
+const defaultFetchOrganizations: FetchOrganizationsFn = async (): Promise<OrganizationItem[]> => {
+  const response = await fetch("/api/auth/orgs/list");
+  const data = await response.json();
+  return data.data ?? data ?? [];
+};
+
+const defaultFetchRoles: FetchRolesFn = async (): Promise<RoleItem[]> => {
+  const response = await fetch("/api/auth/roles/list");
+  const data = await response.json();
+  return data.data ?? data ?? [];
+};
 
 export function NeUserPicker(props: NeUserPickerProps) {
   const {
@@ -33,9 +53,9 @@ export function NeUserPicker(props: NeUserPickerProps) {
     modalWidth = 600,
     excludeUserIds,
     includeUserIds,
-    fetchUsers = fetchUserPage,
-    fetchOrganizations = fetchOrganizationList,
-    fetchRoles = fetchRoleList,
+    fetchUsers = defaultFetchUsers,
+    fetchOrganizations = defaultFetchOrganizations,
+    fetchRoles = defaultFetchRoles,
   } = props;
   const [open, setOpen] = useState(false);
   const [pendingIds, setPendingIds] = useState<string[]>(() => normalizeValue(value));
