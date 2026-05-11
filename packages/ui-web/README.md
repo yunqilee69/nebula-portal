@@ -30,6 +30,8 @@ import { NePage, NePanel, NeStatusTag } from "@nebula/ui-web";
 - `NeStatusTag`：`packages/ui-web/src/ne-status-tag/README.md`
 - `NeTable`：`packages/ui-web/src/ne-table/README.md`
 - `NeTablePage`：`packages/ui-web/src/ne-table-page/README.md`
+- `NeUserPicker`：`packages/ui-web/src/ne-user-picker/README.md`
+- `NeUserPickerModal`：`packages/ui-web/src/ne-user-picker/README.md`
 
 ## 样式说明
 
@@ -50,5 +52,6 @@ import { NePage, NePanel, NeStatusTag } from "@nebula/ui-web";
 - 平台级入口导航优先使用 `NeNavCards`
 - 树形层级展示优先使用 `NeTree`
 - 状态文本统一使用 `NeStatusTag`
+- 用户选择优先使用 `NeUserPicker`
 
 这样可以保证不同业务模块在视觉、交互和命名层面保持一致。
