@@ -1,96 +1,144 @@
-import { Avatar, Button, Col, Row, Space, Tag, Typography } from "antd";
+import { Button, Col, Form, Input, message, Row, Space, Spin, Typography } from "antd";
 import { useAuthStore, useI18n } from "@nebula/core";
-import { useMemo } from "react";
+import { NeImageUpload } from "@nebula/ui-web";
+import { useEffect, useState } from "react";
+import { fetchUserProfile, updateUserProfile } from "../../../api/profile-api";
+import { uploadStorageFile } from "../../../api/storage-api";
+import type { UserProfileDetail } from "@nebula/core";
 
 export function BasicInfoTab() {
   const { t } = useI18n();
-  const session = useAuthStore((state) => state.session);
+  const [form] = Form.useForm();
+  const [loading, setLoading] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [profile, setProfile] = useState<UserProfileDetail | null>(null);
 
-  const user = session?.user;
+  useEffect(() => {
+    loadProfile();
+  }, []);
 
-  const roleTags = useMemo(() => {
-    if (!user?.roles?.length) {
-      return null;
+  async function loadProfile() {
+    setLoading(true);
+    try {
+      const data = await fetchUserProfile();
+      setProfile(data);
+      form.setFieldsValue({
+        nickname: data.nickname ?? "",
+        email: data.email ?? "",
+        phone: data.phone ?? "",
+        avatar: data.avatar ?? "",
+      });
+    } catch (error) {
+      message.error(t("user.profile.loadFailed"));
+    } finally {
+      setLoading(false);
     }
-    return user.roles.map((role) => (
-      <Tag key={role} color="blue">
-        {role}
-      </Tag>
-    ));
-  }, [user?.roles]);
+  }
+
+  async function handleAvatarUpload(file: File): Promise<string> {
+    const result = await uploadStorageFile({
+      file,
+      sourceEntity: "user-avatar",
+      sourceId: crypto.randomUUID(),
+    });
+    return result.fileUrl ?? result.previewUrl ?? "";
+  }
+
+  async function handleSave() {
+    try {
+      const values = await form.validateFields();
+      setSaving(true);
+      const updated = await updateUserProfile({
+        nickname: values.nickname || undefined,
+        email: values.email || undefined,
+        phone: values.phone || undefined,
+        avatar: values.avatar || undefined,
+      });
+      setProfile(updated);
+
+      // 更新 session 中的 user 信息
+      const session = useAuthStore.getState().session;
+      if (session) {
+        useAuthStore.getState().patchSession({
+          user: {
+            ...session.user,
+            nickname: updated.nickname,
+            avatar: updated.avatar,
+            email: updated.email,
+            phone: updated.phone,
+          },
+        });
+      }
+
+      message.success(t("user.profile.saveSuccess"));
+    } catch (error) {
+      // Form validation error or API error
+      if (error instanceof Error) {
+        message.error(error.message);
+      }
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  if (loading) {
+    return (
+      <div style={{ padding: 48, textAlign: "center" }}>
+        <Spin />
+      </div>
+    );
+  }
 
   return (
     <div style={{ padding: 24 }}>
-      <Row gutter={[24, 24]}>
-        <Col span={24}>
-          <Space align="center" size={16}>
-            <Typography.Text type="secondary" style={{ width: 80 }}>
-              {t("user.profile.avatar")}
-            </Typography.Text>
-            <Avatar size={80} src={user?.avatar} style={{ backgroundColor: "#1890ff" }}>
-              {user?.username?.slice(0, 1).toUpperCase() ?? "G"}
-            </Avatar>
-            <Button type="link">{t("user.profile.changeAvatar")}</Button>
-          </Space>
-        </Col>
+      <Form form={form} layout="vertical">
+        <Row gutter={[24, 16]}>
+          <Col span={24}>
+            <Form.Item label={t("user.profile.avatar")} name="avatar">
+              <NeImageUpload
+                onUpload={handleAvatarUpload}
+                shape="circle"
+                size={100}
+                maxSize={5 * 1024 * 1024}
+              />
+            </Form.Item>
+          </Col>
 
-        <Col span={12}>
-          <Space align="center" size={16}>
-            <Typography.Text type="secondary" style={{ width: 80 }}>
-              {t("user.profile.username")}
-            </Typography.Text>
-            <Typography.Text>{user?.username ?? "-"}</Typography.Text>
-          </Space>
-        </Col>
+          <Col span={12}>
+            <Form.Item label={t("user.profile.username")}>
+              <Typography.Text>{profile?.username ?? "-"}</Typography.Text>
+            </Form.Item>
+          </Col>
 
-        <Col span={12}>
-          <Space align="center" size={16}>
-            <Typography.Text type="secondary" style={{ width: 80 }}>
-              {t("user.profile.nickname")}
-            </Typography.Text>
-            <Typography.Text>-</Typography.Text>
-            <Button type="link">{t("user.profile.modify")}</Button>
-          </Space>
-        </Col>
+          <Col span={12}>
+            <Form.Item label={t("user.profile.nickname")} name="nickname">
+              <Input placeholder={t("user.profile.nickname")} maxLength={50} />
+            </Form.Item>
+          </Col>
 
-        <Col span={12}>
-          <Space align="center" size={16}>
-            <Typography.Text type="secondary" style={{ width: 80 }}>
-              {t("user.profile.phone")}
-            </Typography.Text>
-            <Typography.Text>-</Typography.Text>
-            <Button type="link">{t("user.profile.modify")}</Button>
-          </Space>
-        </Col>
+          <Col span={12}>
+            <Form.Item label={t("user.profile.email")} name="email">
+              <Input placeholder={t("user.profile.email")} type="email" />
+            </Form.Item>
+          </Col>
 
-        <Col span={12}>
-          <Space align="center" size={16}>
-            <Typography.Text type="secondary" style={{ width: 80 }}>
-              {t("user.profile.email")}
-            </Typography.Text>
-            <Typography.Text>-</Typography.Text>
-            <Button type="link">{t("user.profile.modify")}</Button>
-          </Space>
-        </Col>
+          <Col span={12}>
+            <Form.Item label={t("user.profile.phone")} name="phone">
+              <Input placeholder={t("user.profile.phone")} />
+            </Form.Item>
+          </Col>
+        </Row>
 
-        <Col span={12}>
-          <Space align="center" size={16}>
-            <Typography.Text type="secondary" style={{ width: 80 }}>
-              {t("user.profile.organization")}
-            </Typography.Text>
-            <Typography.Text>-</Typography.Text>
-          </Space>
-        </Col>
-
-        <Col span={12}>
-          <Space align="center" size={16}>
-            <Typography.Text type="secondary" style={{ width: 80 }}>
-              {t("user.profile.roles")}
-            </Typography.Text>
-            {roleTags ?? <Typography.Text>-</Typography.Text>}
-          </Space>
-        </Col>
-      </Row>
+        <Row>
+          <Col span={24}>
+            <Space>
+              <Button type="primary" loading={saving} onClick={handleSave}>
+                {t("user.profile.save")}
+              </Button>
+            </Space>
+          </Col>
+        </Row>
+      </Form>
     </div>
   );
 }
