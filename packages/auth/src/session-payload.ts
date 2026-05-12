@@ -13,7 +13,10 @@ export function toUserProfile(candidate: unknown): UserProfile {
   return {
     userId: getString(record.userId) ?? getString(record.id) ?? "demo-user",
     username: getString(record.username) ?? getString(record.nickname) ?? getString(record.nickName) ?? "Demo User",
+    nickname: getString(record.nickname) ?? getString(record.nickName),
     avatar: getString(record.avatar),
+    email: getString(record.email),
+    phone: getString(record.phone),
     roles: getArray<string>(record.roles ?? record.roleCodeList),
   };
 }
