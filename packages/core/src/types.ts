@@ -13,8 +13,62 @@ export interface PlatformEventBus {
 export interface UserProfile {
   userId: string;
   username: string;
+  nickname?: string;
   avatar?: string;
+  email?: string;
+  phone?: string;
   roles: string[];
+}
+
+export interface UserProfileDetail {
+  id: string;
+  username: string;
+  nickname?: string;
+  avatar?: string;
+  email?: string;
+  phone?: string;
+  status: number;
+  createTime: string;
+}
+
+export interface ProfileUpdatePayload {
+  nickname?: string;
+  avatar?: string;
+  email?: string;
+  phone?: string;
+}
+
+export interface OAuth2BindingItem {
+  providerId: string;
+  providerName: string;
+  bound: boolean;
+  providerUserId?: string;
+  linkedAt?: string;
+}
+
+export interface OAuth2BindPayload {
+  providerId: string;
+  code: string;
+  state?: string;
+}
+
+export interface LoginRecordItem {
+  loginTime: string;
+  loginAccount: string;
+  loginType: string;
+  loginResult: string;
+  loginIp: string;
+  deviceInfo: string;
+}
+
+export interface LoginRecordPageQuery {
+  pageNum: number;
+  pageSize: number;
+}
+
+export interface LoginRecordPageResult {
+  data: LoginRecordItem[];
+  total: number;
 }
 
 export interface AuthSession {
