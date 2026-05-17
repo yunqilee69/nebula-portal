@@ -1,3 +1,4 @@
+import InboxOutlined from "@ant-design/icons/InboxOutlined";
 import { Upload } from "antd";
 import type { UploadFile, UploadProps } from "antd";
 import type { ReactNode } from "react";
@@ -59,7 +60,9 @@ export function NeFileUploader({
   return (
     <div className="ne-file-uploader">
       <Upload.Dragger {...uploadProps}>
-        <p className="ant-upload-drag-icon">+</p>
+        <p className="ant-upload-drag-icon ne-file-uploader__drag-icon">
+          <InboxOutlined aria-hidden="true" />
+        </p>
         <p className="ant-upload-text">{emptyTitle}</p>
         {helperText ? <div className="ant-upload-hint">{helperText}</div> : null}
       </Upload.Dragger>

@@ -41,3 +41,8 @@ export function DemoUploader() {
 - 如果使用 Nebula Storage，建议在 `onUpload` 中串联：直接上传文件、绑定业务、查询正式文件详情
 - 绑定业务时至少要传入 `sourceEntity` 和 `sourceId`
 - 如果是大文件场景，再切换到 upload task / part / complete 的 chunk 上传流程
+
+## 设计约束
+
+- 拖拽区图标使用 Ant Design SVG 图标，不使用纯文本符号作为结构图标。
+- 上传区域视觉样式由 `nebula.css` 和 `--nebula-*` 变量控制。

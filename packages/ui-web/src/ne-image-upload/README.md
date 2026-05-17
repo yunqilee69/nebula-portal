@@ -52,3 +52,8 @@ export function AvatarEditor() {
   );
 }
 ```
+
+## 设计约束
+
+- 上传占位图标使用 Ant Design SVG 图标，不使用 emoji，避免跨平台渲染差异。
+- 颜色、边框和提示文案优先使用 `nebula.css` 中的 `--nebula-*` 变量。

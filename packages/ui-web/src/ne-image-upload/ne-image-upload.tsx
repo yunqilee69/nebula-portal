@@ -1,3 +1,4 @@
+import CameraOutlined from "@ant-design/icons/CameraOutlined";
 import { Avatar, Spin, Upload } from "antd";
 import type { UploadProps } from "antd";
 import { useState } from "react";
@@ -63,20 +64,20 @@ export function NeImageUpload({
           src={value}
           size={size}
           shape={shape}
-          style={{ backgroundColor: "#f0f0f0" }}
+          className="ne-image-upload__avatar"
         >
           {value ? null : "U"}
         </Avatar>
       ) : (
-        <Avatar size={size} shape={shape} style={{ backgroundColor: "#f0f0f0" }}>
-          <span style={{ fontSize: size * 0.3 }}>📷</span>
+        <Avatar size={size} shape={shape} className="ne-image-upload__avatar">
+          <CameraOutlined className="ne-image-upload__icon" style={{ fontSize: size * 0.3 }} />
         </Avatar>
       )}
     </Spin>
   );
 
   return (
-    <div style={{ display: "inline-block" }}>
+    <div className="ne-image-upload">
       <Upload
         accept={accept}
         showUploadList={false}
@@ -84,7 +85,7 @@ export function NeImageUpload({
       >
         {uploadContent}
       </Upload>
-      <div style={{ marginTop: 8, textAlign: "center", fontSize: 12, color: "#666" }}>
+      <div className="ne-image-upload__hint">
         {value ? "点击更换" : placeholder ?? "点击上传"}
       </div>
     </div>
