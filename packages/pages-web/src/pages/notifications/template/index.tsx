@@ -1,10 +1,10 @@
 import { DeleteOutlined, EditOutlined, PlusOutlined, SearchOutlined, SendOutlined } from "@ant-design/icons";
-import { Button, Descriptions, Form, Input, Pagination, Popconfirm, Select, Space, Table, Tag, Typography, message } from "antd";
+import { Button, Descriptions, Form, Input, Popconfirm, Select, Space, Table, Tag, Typography, message } from "antd";
 import type { NotifyTemplateDetail, NotifyTemplateItem, NotifyTemplateMutationPayload, NotifyTemplatePageQuery, SendNotifyPayload } from "@nebula/core";
 import { useI18n } from "@nebula/core";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { createNotifyTemplate, deleteNotifyTemplate, fetchNotifyTemplateDetail, fetchNotifyTemplatePage, sendNotification, updateNotifyTemplate } from "../../../api/notify-template-api";
-import { NeDetailDrawer, NeModal, NePage, NeSearch, NeTable } from "@nebula/ui-web";
+import { NeDetailDrawer, NeModal, NePage, NeSearch, NeTablePage } from "@nebula/ui-web";
 
 const initialQuery: NotifyTemplatePageQuery = { pageNum: 1, pageSize: 10, orderName: "updateTime", orderType: "desc" };
 const initialForm: NotifyTemplateMutationPayload = { templateCode: "", templateName: "", channelType: "SITE", subjectTemplate: "", contentTemplate: "", status: 1, isBuiltin: 0, remark: "" };
@@ -15,10 +15,7 @@ export function NotificationsTemplatePage() {
   const [filterForm] = Form.useForm<NotifyTemplatePageQuery>();
   const [drawerForm] = Form.useForm<NotifyTemplateMutationPayload>();
   const [sendForm] = Form.useForm<typeof initialSendForm>();
-  const [query, setQuery] = useState(initialQuery);
-  const [rows, setRows] = useState<NotifyTemplateItem[]>([]);
-  const [total, setTotal] = useState(0);
-  const [loading, setLoading] = useState(false);
+  const [reloadSeed, setReloadSeed] = useState(0);
   const [submitting, setSubmitting] = useState(false);
   const [sendSubmitting, setSendSubmitting] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -41,30 +38,10 @@ export function NotificationsTemplatePage() {
     return channelOptions.find((item) => item.value === value)?.label ?? value ?? "-";
   }
 
-  async function loadRows(nextQuery: NotifyTemplatePageQuery) {
-    setLoading(true);
-    setError(null);
-    try {
-      const result = await fetchNotifyTemplatePage(nextQuery);
-      setRows(result.data);
-      setTotal(result.total);
-    } catch (caughtError) {
-      setRows([]);
-      setTotal(0);
-      setError(caughtError instanceof Error ? caughtError.message : t("notifyTemplate.loadFailed"));
-    } finally {
-      setLoading(false);
-    }
-  }
-
   async function openDetail(id: string) {
     setDetailOpen(true);
     setDetail(await fetchNotifyTemplateDetail(id));
   }
-
-  useEffect(() => {
-    loadRows(query).catch(() => undefined);
-  }, [query]);
 
   const columns = useMemo(
     () => [
@@ -118,10 +95,17 @@ export function NotificationsTemplatePage() {
               onConfirm={async (event) => {
                 event?.stopPropagation();
                 await deleteNotifyTemplate(row.id);
-                await loadRows(query);
+                setReloadSeed((current) => current + 1);
               }}
             >
-              <Button size="small" danger icon={<DeleteOutlined />}>
+              <Button
+                size="small"
+                danger
+                icon={<DeleteOutlined />}
+                onClick={(event) => {
+                  event.stopPropagation();
+                }}
+              >
                 {t("common.delete")}
               </Button>
             </Popconfirm>
@@ -129,42 +113,20 @@ export function NotificationsTemplatePage() {
         ),
       },
     ],
-    [drawerForm, query, sendForm, t],
+    [drawerForm, sendForm, t],
   );
 
   return (
     <NePage>
-      <NeSearch
-        title={t("notifyTemplate.filterTitle")}
-        labels={{ expand: t("common.expand"), collapse: t("common.collapse"), reset: t("common.reset") }}
-        onReset={() => {
-          filterForm.resetFields();
-          setQuery(initialQuery);
+      <NeTablePage<NotifyTemplatePageQuery>
+        searchForm={filterForm}
+        request={fetchNotifyTemplatePage}
+        initialQuery={initialQuery}
+        reloadToken={reloadSeed}
+        onRequestSuccess={() => setError(null)}
+        onRequestFail={(caughtError) => {
+          setError(caughtError instanceof Error ? caughtError.message : t("notifyTemplate.loadFailed"));
         }}
-      >
-        <Form form={filterForm} layout="inline" initialValues={initialQuery} onFinish={(values) => setQuery((current) => ({ ...current, ...values, pageNum: 1 }))}>
-          <Form.Item name="templateCode" label={t("common.templateCode")}>
-            <Input allowClear />
-          </Form.Item>
-          <Form.Item name="templateName" label={t("common.templateName")}>
-            <Input allowClear />
-          </Form.Item>
-          <Form.Item name="channelType" label={t("common.channel")}>
-            <Select allowClear style={{ width: 160 }} options={channelOptions} />
-          </Form.Item>
-          <Form.Item name="status" label={t("common.status")}>
-            <Select allowClear style={{ width: 140 }} options={[{ label: t("common.enabled"), value: 1 }, { label: t("common.disabled"), value: 0 }]} />
-          </Form.Item>
-          <Form.Item>
-            <Button type="primary" htmlType="submit" icon={<SearchOutlined />}>
-              {t("common.search")}
-            </Button>
-          </Form.Item>
-        </Form>
-        {error ? <Typography.Paragraph type="danger" style={{ marginTop: 16, marginBottom: 0 }}>{error}</Typography.Paragraph> : null}
-      </NeSearch>
-
-      <NeTable
         toolbar={
           <Space>
             <Button
@@ -189,11 +151,46 @@ export function NotificationsTemplatePage() {
             </Button>
           </Space>
         }
-        summary={t("common.recordCount", undefined, { count: total })}
-        pagination={<Pagination align="end" current={query.pageNum} pageSize={query.pageSize} total={total} onChange={(pageNum, pageSize) => setQuery((current) => ({ ...current, pageNum, pageSize }))} />}
+        summary={(result) => t("common.recordCount", undefined, { count: result.total })}
       >
-        <Table<NotifyTemplateItem> rowKey="id" loading={loading} dataSource={rows} columns={columns} pagination={false} onRow={(record) => ({ onClick: () => openDetail(record.id).catch(() => undefined) })} />
-      </NeTable>
+        <NeSearch
+          title={t("notifyTemplate.filterTitle")}
+          labels={{ expand: t("common.expand"), collapse: t("common.collapse"), reset: t("common.reset") }}
+          onReset={() => {
+            filterForm.resetFields();
+            setReloadSeed((current) => current + 1);
+          }}
+        >
+          <Form form={filterForm} layout="inline" initialValues={initialQuery} onFinish={() => setReloadSeed((current) => current + 1)}>
+            <Form.Item name="templateCode" label={t("common.templateCode")}>
+              <Input allowClear />
+            </Form.Item>
+            <Form.Item name="templateName" label={t("common.templateName")}>
+              <Input allowClear />
+            </Form.Item>
+            <Form.Item name="channelType" label={t("common.channel")}>
+              <Select allowClear style={{ width: 160 }} options={channelOptions} />
+            </Form.Item>
+            <Form.Item name="status" label={t("common.status")}>
+              <Select allowClear style={{ width: 140 }} options={[{ label: t("common.enabled"), value: 1 }, { label: t("common.disabled"), value: 0 }]} />
+            </Form.Item>
+            <Form.Item>
+              <Button type="primary" htmlType="submit" icon={<SearchOutlined />}>
+                {t("common.search")}
+              </Button>
+            </Form.Item>
+          </Form>
+          {error ? <Typography.Paragraph type="danger" className="ne-request-error">{error}</Typography.Paragraph> : null}
+        </NeSearch>
+
+        <Table<NotifyTemplateItem>
+          rowKey="id"
+          columns={columns}
+          onRow={(record) => ({
+            onClick: () => openDetail(record.id).catch(() => undefined),
+          })}
+        />
+      </NeTablePage>
 
       <NeDetailDrawer title={t("notifyTemplate.detailTitle")} open={detailOpen && Boolean(detail)} onClose={() => setDetailOpen(false)} width={640}>
         {detail ? (
@@ -232,7 +229,7 @@ export function NotificationsTemplatePage() {
                 await createNotifyTemplate(values);
               }
               setDrawerOpen(false);
-              await loadRows(query);
+              setReloadSeed((current) => current + 1);
             } finally {
               setSubmitting(false);
             }
