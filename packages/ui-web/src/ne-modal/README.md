@@ -23,6 +23,7 @@
 | `bodyHeight` | `number \| string` | 内容区最大高度，默认 `min(72vh, 760px)` |
 | `confirmText` | `string` | 默认主按钮文案，默认 `Save` |
 | `cancelText` | `string` | 默认取消按钮文案，默认 `Cancel` |
+| `closeAriaLabel` | `string` | 弹窗关闭按钮的无障碍标签，默认 `Close dialog` |
 | `confirmLoading` | `boolean` | 默认主按钮加载态 |
 | `confirmButtonProps` | `ButtonProps` | 默认主按钮的附加属性 |
 | `cancelButtonProps` | `ButtonProps` | 默认取消按钮的附加属性 |

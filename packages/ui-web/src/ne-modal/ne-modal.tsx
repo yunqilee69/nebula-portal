@@ -14,6 +14,7 @@ export interface NeModalProps {
   bodyHeight?: number | string;
   confirmText?: string;
   cancelText?: string;
+  closeAriaLabel?: string;
   confirmLoading?: boolean;
   confirmButtonProps?: ButtonProps;
   cancelButtonProps?: ButtonProps;
@@ -33,6 +34,7 @@ export function NeModal(props: NeModalProps) {
     bodyHeight = "min(72vh, 760px)",
     confirmText = "Save",
     cancelText = "Cancel",
+    closeAriaLabel = "Close dialog",
     confirmLoading = false,
     confirmButtonProps,
     cancelButtonProps,
@@ -55,6 +57,7 @@ export function NeModal(props: NeModalProps) {
     <Modal
       open={open}
       onCancel={onClose}
+      closable={{ "aria-label": closeAriaLabel }}
       footer={resolvedFooter ? <div className="ne-modal__footer">{resolvedFooter}</div> : resolvedFooter}
       centered
       width={width}
@@ -70,7 +73,7 @@ export function NeModal(props: NeModalProps) {
     >
       <div className={["ne-modal__content", resolvedFooter ? "ne-modal__content--with-footer" : ""].filter(Boolean).join(" ")}>
         <div className="ne-modal__body" style={{ maxHeight: bodyHeight }}>
-        {children}
+          {children}
         </div>
       </div>
     </Modal>
