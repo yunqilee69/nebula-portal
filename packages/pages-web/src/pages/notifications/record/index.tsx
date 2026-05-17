@@ -1,20 +1,17 @@
 import { SearchOutlined } from "@ant-design/icons";
-import { Button, Descriptions, Form, Input, Pagination, Select, Table, Tag, Typography } from "antd";
+import { Button, Descriptions, Form, Input, Select, Table, Tag, Typography } from "antd";
 import type { NotifyRecordDetail, NotifyRecordItem, NotifyRecordPageQuery } from "@nebula/core";
 import { useI18n } from "@nebula/core";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { fetchNotifyRecordDetail, fetchNotifyRecordPage } from "../../../api/notify-record-api";
-import { NeDetailDrawer, NePage, NeSearch, NeTable } from "@nebula/ui-web";
+import { NeDetailDrawer, NePage, NeSearch, NeTablePage } from "@nebula/ui-web";
 
 const initialQuery: NotifyRecordPageQuery = { pageNum: 1, pageSize: 10, orderName: "updateTime", orderType: "desc" };
 
 export function NotificationsRecordPage() {
   const { t } = useI18n();
   const [filterForm] = Form.useForm<NotifyRecordPageQuery>();
-  const [query, setQuery] = useState(initialQuery);
-  const [rows, setRows] = useState<NotifyRecordItem[]>([]);
-  const [total, setTotal] = useState(0);
-  const [loading, setLoading] = useState(false);
+  const [reloadSeed, setReloadSeed] = useState(0);
   const [detailOpen, setDetailOpen] = useState(false);
   const [detail, setDetail] = useState<NotifyRecordDetail | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -53,30 +50,10 @@ export function NotificationsRecordPage() {
     return value ?? t("notify.status.unknown");
   }
 
-  async function loadRows(nextQuery: NotifyRecordPageQuery) {
-    setLoading(true);
-    setError(null);
-    try {
-      const result = await fetchNotifyRecordPage(nextQuery);
-      setRows(result.data);
-      setTotal(result.total);
-    } catch (caughtError) {
-      setRows([]);
-      setTotal(0);
-      setError(caughtError instanceof Error ? caughtError.message : t("notifyRecord.loadFailed"));
-    } finally {
-      setLoading(false);
-    }
-  }
-
   async function openDetail(id: string) {
     setDetailOpen(true);
     setDetail(await fetchNotifyRecordDetail(id));
   }
-
-  useEffect(() => {
-    loadRows(query).catch(() => undefined);
-  }, [query]);
 
   const columns = useMemo(
     () => [
@@ -99,39 +76,55 @@ export function NotificationsRecordPage() {
 
   return (
     <NePage>
-      <NeSearch
-        title={t("notifyRecord.filterTitle")}
-        labels={{ expand: t("common.expand"), collapse: t("common.collapse"), reset: t("common.reset") }}
-        onReset={() => {
-          filterForm.resetFields();
-          setQuery(initialQuery);
+      <NeTablePage<NotifyRecordPageQuery>
+        searchForm={filterForm}
+        request={fetchNotifyRecordPage}
+        initialQuery={initialQuery}
+        reloadToken={reloadSeed}
+        onRequestSuccess={() => setError(null)}
+        onRequestFail={(caughtError) => {
+          setError(caughtError instanceof Error ? caughtError.message : t("notifyRecord.loadFailed"));
         }}
+        summary={(result) => t("common.recordCount", undefined, { count: result.total })}
       >
-        <Form form={filterForm} layout="inline" initialValues={initialQuery} onFinish={(values) => setQuery((current) => ({ ...current, ...values, pageNum: 1 }))}>
-          <Form.Item name="channelType" label={t("common.channel")}>
-            <Select allowClear style={{ width: 160 }} options={channelOptions} />
-          </Form.Item>
-          <Form.Item name="templateCode" label={t("common.templateCode")}>
-            <Input allowClear />
-          </Form.Item>
-          <Form.Item name="receiver" label={t("common.receiver")}>
-            <Input allowClear />
-          </Form.Item>
-          <Form.Item name="sendStatus" label={t("common.sendStatus")}>
-            <Select allowClear style={{ width: 160 }} options={sendStatusOptions} />
-          </Form.Item>
-          <Form.Item>
-            <Button type="primary" htmlType="submit" icon={<SearchOutlined />}>
-              {t("common.search")}
-            </Button>
-          </Form.Item>
-        </Form>
-        {error ? <Typography.Paragraph type="danger" style={{ marginTop: 16, marginBottom: 0 }}>{error}</Typography.Paragraph> : null}
-      </NeSearch>
+        <NeSearch
+          title={t("notifyRecord.filterTitle")}
+          labels={{ expand: t("common.expand"), collapse: t("common.collapse"), reset: t("common.reset") }}
+          onReset={() => {
+            filterForm.resetFields();
+            setReloadSeed((current) => current + 1);
+          }}
+        >
+          <Form form={filterForm} layout="inline" initialValues={initialQuery} onFinish={() => setReloadSeed((current) => current + 1)}>
+            <Form.Item name="channelType" label={t("common.channel")}>
+              <Select allowClear style={{ width: 160 }} options={channelOptions} />
+            </Form.Item>
+            <Form.Item name="templateCode" label={t("common.templateCode")}>
+              <Input allowClear />
+            </Form.Item>
+            <Form.Item name="receiver" label={t("common.receiver")}>
+              <Input allowClear />
+            </Form.Item>
+            <Form.Item name="sendStatus" label={t("common.sendStatus")}>
+              <Select allowClear style={{ width: 160 }} options={sendStatusOptions} />
+            </Form.Item>
+            <Form.Item>
+              <Button type="primary" htmlType="submit" icon={<SearchOutlined />}>
+                {t("common.search")}
+              </Button>
+            </Form.Item>
+          </Form>
+          {error ? <Typography.Paragraph type="danger" className="ne-request-error">{error}</Typography.Paragraph> : null}
+        </NeSearch>
 
-      <NeTable summary={t("common.recordCount", undefined, { count: total })} pagination={<Pagination align="end" current={query.pageNum} pageSize={query.pageSize} total={total} onChange={(pageNum, pageSize) => setQuery((current) => ({ ...current, pageNum, pageSize }))} />}>
-        <Table<NotifyRecordItem> rowKey="id" loading={loading} dataSource={rows} columns={columns} pagination={false} onRow={(record) => ({ onClick: () => openDetail(record.id).catch(() => undefined) })} />
-      </NeTable>
+        <Table<NotifyRecordItem>
+          rowKey="id"
+          columns={columns}
+          onRow={(record) => ({
+            onClick: () => openDetail(record.id).catch(() => undefined),
+          })}
+        />
+      </NeTablePage>
 
       <NeDetailDrawer title={t("notifyRecord.detailTitle")} open={detailOpen && Boolean(detail)} onClose={() => setDetailOpen(false)} width={640}>
         {detail ? (
