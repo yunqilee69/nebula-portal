@@ -1,11 +1,11 @@
 import { DeleteOutlined, EditOutlined, PlusOutlined, SearchOutlined } from "@ant-design/icons";
-import { Button, Descriptions, Form, Input, List, Pagination, Popconfirm, Select, Space, Table, Tag, Typography } from "antd";
+import { Button, Descriptions, Form, Input, List, Popconfirm, Select, Space, Table, Tag, Typography } from "antd";
 import { useI18n } from "@nebula/core";
 
 import type { RoleDetail, RoleItem, RoleMutationPayload, RolePageQuery } from "@nebula/core";
 import { useEffect, useMemo, useState } from "react";
 import { createRole, deleteRole, fetchRoleDetail, fetchRoleList, fetchRolePage, updateRole } from "../../../api/role-api";
-import { NeDetailDrawer, NeModal, NePage, NeSearch, NeTable } from "@nebula/ui-web";
+import { NeDetailDrawer, NeModal, NePage, NeSearch, NeTablePage } from "@nebula/ui-web";
 
 const initialQuery: RolePageQuery = {
   pageNum: 1,
@@ -25,11 +25,8 @@ export function OperationsRolePage() {
   const { t } = useI18n();
   const [form] = Form.useForm<RolePageQuery>();
   const [drawerForm] = Form.useForm<RoleMutationPayload>();
-  const [query, setQuery] = useState<RolePageQuery>(initialQuery);
-  const [rows, setRows] = useState<RoleItem[]>([]);
+  const [reloadSeed, setReloadSeed] = useState(0);
   const [allRoles, setAllRoles] = useState<RoleItem[]>([]);
-  const [total, setTotal] = useState(0);
-  const [loading, setLoading] = useState(false);
   const [metaLoading, setMetaLoading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -47,40 +44,20 @@ export function OperationsRolePage() {
     }
   }
 
-  async function loadRoles(nextQuery: RolePageQuery) {
-    setLoading(true);
-    setError(null);
-    try {
-      const result = await fetchRolePage(nextQuery);
-      setRows(result.data);
-      setTotal(result.total);
-    } catch (caughtError) {
-      setRows([]);
-      setTotal(0);
-      setError(caughtError instanceof Error ? caughtError.message : t("roleManagement.loadFailed"));
-    } finally {
-      setLoading(false);
-    }
-  }
-
   async function reloadCurrentData() {
-    await Promise.all([loadRoles(query), loadRoleOptions()]);
+    setReloadSeed((current) => current + 1);
+    await loadRoleOptions();
   }
 
-  async function openDetail(roleId: string) {
+  async function openDetail(role: RoleItem) {
     setDetailOpen(true);
     try {
-      setDetail(await fetchRoleDetail(roleId));
+      setDetail(await fetchRoleDetail(role.id));
     } catch {
-      const fallbackRole = rows.find((item) => item.id === roleId) ?? null;
-      setDetail(
-        fallbackRole
-          ? {
-              ...fallbackRole,
-              permissions: [],
-            }
-          : null,
-      );
+      setDetail({
+        ...role,
+        permissions: [],
+      });
     }
   }
 
@@ -106,10 +83,6 @@ export function OperationsRolePage() {
   useEffect(() => {
     loadRoleOptions().catch(() => undefined);
   }, []);
-
-  useEffect(() => {
-    loadRoles(query).catch(() => undefined);
-  }, [query]);
 
   const columns = useMemo(
     () => [
@@ -161,60 +134,65 @@ export function OperationsRolePage() {
 
   return (
     <NePage>
-      <NeSearch
-        title={t("common.filters")}
-        labels={{ expand: t("common.expand"), collapse: t("common.collapse"), reset: t("common.reset") }}
-        onReset={() => {
-          form.resetFields();
-          setQuery(initialQuery);
+      <NeTablePage<RolePageQuery>
+        searchForm={form}
+        request={fetchRolePage}
+        initialQuery={initialQuery}
+        reloadToken={reloadSeed}
+        onRequestSuccess={() => setError(null)}
+        onRequestFail={(caughtError) => {
+          setError(caughtError instanceof Error ? caughtError.message : t("roleManagement.loadFailed"));
         }}
-      >
-        <Form form={form} layout="inline" initialValues={initialQuery} onFinish={(values) => setQuery((current) => ({ ...current, ...values, pageNum: 1 }))}>
-          <Form.Item name="name" label={t("common.name")}>
-            <Input allowClear placeholder={t("roleManagement.namePlaceholder")} />
-          </Form.Item>
-          <Form.Item name="code" label={t("common.code")}>
-            <Input allowClear placeholder={t("roleManagement.codePlaceholder")} />
-          </Form.Item>
-          <Form.Item name="status" label={t("common.status")}>
-            <Select style={{ width: 140 }} allowClear options={[{ label: t("common.enabled"), value: 1 }, { label: t("common.disabled"), value: 0 }]} />
-          </Form.Item>
-          <Form.Item>
-            <Button type="primary" htmlType="submit" icon={<SearchOutlined />}>
-              {t("common.search")}
-            </Button>
-          </Form.Item>
-        </Form>
-        {error ? <Typography.Paragraph type="danger" style={{ marginTop: 16, marginBottom: 0 }}>{error}</Typography.Paragraph> : null}
-      </NeSearch>
-      <NeTable
-toolbar={
-            <Button
-              type="primary"
-              icon={<PlusOutlined />}
-              onClick={() => {
-                openEditor(null).catch(() => undefined);
-              }}
-            >
-              {t("roleManagement.createRole")}
-            </Button>
+        toolbar={
+          <Button
+            type="primary"
+            icon={<PlusOutlined />}
+            onClick={() => {
+              openEditor(null).catch(() => undefined);
+            }}
+          >
+            {t("roleManagement.createRole")}
+          </Button>
         }
-        summary={t("common.recordCount", undefined, { count: total })}
-        pagination={<Pagination align="end" current={query.pageNum} pageSize={query.pageSize} total={total} onChange={(pageNum, pageSize) => setQuery((current) => ({ ...current, pageNum, pageSize }))} />}
+        summary={(result) => t("common.recordCount", undefined, { count: result.total })}
       >
+        <NeSearch
+          title={t("common.filters")}
+          labels={{ expand: t("common.expand"), collapse: t("common.collapse"), reset: t("common.reset") }}
+          onReset={() => {
+            form.resetFields();
+            setReloadSeed((current) => current + 1);
+          }}
+        >
+          <Form form={form} layout="inline" initialValues={initialQuery} onFinish={() => setReloadSeed((current) => current + 1)}>
+            <Form.Item name="name" label={t("common.name")}>
+              <Input allowClear placeholder={t("roleManagement.namePlaceholder")} />
+            </Form.Item>
+            <Form.Item name="code" label={t("common.code")}>
+              <Input allowClear placeholder={t("roleManagement.codePlaceholder")} />
+            </Form.Item>
+            <Form.Item name="status" label={t("common.status")}>
+              <Select style={{ width: 140 }} allowClear options={[{ label: t("common.enabled"), value: 1 }, { label: t("common.disabled"), value: 0 }]} />
+            </Form.Item>
+            <Form.Item>
+              <Button type="primary" htmlType="submit" icon={<SearchOutlined />}>
+                {t("common.search")}
+              </Button>
+            </Form.Item>
+          </Form>
+          {error ? <Typography.Paragraph type="danger" className="ne-request-error">{error}</Typography.Paragraph> : null}
+        </NeSearch>
+
         <Table<RoleItem>
           rowKey="id"
-          loading={loading}
-          dataSource={rows}
           columns={columns}
-          pagination={false}
           onRow={(record) => ({
             onClick: () => {
-              openDetail(record.id).catch(() => undefined);
+              openDetail(record).catch(() => undefined);
             },
           })}
         />
-      </NeTable>
+      </NeTablePage>
       <NeDetailDrawer title={t("roleManagement.detailTitle")} open={detailOpen && Boolean(detail)} onClose={() => setDetailOpen(false)} width={560}>
         {detail ? (
           <Space direction="vertical" size={16} style={{ width: "100%" }}>
