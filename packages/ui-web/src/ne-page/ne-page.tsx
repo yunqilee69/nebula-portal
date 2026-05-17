@@ -33,19 +33,12 @@ export function NePage({ title, subtitle, extra, children, className }: NePagePr
   return (
     <section className={pageClassName}>
       {hasHeader ? (
-        <header
-          style={{
-            display: "flex",
-            alignItems: "start",
-            justifyContent: "space-between",
-            gap: 16,
-          }}
-        >
-          <div>
-            {title ? <h1 style={{ margin: 0, fontSize: 24 }}>{title}</h1> : null}
-            {subtitle ? <p style={{ margin: title ? "8px 0 0" : 0, color: "var(--nebula-text-muted, #667085)" }}>{subtitle}</p> : null}
+        <header className="ne-page__header">
+          <div className="ne-page__heading">
+            {title ? <h1 className="ne-page__title">{title}</h1> : null}
+            {subtitle ? <p className="ne-page__subtitle">{subtitle}</p> : null}
           </div>
-          {extra}
+          {extra ? <div className="ne-page__extra">{extra}</div> : null}
         </header>
       ) : null}
       {children}

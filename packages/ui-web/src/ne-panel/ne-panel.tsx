@@ -29,11 +29,10 @@ export interface NePanelProps {
 export function NePanel({ title, extra, children, className }: NePanelProps) {
   return (
     <Card
-      className={className}
+      className={["ne-panel", className].filter(Boolean).join(" ")}
       title={title}
       extra={extra}
       variant="borderless"
-      style={{ boxShadow: "var(--nebula-shadow, 0 10px 30px rgba(15, 23, 42, 0.06))" }}
     >
       {children}
     </Card>
